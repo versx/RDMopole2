@@ -1,0 +1,108 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{title}}</h1>
+        <br>
+        <div class="w-75" style="float: none; margin: 0 auto;">
+            <div class="card text-center p-1 m-3">
+                <div class="card-header bg-dark text-light text-center"><b>{{Overview}}</b></div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/device.png" width="auto" height="64"/></h3>
+                                        <h4 class="list-group-item-heading">{{gyms_total}}</h4>
+                                        <p class="list-group-item-text">Gyms</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/config.png" width="auto" height="64"/></h3>
+                                        <h4 class="list-group-item-heading">{{raids}}</h4>
+                                        <p class="list-group-item-text">Active Raids</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/config.png" width="auto" height="64"/></h3>
+                                        <h4 class="list-group-item-heading">{{quests}}</h4>
+                                        <p class="list-group-item-text">Quests</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/config.png" width="auto" height="64"/></h3>
+                                        <h4 class="list-group-item-heading">{{invasions}}</h4>
+                                        <p class="list-group-item-text">Invasions</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card text-center p-1 m-3">
+                <div class="card-header bg-dark text-light text-center"><b>Teams</b></div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/teams/neutral.png" width="auto" height="64"/></h3>
+                                        <h4 class="list-group-item-heading">{{gyms_neutral}}</h4>
+                                        <p class="list-group-item-text">Neutral</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/teams/mystic.png" width="auto" height="64"/></h3>
+                                        <h4 class="list-group-item-heading">{{gyms_mystic}}</h4>
+                                        <p class="list-group-item-text">Mystic</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/teams/valor.png" width="auto" height="64"/></h3>
+                                        <h4 class="list-group-item-heading">{{gyms_valor}}</h4>
+                                        <p class="list-group-item-text">Valor</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/teams/instinct.png" width="auto" height="64"/></h3>
+                                        <h4 class="list-group-item-heading">{{gyms_instinct}}</h4>
+                                        <p class="list-group-item-text">Instinct</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('#header').css('color', 'white');
+    }
+</script>

@@ -1,0 +1,59 @@
+{
+    "interface": "0.0.0.0",
+    "port": 8080,
+    "title": "RDM-opole2",
+    "locale": "en",
+    "style": "dark",
+    "lastNestMigration": "2019-03-07T01:00:00Z",
+    "db": {
+        "scanner": {
+            "host": "127.0.0.1",
+            "port": 3306,
+            "username": "user",
+            "password": "pass123!",
+            "database": "rdmdb",
+            "charset": "utf8mb4"
+        },
+        "manualdb": {
+            "host": "127.0.0.1",
+            "port": 3306,
+            "username": "user",
+            "password": "pass123!",
+            "database": "manualdb",
+            "charset": "utf8mb4"
+        }
+    },
+    "discord": {
+        "botToken": "",
+        "clientId": "",
+        "clientSecret": "",
+        "guilds": [""]
+    },
+    "pages": {
+        "home": {
+            "enabled": true,
+            "roles": []
+        },
+        "raids": {
+            "enabled": true,
+            "roles": []
+        },
+        "gyms": {
+            "enabled": true,
+            "roles": []
+        },
+        "quests": {
+            "enabled": true,
+            "roles": []
+        },
+        "nests": {
+            "enabled": true,
+            "roles": []
+        }
+    }, 
+    "urls": {
+        "pokemon": "https://cdn.example.com/images/original/monsters/%s_%s.png",
+        "raids": "https://cdn.example.com/images/original/eggs/%s.png",
+        "quests": "https://cdn.example.com/images/original/quests/%s.png"
+    }
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Raids}}</h1>
+        <br>
+        <div style="width:90%; margin-left:calc(5%);">
+            <div class="btn-group btn-group-sm float-right">
+                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#filtersModal">
+                <i class="fa fa-fw fa-filter" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="modal fade" id="filtersModal" tabindex="-1" role="dialog" aria-labelledby="filtersModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="filtersModalLabel">Raid Filters</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="filter-pokemon">Pokemon</label>
+                                    </div>
+                                    <input type="text" id="filter-pokemon" class="form-control input-lg" onkeyup="reload()" placeholder="Search by name.." title="Type in a name">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="filter-gym">Gym</label>
+                                    </div>
+                                    <input type="text" id="filter-gym" class="form-control input-lg" onkeyup="reload()" placeholder="Search by gym.." title="Type in a gym name">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="filter-city">City</label>
+                                    </div>
+                                    <select multiple id="filter-city" class="custom-select" onchange="reload()">
+                                        <option value="" selected>All</option>
+                                        {{#cities}}
+                                        <option value="{{name}}">{{name}}</option>
+                                        {{/cities}}
+                                    </select>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="filter-level">Raid Level</label>
+                                    </div>
+                                    <select id="filter-level" class="custom-select" onchange="reload()">
+                                        <option value="all" selected>All</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="filter-team">Team</label>
+                                    </div>
+                                    <select id="filter-team" class="custom-select"onchange="reload()">
+                                        <option value="all" selected>All</option>
+                                        <option value="Neutral">Neutral</option>
+                                        <option value="Mystic">Mystic</option>
+                                        <option value="Valor">Valor</option>
+                                        <option value="Instinct">Instinct</option>
+                                    </select>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="filter-ex">Ex-Eligible</label>
+                                    </div>
+                                    <select id="filter-ex" class="custom-select" onchange="reload()">
+                                        <option value="all" selected>All</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" id="reset-filters">Reset Filters</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <br><br>
+            <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Pokemon</th>
+                    <th>Level</th>
+                    <th>Starts</th>
+                    <th>Ends</th>
+                    <th>Gym Name</th>
+                    <th>Team</th>
+                    <th>EX-Eligible</th>
+                    <th>City</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </body>
+</html>
+
+<script>
+    // TODO: Load from localStorage
+    var pokemon = $('#filter-pokemon').val();
+    var gym = $('#filter-gym').val();
+    var level = $('#filter-level').val();
+    var city = $('#filter-city').val();
+    var team = $('#filter-team').val();
+    var ex = $('#filter-ex').val();
+    var query = `?pokemon=${pokemon}&gym=${gym}&level=${level}&city=${city}&team=${team}&ex=${ex}`;
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+    }
+    //$(document).ready(function() {
+        const table = $('#table').DataTable( {
+            "ajax": {
+                "url": "/api/raids" + query,
+                "dataSrc": "data.raids",
+                "async": true
+            },
+            "stateSave": true,
+            "paging":   true,
+            "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+            "pageLength": 50,
+            "columns": [
+                { "data": "pokemon" },
+                { "data": "raid_level" },
+                { "data": "raid_starts" },
+                { "data": "raid_ends" },
+                { "data": "gym_name" },
+                { "data": "team" },
+                { "data": "ex_eligible" },
+                { "data": "city" }
+            ],
+            "info": true,
+            "order": [[ 3, "asc" ]],
+            "search.caseInsensitive": true,
+            "responsive": true,
+            /*
+            "createdRow": function (row, data, index) {
+                $('td', row).eq(2).css('color', 'blue');
+                $('td', row).eq(2).css('font-weight', 'bold');
+                $(row).css('height', 128);
+            }
+            */
+        });
+        table.on('draw.dt', function() {
+            setTimeout(function () {
+                table.ajax.reload(null, false);
+            }, 30 * 1000);
+        });
+        function reload() {
+            var pokemon = $('#filter-pokemon').val();
+            var gym = $('#filter-gym').val();
+            var level = $('#filter-level').val();
+            var city = $('#filter-city').val();
+            var team = $('#filter-team').val();
+            var ex = $('#filter-ex').val();
+            var query = `?pokemon=${pokemon}&gym=${gym}&level=${level}&city=${city}&team=${team}&ex=${ex}`;
+            table.ajax.url('/api/raids' + query).load();
+        }
+    //});
+</script>

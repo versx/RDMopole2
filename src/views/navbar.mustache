@@ -1,0 +1,86 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="/">
+      <!--<img src="./static/logo.svg" width="30" height="30" class="d-inline-block align-top" alt="">-->
+      {{title}}
+    </a>
+  </div>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbar">
+    {{#logged_in}}
+    <ul class="navbar-nav mr-auto">
+      {{#home_page}}
+      <li class="nav-item">
+        <a class="nav-link" href="/"><i class="fa fa-fw fa-home" aria-hidden="true"></i>&nbsp;{{Home}} <span class="sr-only"></span></a>
+      </li>
+      {{/home_page}}
+      {{#raids_page}}
+      <li class="nav-item raids_page">
+        <a class="nav-link" href="/raids"><i class="fa fa-fw fa-bolt" aria-hidden="true"></i>&nbsp;{{Raids}}</a>
+      </li>
+      {{/raids_page}}
+      {{#gyms_page}}
+      <li class="nav-item gyms_page">
+        <a class="nav-link" href="/gyms"><i class="fa fa-fw fa-cog" aria-hidden="true"></i>&nbsp;{{Gyms}}</a>
+      </li>
+      {{/gyms_page}}
+      {{#quests_page}}
+      <li class="nav-item quests_page">
+        <a class="nav-link" href="/quests"><i class="fa fa-fw fa-search-plus" aria-hidden="true"></i>&nbsp;{{Quests}}</a>
+      </li>
+      {{/quests_page}}
+      {{#invasions_page}}
+      <li class="nav-item invasions_page">
+        <a class="nav-link" href="/invasions"><i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;{{Invasions}}</a>
+      </li>
+      {{/invasions_page}}
+      {{#nests_page}}
+      <li class="nav-item nests_page">
+        <a class="nav-link" href="/nests"><i class="fa fa-fw fa-connectdevelop" aria-hidden="true"></i>&nbsp;{{Nests}}</a>
+      </li>
+      {{/nests_page}}
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-fw fa-user" aria-hidden="true"></i>&nbsp;{{username}}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/logout"><i class="fa fa-fw fa-sign-out" aria-hidden="true"></i>&nbsp;{{Logout}}</a>
+        </div>
+      </li>
+    </ul>
+    {{/logged_in}}
+  </div>
+</nav>
+<br>
+<br>
+
+<script>
+    $(document).ready(function() {
+        // Get current URL path and assign 'active' class
+        var pathname = window.location.pathname;
+        $('#navbar > ul > li > a[href="'+pathname+'"]').parent().addClass('active');
+
+        {{^home_page}}
+            $('.home_page').removeClass('active'});
+        {{/home_page}}
+        {{^raids_page}}
+            $('.raids_page').css('hidden', {{raids_page}});
+        {{/raids_page}}
+        {{^gyms_page}}
+            $('.gyms_page').css('hidden', {{gyms_page}});
+        {{/gyms_page}}
+        {{^quests_page}}
+            $('.quests_page').css('hidden', {{quests_page}});
+        {{/quests_page}}
+        {{^invasions_page}}
+            $('.invasions_page').css('hidden', {{invasions_page}});
+        {{/invasions_page}}
+        {{^nests_page}}
+            $('.nests_page').css('hidden', {{nests_page}});
+        {{/nests_page}}
+    });
+</script>

@@ -1,0 +1,79 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" class="page-header">Neighborhood nests</h1>
+        <p id="migration" class="text-center"></p>
+        <br>
+        <div style="width:90%; margin-left:calc(5%);">
+            <br><br>
+            <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Nest</th>
+                    <th>Pokemon</th>
+                    <th>Count</th>
+                    <th>Average/h</th>
+                    <th>City</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </body>
+</html>
+
+<script type="text/javascript" src="./js/moment.js"></script>
+<script type="text/javascript" src="./js/jquery.countdown.min.js"></script>
+<script>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+    }
+
+    var lastMigrationDate = new Date("{{last_nest_migration}}");
+    var migrationDate = new Date("{{last_nest_migration}}");
+    while (migrationDate < new Date()) {
+        var d = new Date(migrationDate);
+        d.setDate(d.getDate() + 14);
+        migrationDate = d;
+    }
+    $("#migration").countdown(migrationDate, function(event) {
+        var msg = "The next <b>nest migration</b> occurs in<br/> ";
+        var time = event.strftime("%w %!w:<span>week</span>,<span>weeks</span>;, %d %!d:<span>day</span>,<span>days</span>;, %H %!H:<span>hour</span>,<span>hours</span>;, %M %!M:<span>minute</span>,<span>minutes</span>;, and %S %!S:<span>second</span>,<span>seconds</span>;");
+        $(this).html(msg + time + "<br/>on<br/><span>" + moment(migrationDate).format("dddd MMMM Do YYYY, h:mm:ss A") + "</span>");
+    });
+
+    $(document).ready(function() {
+        const table = $('#table').DataTable( {
+            "ajax": {
+                "url": "/api/nests",
+                "dataSrc": "data.nests",
+                "async": true
+            },
+            "stateSave": true,
+            "paging":   true,
+            "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+            "pageLength": 50,
+            "columns": [
+                { "data": "name" },
+                { "data": "pokemon" },
+                { "data": "count" },
+                { "data": "average" },
+                { "data": "city" }
+            ],
+            "info": true,
+            "order": [[ 0, "asc" ]],
+            "search.caseInsensitive": true,
+            "responsive": true
+        });
+        table.on('draw.dt', function() {
+            setTimeout(function () {
+                table.ajax.reload(null, false);
+            }, 30 * 1000);
+        });
+    });
+</script>

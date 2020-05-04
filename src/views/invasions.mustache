@@ -1,0 +1,60 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Invasions}}</h1>
+        <br>
+        <div style="width:90%; margin-left:calc(5%);">
+            <br><br>
+            <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Grunt Type</th>
+                    <th>Pokestop</th>
+                    <th>Expires</th>
+                    <th>City</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </body>
+</html>
+
+<script>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+    }
+    $(document).ready(function() {
+        const table = $('#table').DataTable( {
+            "ajax": {
+                "url": "/api/invasions",
+                "dataSrc": "data.invasions",
+                "async": true
+            },
+            "stateSave": true,
+            "paging":   true,
+            "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+            "pageLength": 50,
+            "columns": [
+                { "data": "grunt_type" },
+                { "data": "pokestop_name" },
+                { "data": "expires" },
+                { "data": "city" }
+            ],
+            "info": true,
+            "order": [[ 2, "asc" ]],
+            "search.caseInsensitive": true,
+            "responsive": true
+        });
+        table.on('draw.dt', function() {
+            setTimeout(function () {
+                table.ajax.reload(null, false);
+            }, 30 * 1000);
+        });
+    });
+</script>
