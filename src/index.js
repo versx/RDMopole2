@@ -18,7 +18,6 @@ const defaultData = require('./data/default.js');
 
 
 // TODO: Raid list with pressable rows for more details
-// TODO: Nests
 // TODO: Add table filtering via ajax call
 // TODO: Login button/page
 // TODO: Cache filter settings

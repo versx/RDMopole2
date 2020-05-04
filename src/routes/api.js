@@ -16,7 +16,6 @@ const pokedex = require('../../static/data/pokedex.json');
 
 if (config.pages.raids.enabled) {
     router.get('/raids*', async function(req, res) {
-        //console.log("Query:", req.query);
         var raids = await getRaids(req.query);
         var json = JSON.stringify({ data: { raids: raids } });
         res.send(json);
@@ -25,7 +24,7 @@ if (config.pages.raids.enabled) {
 
 if (config.pages.gyms.enabled) {
     router.get('/gyms', async function(req, res) {
-        var gyms = await getGyms();
+        var gyms = await getGyms(req.query);
         var json = JSON.stringify({ data: { gyms: gyms } });
         res.send(json);
     });
@@ -121,7 +120,7 @@ async function getRaids(filter) {
     return [];
 }
 
-async function getGyms() {
+async function getGyms(filter) {
     var sql = `
     SELECT 
         lat, 
@@ -143,20 +142,27 @@ async function getGyms() {
         results.forEach(function(row) {
             var name = row.name;
             var team = getTeamIcon(row.team_id);
-            var slots = row.availble_slots === 0 ? 'Full' : row.availble_slots === 6 ? 'Empty' : row.availble_slots;
+            var slots = row.availble_slots === 0 ? 'Full' : row.availble_slots === 6 ? 'Empty' : '' + row.availble_slots;
             var guard = row.guarding_pokemon_id === 0 ? 'None' : pokedex[row.guarding_pokemon_id];
             var geofence = svc.getGeofence(row.lat, row.lon);
             var city = geofence ? geofence.name : 'Unknown';
             var inBattle = row.in_battle ? 'Yes' : 'No';
-            gyms.push({
-                name: name,
-                team: team,
-                available_slots: slots,
-                guarding_pokemon_id: guard,
-                in_battle: inBattle,
-                city: city
-                // TODO: Updated
-            });
+            if (name.toLowerCase().indexOf(filter.gym.toLowerCase()) > -1 &&
+                (team.toLowerCase().indexOf(filter.team.toLowerCase()) > -1 || filter.team === 'all') &&
+                (slots.toLowerCase().indexOf(filter.slots.toLowerCase()) > -1 || filter.slots.toLowerCase() === 'all') && // TODO: Accomodate for Full and Empty
+                //(guard.toLowerCase().indexOf(filter.guard.toLowerCase()) > -1 || filter.guard.toLowerCase() === 'all') &&
+                (inBattle.toLowerCase().indexOf(filter.battle.toLowerCase()) > -1 || filter.battle.toLowerCase() === 'all') &&
+                (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                gyms.push({
+                    name: name,
+                    team: team,
+                    available_slots: slots,
+                    guarding_pokemon_id: guard,
+                    in_battle: inBattle,
+                    city: city
+                    // TODO: Updated
+                });
+            }
         });
         return gyms;
     }

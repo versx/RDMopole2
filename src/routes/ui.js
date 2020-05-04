@@ -45,7 +45,9 @@ if (config.pages.raids.enabled) {
 
 if (config.pages.gyms.enabled) {
     router.get('/gyms', function(req, res) {
-        res.render('gyms', defaultData);
+        var data = defaultData;
+        data.cities = svc.geofences.map(x => { return { 'name': x.name } });
+        res.render('gyms', data);
     });
 }
 

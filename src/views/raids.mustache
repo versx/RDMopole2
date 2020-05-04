@@ -8,7 +8,7 @@
         <div style="width:90%; margin-left:calc(5%);">
             <div class="btn-group btn-group-sm float-right">
                 <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#filtersModal">
-                <i class="fa fa-fw fa-filter" aria-hidden="true"></i>
+                    <i class="fa fa-fw fa-filter" aria-hidden="true"></i>
                 </button>
             </div>
             <div class="modal fade" id="filtersModal" tabindex="-1" role="dialog" aria-labelledby="filtersModalLabel" aria-hidden="true">
@@ -39,7 +39,7 @@
                                         <label class="input-group-text" for="filter-city">City</label>
                                     </div>
                                     <select multiple id="filter-city" class="custom-select" onchange="reload()">
-                                        <option value="" selected>All</option>
+                                        <option value="all" selected>All</option>
                                         {{#cities}}
                                         <option value="{{name}}">{{name}}</option>
                                         {{/cities}}
