@@ -32,7 +32,7 @@ if (config.pages.gyms.enabled) {
 
 if (config.pages.quests.enabled) {
     router.get('/quests', async function(req, res) {
-        var quests = await getQuests();
+        var quests = await getQuests(req.query);
         var json = JSON.stringify({ data: { quests: quests } });
         res.send(json);
     });
@@ -169,7 +169,7 @@ async function getGyms(filter) {
     return [];
 }
 
-async function getQuests() {
+async function getQuests(filter) {
     var sql = `
     SELECT 
         lat, 
@@ -201,15 +201,20 @@ async function getQuests() {
             var task = getQuestTask(row.quest_type, row.quest_target);
             var conditions = getQuestConditions(row.quest_conditions);
             var geofence = svc.getGeofence(row.lat, row.lon);
+            var pokestop = row.name;
             var city = geofence ? geofence.name : 'Unknown';
-            quests.push({
-                reward: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${reward}`,
-                quest: task,
-                conditions: conditions,
-                pokestop_name: row.name,
-                city: city
-                // TODO: Updated
-            });
+            if (reward.toLowerCase().indexOf(filter.reward.toLowerCase()) > -1 &&
+                pokestop.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
+                (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                quests.push({
+                    reward: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${reward}`,
+                    quest: task,
+                    conditions: conditions,
+                    pokestop_name: row.name,
+                    city: city
+                    // TODO: Updated
+                });
+            }
         });
         return quests;
     }

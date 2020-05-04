@@ -6,6 +6,55 @@
         <h1 align="center" id="header">{{Quests}}</h1>
         <br>
         <div style="width:90%; margin-left:calc(5%);">
+            <div class="btn-group btn-group-sm float-right">
+                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#filtersModal">
+                    <i class="fa fa-fw fa-filter" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="modal fade" id="filtersModal" tabindex="-1" role="dialog" aria-labelledby="filtersModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="filtersModalLabel">Quest Filters</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="filter-reward">Reward</label>
+                                    </div>
+                                    <input type="text" id="filter-reward" class="form-control input-lg" onkeyup="reload()" placeholder="Search by name.." title="Type in a name">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="filter-pokestop">Pokestop</label>
+                                    </div>
+                                    <input type="text" id="filter-pokestop" class="form-control input-lg" onkeyup="reload()" placeholder="Search by pokestop.." title="Type in a pokestop name">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="filter-city">City</label>
+                                    </div>
+                                    <select multiple id="filter-city" class="custom-select" onchange="reload()">
+                                        <option value="all" selected>All</option>
+                                        {{#cities}}
+                                        <option value="{{name}}">{{name}}</option>
+                                        {{/cities}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" id="reset-filters">Reset Filters</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <br><br>
             <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                 <thead class="thead-dark">
@@ -26,14 +75,18 @@
 </html>
 
 <script>
+    var reward = $('#filter-reward').val();
+    var pokestop = $('#filter-pokestop').val();
+    var city = $('#filter-city').val();
+    var query = `?reward=${reward}&pokestop=${pokestop}&city=${city}`;
     if ("{{style}}" === 'dark') {
         $('body').css('background-color', 'rgb(33, 37, 41)');
         $('body').css('color', 'rgb(255, 255, 255)');
     }
-    $(document).ready(function() {
+    //$(document).ready(function() {
         const table = $('#table').DataTable( {
             "ajax": {
-                "url": "/api/quests",
+                "url": "/api/quests" + query,
                 "dataSrc": "data.quests",
                 "async": true
             },
@@ -58,5 +111,12 @@
                 table.ajax.reload(null, false);
             }, 30 * 1000);
         });
-    });
+        function reload() {
+            var reward = $('#filter-reward').val();
+            var pokestop = $('#filter-pokestop').val();
+            var city = $('#filter-city').val();
+            var query = `?reward=${reward}&pokestop=${pokestop}&city=${city}`;
+            table.ajax.url('/api/quests' + query).load();
+        }
+    //});
 </script>

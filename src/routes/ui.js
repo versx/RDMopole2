@@ -53,7 +53,9 @@ if (config.pages.gyms.enabled) {
 
 if (config.pages.quests.enabled) {
     router.get('/quests', function(req, res) {
-        res.render('quests', defaultData);
+        var data = defaultData;
+        data.cities = svc.geofences.map(x => { return { 'name': x.name } });
+        res.render('quests', data);
     });
 }
 
