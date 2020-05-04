@@ -67,7 +67,9 @@ if (config.pages.invasions.enabled) {
 
 if (config.pages.nests.enabled) {
     router.get('/nests', function(req, res) {
-        res.render('nests', defaultData);
+        var data = defaultData;
+        data.cities = svc.geofences.map(x => { return { 'name': x.name } });
+        res.render('nests', data);
     });
 }
 

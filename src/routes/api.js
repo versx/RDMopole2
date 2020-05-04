@@ -17,41 +17,35 @@ const pokedex = require('../../static/data/pokedex.json');
 if (config.pages.raids.enabled) {
     router.get('/raids*', async function(req, res) {
         var raids = await getRaids(req.query);
-        var json = JSON.stringify({ data: { raids: raids } });
-        res.send(json);
+        res.json({ data: { raids: raids } });
     });
 }
 
 if (config.pages.gyms.enabled) {
     router.get('/gyms', async function(req, res) {
         var gyms = await getGyms(req.query);
-        var json = JSON.stringify({ data: { gyms: gyms } });
-        res.send(json);
+        res.json({ data: { gyms: gyms } });
     });
 }
 
 if (config.pages.quests.enabled) {
     router.get('/quests', async function(req, res) {
         var quests = await getQuests(req.query);
-        var json = JSON.stringify({ data: { quests: quests } });
-        res.send(json);
+        res.json({ data: { quests: quests } });
     });
 }
 
 if (config.pages.invasions.enabled) {
     router.get('/invasions', async function(req, res) {
-        var invasions = await getInvasions();
-        var json = JSON.stringify({ data: { invasions: invasions } });
-        res.send(json);
+        var invasions = await getInvasions(req.query);
+        res.json({ data: { invasions: invasions } });
     });
 }
 
 if (config.pages.nests.enabled) {
     router.get('/nests', async function(req, res) {
-        var nests = await getNests();
+        var nests = await getNests(req.query);
         res.json({ data: { nests: nests } });
-        //var json = JSON.stringify({ data: { nests: nests } });
-        //res.send(json);
     });
 }
 
@@ -221,7 +215,7 @@ async function getQuests(filter) {
     return [];
 }
 
-async function getInvasions() {
+async function getInvasions(filter) {
     var sql = `
     SELECT 
         lat, 
@@ -258,7 +252,7 @@ async function getInvasions() {
     return [];
 }
 
-async function getNests() {
+async function getNests(filter) {
     var sql = `
     SELECT 
         lat, 
@@ -282,14 +276,18 @@ async function getNests() {
             var average = row.pokemon_avg;
             var geofence = svc.getGeofence(row.lat, row.lon);
             var city = geofence ? geofence.name : 'Unknown';
-            nests.push({
-                name: name,
-                pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${pokemon}`,
-                count: count,
-                average: average,
-                city: city
-                // TODO: Updated
-            });
+            if (name.toLowerCase().indexOf(filter.nest.toLowerCase()) > -1 &&
+                pokemon.toLowerCase().indexOf(filter.pokemon.toLowerCase()) > -1 &&
+                (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                nests.push({
+                    name: name,
+                    pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${pokemon}`,
+                    count: count,
+                    average: average,
+                    city: city
+                    // TODO: Updated
+                });
+            }
         });
         return nests;
     }
