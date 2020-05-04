@@ -234,18 +234,22 @@ async function getInvasions(filter) {
     if (results && results.length > 0) {
         var invasions = [];
         results.forEach(function(row) {
-            var name = row.name;
+            var name = row.name || '';
             var gruntType = getGruntType(row.grunt_type);
             var expires = new Date(row.incident_expire_timestamp * 1000).toLocaleTimeString();
             var geofence = svc.getGeofence(row.lat, row.lon);
             var city = geofence ? geofence.name : 'Unknown';
-            invasions.push({
-                grunt_type: `<img src='./img/grunts/${row.grunt_type}.png' width=auto height=32 />&nbsp;${gruntType}`,
-                pokestop_name: name,
-                expires: expires,
-                city: city
-                // TODO: Updated
-            });
+            if ((gruntType.toLowerCase().indexOf(filter.grunt.toLowerCase()) > -1 || filter.grunt.toLowerCase() === 'all') &&
+                name.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
+                (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                invasions.push({
+                    grunt_type: `<img src='./img/grunts/${row.grunt_type}.png' width=auto height=32 />&nbsp;${gruntType}`,
+                    pokestop_name: name,
+                    expires: expires,
+                    city: city
+                    // TODO: Updated
+                });
+            }
         });
         return invasions;
     }

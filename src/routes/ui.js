@@ -2,6 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
+const i18n = require('i18n');
 
 const config = require('../config.json');
 const defaultData = require('../data/default.js');
@@ -61,7 +62,15 @@ if (config.pages.quests.enabled) {
 
 if (config.pages.invasions.enabled) {
     router.get('/invasions', function(req, res) {
-        res.render('invasions', defaultData);
+        var data = defaultData;
+        var gruntTypes = [];
+        for (var i = 0; i <= 50; i++) {
+            var grunt = i18n.__('grunt_' + i);
+            gruntTypes.push({ 'name': grunt });
+        }
+        data.cities = svc.geofences.map(x => { return { 'name': x.name } });
+        data.grunt_types = gruntTypes;
+        res.render('invasions', data);
     });
 }
 

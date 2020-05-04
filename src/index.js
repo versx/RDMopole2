@@ -17,6 +17,7 @@ const config = require('./config.json');
 const defaultData = require('./data/default.js');
 
 
+// TODO: Dark style filters
 // TODO: Raid list with pressable rows for more details
 // TODO: Add table filtering via ajax call
 // TODO: Login button/page
