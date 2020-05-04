@@ -51,7 +51,7 @@ class GeofenceService {
     loadGeofence(file) {
         var data = fs.readFileSync(file, 'UTF-8');
         var lines = data.split(/\r?\n/);
-        var name = "Unknown";
+        var name = 'Unknown';
         if (lines.length > 0 && lines[0].indexOf('[', 0) === 0) {
             name = lines[0].replace('[', '');
             name = name.replace(']', '');
@@ -69,7 +69,7 @@ class GeofenceService {
             var line = lines[i];
             if (line.indexOf('[', 0) === 0)
                 continue;
-	  	  	  
+
             var parts = line.split(',');
             var lat = parseFloat(parts[0]);
             var lon = parseFloat(parts[1]);

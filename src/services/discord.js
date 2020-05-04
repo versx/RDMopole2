@@ -2,7 +2,7 @@
 
 const config = require('../config.json');
 
-const DiscordOauth2 = require("discord-oauth2");
+const DiscordOauth2 = require('discord-oauth2');
 const oauth = new DiscordOauth2();
 
 const Discord = require('discord.js');

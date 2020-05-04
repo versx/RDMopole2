@@ -36,4 +36,4 @@ module.exports = {
     generateString,
     hasGuild,
     hasRole
-}
+};

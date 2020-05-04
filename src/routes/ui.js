@@ -39,7 +39,7 @@ router.get('/logout', function(req, res) {
 if (config.pages.raids.enabled) {
     router.get('/raids', function(req, res) {
         var data = defaultData;
-        data.cities = svc.geofences.map(x => { return { 'name': x.name } });
+        data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         res.render('raids', data);
     });
 }
@@ -47,7 +47,7 @@ if (config.pages.raids.enabled) {
 if (config.pages.gyms.enabled) {
     router.get('/gyms', function(req, res) {
         var data = defaultData;
-        data.cities = svc.geofences.map(x => { return { 'name': x.name } });
+        data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         res.render('gyms', data);
     });
 }
@@ -55,7 +55,7 @@ if (config.pages.gyms.enabled) {
 if (config.pages.quests.enabled) {
     router.get('/quests', function(req, res) {
         var data = defaultData;
-        data.cities = svc.geofences.map(x => { return { 'name': x.name } });
+        data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         res.render('quests', data);
     });
 }
@@ -68,7 +68,7 @@ if (config.pages.invasions.enabled) {
             var grunt = i18n.__('grunt_' + i);
             gruntTypes.push({ 'name': grunt });
         }
-        data.cities = svc.geofences.map(x => { return { 'name': x.name } });
+        data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         data.grunt_types = gruntTypes;
         res.render('invasions', data);
     });
@@ -77,7 +77,7 @@ if (config.pages.invasions.enabled) {
 if (config.pages.nests.enabled) {
     router.get('/nests', function(req, res) {
         var data = defaultData;
-        data.cities = svc.geofences.map(x => { return { 'name': x.name } });
+        data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         res.render('nests', data);
     });
 }

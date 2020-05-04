@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx eslint src/**/*.js",
+    "test-fix": "npx eslint src/**/*.js --fix"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
     "btoa": "^1.2.1",
     "discord-oauth2": "^2.1.0",
     "discord.js": "^12.2.0",
+    "eslint": "^6.8.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "i18n": "^0.9.0",

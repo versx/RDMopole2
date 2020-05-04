@@ -32,6 +32,7 @@ const defaultData = require('./data/default.js');
 // TODO: Max pokestop and gym name length
 // TODO: Map links config
 // TODO: Support multiple city filter selections
+// TODO: Support multiple grunt filter selections
 // TODO: Cleanup API route class
 // TODO: Make sql class to connect with different config options
 
@@ -61,7 +62,9 @@ async function run() {
     app.use(function(req, res, next) {
         // Mustache helper
         res.locals.__ = function() {
+            /* eslint-disable no-unused-vars */
             return function(text, render) {
+            /* eslint-enable no-unused-vars */
                 return i18n.__.routerly(req, arguments);
             };
         };
@@ -81,20 +84,22 @@ async function run() {
     app.use('/api/discord', discordRoutes);
 
     // Discord error middleware
-    app.use((err, req, res, next) => {
+    /* eslint-disable no-unused-vars */
+    app.use(function(err, req, res, next) {
         switch (err.message) {
-            case 'NoCodeProvided':
-                return res.status(400).send({
-                    status: 'ERROR',
-                    error: err.message,
-                });
-            default:
-                return res.status(500).send({
-                    status: 'ERROR',
-                    error: err.message,
-                });
+        case 'NoCodeProvided':
+            return res.status(400).send({
+                status: 'ERROR',
+                error: err.message,
+            });
+        default:
+            return res.status(500).send({
+                status: 'ERROR',
+                error: err.message,
+            });
         }
     });
+    /* eslint-enable no-unused-vars */
     
     // Login middleware
     app.use(function(req, res, next) {

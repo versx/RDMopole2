@@ -30,12 +30,12 @@ router.get('/callback', catchAsyncErrors(async function(req, res) {
     const code = req.query.code;
     const creds = btoa(`${config.discord.clientId}:${config.discord.clientSecret}`);
     const response = await fetch(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirect}`,
-    {
-        method: 'POST',
-        headers: {
-            Authorization: `Basic ${creds}`,
-        }
-    });
+        {
+            method: 'POST',
+            headers: {
+                Authorization: `Basic ${creds}`,
+            }
+        });
     const json = await response.json();
     const client = new DiscordClient(json.access_token);
     const user = await client.getUser();

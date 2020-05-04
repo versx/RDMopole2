@@ -309,14 +309,14 @@ function toHHMMSS(secs) {
 function getTeamIcon(teamId) {
     var teamName = getTeamName(teamId);
     switch (teamId) {
-        case 1:
-            return '<img src="./img/teams/mystic.png" width=auto height=32 />&nbsp;' + teamName;
-        case 2:
-            return '<img src="./img/teams/valor.png" width=auto height=32 />&nbsp;' + teamName;
-        case 3:
-            return '<img src="./img/teams/instinct.png" width=auto height=32 />&nbsp;' + teamName;
-        default:
-            return '<img src="./img/teams/neutral.png" width=auto height=32 />&nbsp;' + teamName;
+    case 1:
+        return '<img src="./img/teams/mystic.png" width=auto height=32 />&nbsp;' + teamName;
+    case 2:
+        return '<img src="./img/teams/valor.png" width=auto height=32 />&nbsp;' + teamName;
+    case 3:
+        return '<img src="./img/teams/instinct.png" width=auto height=32 />&nbsp;' + teamName;
+    default:
+        return '<img src="./img/teams/neutral.png" width=auto height=32 />&nbsp;' + teamName;
     }
 }
 
@@ -347,8 +347,8 @@ function getQuestTask(questId, amount) {
 function getQuestReward(rewards) {
     const obj = JSON.parse(rewards);
     const reward = obj[0];
-    const id = reward.type
-    const info = reward.info
+    const id = reward.type;
+    const info = reward.info;
     if (id === 1 && info !== undefined && info.amount !== undefined) {
         return i18n.__('quest_reward_1_formatted', { amount: info.amount });
     } else if (id === 2 && info !== undefined && info.amount !== undefined && info.item_id !== undefined) {
@@ -384,6 +384,7 @@ function getQuestConditions(conditions) {
 }
 
 function getQuestCondition(condition) {
+    /* eslint-disable no-redeclare */
     const id = condition.type;
     const info = condition.info;
     if (id === 1 && info !== undefined && info.pokemon_type_ids !== undefined) {
@@ -396,7 +397,7 @@ function getQuestCondition(condition) {
             } else if (i === info.pokemon_type_ids.length - 1) {
                 formatted = ' or ';
             } else {
-                formatted = ', '
+                formatted = ', ';
             }
             typesString += formatted + getPokemonType(typeId);
         }
@@ -432,11 +433,11 @@ function getQuestCondition(condition) {
         }
         return i18n.__('quest_condition_7_formatted', { levels: levelsString });
     } else if (id === 8 && info !== undefined && info.throw_type_id !== undefined) {
-        return i18n.__('quest_condition_8_formatted', { throw_type: getThrowType(info.throw_type_id) })
+        return i18n.__('quest_condition_8_formatted', { throw_type: getThrowType(info.throw_type_id) });
     } else if (id === 11 && info !== undefined && info.item_id !== undefined) {
-        return i18n.__('quest_condition_11_formatted', { item: getItem(info.item_id) })
+        return i18n.__('quest_condition_11_formatted', { item: getItem(info.item_id) });
     } else if (id === 14 && info !== undefined && info.throw_type_id !== undefined) {
-        return i18n.__('quest_condition_14_formatted', { throw_type: getThrowType(info.throw_type_id) })
+        return i18n.__('quest_condition_14_formatted', { throw_type: getThrowType(info.throw_type_id) });
     } else if (id === 26 && info !== undefined && info.alignment_ids !== undefined) {
         var alignmentsString = '';
         for (var i = 0; info.alignment_ids.length; i++) {
@@ -451,7 +452,7 @@ function getQuestCondition(condition) {
             }
             alignmentsString += formatted + getAlignmentName(alignment);
         }
-        return i18n.__('quest_condition_26_formatted', { alignments: alignmentsString })
+        return i18n.__('quest_condition_26_formatted', { alignments: alignmentsString });
     } else if (id === 27 && info !== undefined && info.character_category_ids !== undefined) {
         var categoriesString = '';
         for (var i = 0; i < info.character_category_ids.length; i++) {
@@ -470,6 +471,7 @@ function getQuestCondition(condition) {
     } else {
         return i18n.__('quest_condition_' + id);
     }
+    /* eslint-enable no-unused-vars */
 }
 
 function getQuestIcon(rewards) {
@@ -477,27 +479,27 @@ function getQuestIcon(rewards) {
     var obj = JSON.parse(rewards);
     var reward = obj[0];
     switch (reward.type) {
-        case 1://Experience
-            iconIndex = -2;
-            break;
-        case 2://Item
-            iconIndex = reward.info.item_id;
-            break;
-        case 3://Stardust
-            iconIndex = -1;
-            break;
-        case 4://Candy
-            iconIndex = 1301;
-            break;
-        case 5://AvatarClothing
-            break;
-        case 6://Quest
-            break;
-        case 7://Pokemon
-            var padId = (reward.info.pokemon_id + '').padStart(3, '0');
-            return getPokemonIcon(padId, 0);
-        default: //Unset/Unknown
-            break;
+    case 1://Experience
+        iconIndex = -2;
+        break;
+    case 2://Item
+        iconIndex = reward.info.item_id;
+        break;
+    case 3://Stardust
+        iconIndex = -1;
+        break;
+    case 4://Candy
+        iconIndex = 1301;
+        break;
+    case 5://AvatarClothing
+        break;
+    case 6://Quest
+        break;
+    case 7://Pokemon
+        var padId = (reward.info.pokemon_id + '').padStart(3, '0');
+        return getPokemonIcon(padId, 0);
+    default: //Unset/Unknown
+        break;
     }
     return `./img/quests/${iconIndex}.png`;
 }
@@ -509,7 +511,7 @@ function getAlignmentName(alignmentId) {
     return i18n.__('alignment_' + alignmentId);
 }
 function getCharacterCategoryName(characterCategoryId) {
-    return i18n.__('character_category_' + characterCategoryId)
+    return i18n.__('character_category_' + characterCategoryId);
 }
 function getThrowType(throwTypeId) {
     return i18n.__('throw_type_' + throwTypeId);
