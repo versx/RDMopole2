@@ -19,8 +19,6 @@ const defaultData = require('./data/default.js');
 
 // TODO: Dark style filters
 // TODO: Raid list with pressable rows for more details
-// TODO: Cache filter settings
-// TODO: Home page basic stats
 // TODO: Mobile friendly
 // TODO: Custom user settings (per user)
 // TODO: Double check discord role check

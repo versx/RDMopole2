@@ -47,6 +47,10 @@
             "enabled": true,
             "roles": []
         },
+        "invasions": {
+            "enabled": true,
+            "roles": []
+        },
         "nests": {
             "enabled": true,
             "roles": []
@@ -54,12 +58,16 @@
     },
     "google": {
         "maps": "https://maps.google.com/maps?q=%s,%s",
-        "analyticsId": "",
-        "adsenseId": ""
+        "analytics": "",
+        "adsense": ""
     },
     "urls": {
-        "pokemon": "https://cdn.example.com/images/original/monsters/%s_%s.png",
-        "raids": "https://cdn.example.com/images/original/eggs/%s.png",
-        "quests": "https://cdn.example.com/images/original/quests/%s.png"
+        "images": {
+            "pokemon": "https://cdn.example.com/images/original/monsters/%s_%s.png",
+            "eggs": "https://cdn.example.com/images/original/eggs/%s.png",
+            "quests": "https://cdn.example.com/images/original/quests/%s.png"
+        },
+        "map": "",
+        "paypal": ""
     }
 }

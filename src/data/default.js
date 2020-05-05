@@ -15,5 +15,7 @@ data.invasions_page = config.pages.invasions.enabled;
 data.nests_page = config.pages.nests.enabled;
 data.analytics = config.google.analytics;
 data.adsense = config.google.adsense;
+data.map_url = config.urls.map;
+data.paypal_url = config.urls.paypal;
 
 module.exports = data;
