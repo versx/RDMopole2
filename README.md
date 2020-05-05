@@ -4,9 +4,10 @@
 1.) Clone repository `git clone https://github.com/versx/RDM-opole2`  
 2.) Install dependencies `npm install`  
 3.) Copy config `cp src/config.example.json src/config.json`  
-4.) Fill out config `vi src/config.json`  
-5.) Run `npm start`  
-6.) Access via http://machineip:port/ login using your Discord account    
+4.) Create a Discord bot at https://discord.com/developers and enter the `botToken`, `clientId`, and `clientSecret` in your `config.json`  
+5.) Fill out config `vi src/config.json`  
+6.) Run `npm start`  
+7.) Access via http://machineip:port/ login using your Discord account    
 
 ## Updating  
 1.) `git pull`  
