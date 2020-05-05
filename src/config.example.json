@@ -24,6 +24,7 @@
         }
     },
     "discord": {
+        "enabled": false,
         "botToken": "",
         "clientId": "",
         "clientSecret": "",

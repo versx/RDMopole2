@@ -35,6 +35,8 @@ const defaultData = require('./data/default.js');
 // TODO: Support multiple grunt filter selections
 // TODO: Cleanup API route class
 // TODO: Make sql class to connect with different config options
+// TODO: Google analytics
+// TODO: Google adsense
 
 run();
 
@@ -81,32 +83,34 @@ async function run() {
         saveUninitialized: true
     }));
 
-    app.use('/api/discord', discordRoutes);
+    if (config.discord.enabled) {
+        app.use('/api/discord', discordRoutes);
 
-    // Discord error middleware
-    /* eslint-disable no-unused-vars */
-    app.use(function(err, req, res, next) {
-        switch (err.message) {
-        case 'NoCodeProvided':
-            return res.status(400).send({
-                status: 'ERROR',
-                error: err.message,
-            });
-        default:
-            return res.status(500).send({
-                status: 'ERROR',
-                error: err.message,
-            });
-        }
-    });
-    /* eslint-enable no-unused-vars */
+        // Discord error middleware
+        /* eslint-disable no-unused-vars */
+        app.use(function(err, req, res, next) {
+            switch (err.message) {
+            case 'NoCodeProvided':
+                return res.status(400).send({
+                    status: 'ERROR',
+                    error: err.message,
+                });
+            default:
+                return res.status(500).send({
+                    status: 'ERROR',
+                    error: err.message,
+                });
+            }
+        });
+        /* eslint-enable no-unused-vars */
+    }
     
     // Login middleware
     app.use(function(req, res, next) {
-        if (req.path === '/api/discord/login' || req.path === '/login' || req.path === '/api/raids') {
+        if (config.discord.enabled && (req.path === '/api/discord/login' || req.path === '/login')) {
             return next();
         }
-        if (req.session.logged_in) {
+        if (!config.discord.enabled || req.session.logged_in) {
             defaultData.logged_in = true;
             defaultData.username = req.session.username;
             defaultData.home_page = config.pages.home.enabled && utils.hasRole(req.roles, config.pages.home.roles);

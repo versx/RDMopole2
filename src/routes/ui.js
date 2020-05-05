@@ -25,16 +25,18 @@ router.get(['/', '/index'], async function(req, res) {
     res.render('index', data);
 });
 
-router.get('/login', function(req, res) {
-    res.redirect('/api/discord/login');
-});
-
-router.get('/logout', function(req, res) {
-    req.session.destroy(function(err) {
-        if (err) throw err;
-        res.redirect('/login');
+if (config.discord.enabled) {
+    router.get('/login', function(req, res) {
+        res.redirect('/api/discord/login');
     });
-});
+
+    router.get('/logout', function(req, res) {
+        req.session.destroy(function(err) {
+            if (err) throw err;
+            res.redirect('/login');
+        });
+    });
+}
 
 if (config.pages.raids.enabled) {
     router.get('/raids', function(req, res) {
