@@ -80,6 +80,7 @@ async function getRaids(filter) {
             var imgUrl = getRaidImage(row.raid_pokemon_id, row.raid_level);
             var geofence = svc.getGeofence(row.lat, row.lon);
             var team = getTeamName(row.team_id);
+            var teamIcon = getTeamIcon(row.team_id);
             var gym = row.name;
             var level = '' + row.raid_level;
             var ex = row.ex_raid_eligible ? 'Yes' : 'No';
@@ -89,24 +90,29 @@ async function getRaids(filter) {
             var started = starts < now;
             var startTime = started ? '--' : starts.toLocaleTimeString();
             var ends = new Date(row.raid_end_timestamp * 1000);
-            var endTimeLeft = toHHMMSS(ends - now);
-            var endTime = started ? endTimeLeft : ends.toLocaleTimeString();
-            if (name.toLowerCase().indexOf(filter.pokemon.toLowerCase()) > -1 &&
-                (gym.toLowerCase().indexOf(filter.gym.toLowerCase()) > -1 || filter.gym === '') &&
-                (team.toLowerCase().indexOf(filter.team.toLowerCase()) > -1 || filter.team.toLowerCase() === 'all') &&
-                (level.toLowerCase().indexOf(filter.level.toLowerCase()) > -1 || filter.level.toLowerCase() === 'all') &&
-                (ex.toLowerCase().indexOf(filter.ex.toLowerCase()) > -1 || filter.ex.toLowerCase() === 'all') &&
-                (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
-                raids.push({
-                    pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${name}`,
-                    raid_starts: startTime,
-                    raid_ends: endTime,
-                    raid_level: 'Level ' + level,
-                    gym_name: gym,
-                    team: team,
-                    ex_eligible: ex,
-                    city: city
-                });
+            var secondsLeft = ends - now;
+            // Skip raids that have less than 60 seconds remaining.
+            if (secondsLeft > 60 * 1000) {
+                var endTimeLeft = toHHMMSS(secondsLeft);
+                var endTime = started ? endTimeLeft : ends.toLocaleTimeString();
+                if (name.toLowerCase().indexOf(filter.pokemon.toLowerCase()) > -1 &&
+                    (gym.toLowerCase().indexOf(filter.gym.toLowerCase()) > -1 || filter.gym === '') &&
+                    (team.toLowerCase().indexOf(filter.team.toLowerCase()) > -1 || filter.team.toLowerCase() === 'all') &&
+                    (level.toLowerCase().indexOf(filter.level.toLowerCase()) > -1 || filter.level.toLowerCase() === 'all') &&
+                    (ex.toLowerCase().indexOf(filter.ex.toLowerCase()) > -1 || filter.ex.toLowerCase() === 'all') &&
+                    (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                    var mapLink = util.format(config.google.maps, row.lat, row.lon);
+                    raids.push({
+                        pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${name}`,
+                        raid_starts: startTime,
+                        raid_ends: endTime,
+                        raid_level: 'Level ' + level,
+                        gym_name: `<a href='${mapLink}' target='_blank'>${gym}</a>`,
+                        team: teamIcon,
+                        ex_eligible: ex,
+                        city: city
+                    });
+                }
             }
         });
         return raids;
@@ -135,9 +141,11 @@ async function getGyms(filter) {
         var gyms = [];
         results.forEach(function(row) {
             var name = row.name;
-            var team = getTeamIcon(row.team_id);
+            var team = getTeamName(row.team_id);
+            var teamIcon = getTeamIcon(row.team_id);
             var slots = row.availble_slots === 0 ? 'Full' : row.availble_slots === 6 ? 'Empty' : '' + row.availble_slots;
             var guard = row.guarding_pokemon_id === 0 ? 'None' : pokedex[row.guarding_pokemon_id];
+            var pkmnIcon = guard === 'None' ? 'None' : getPokemonIcon(row.guarding_pokemon_id, 0);
             var geofence = svc.getGeofence(row.lat, row.lon);
             var city = geofence ? geofence.name : 'Unknown';
             var inBattle = row.in_battle ? 'Yes' : 'No';
@@ -147,11 +155,12 @@ async function getGyms(filter) {
                 //(guard.toLowerCase().indexOf(filter.guard.toLowerCase()) > -1 || filter.guard.toLowerCase() === 'all') &&
                 (inBattle.toLowerCase().indexOf(filter.battle.toLowerCase()) > -1 || filter.battle.toLowerCase() === 'all') &&
                 (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                var mapLink = util.format(config.google.maps, row.lat, row.lon);
                 gyms.push({
-                    name: name,
-                    team: team,
+                    name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
+                    team: teamIcon,
                     available_slots: slots,
-                    guarding_pokemon_id: guard,
+                    guarding_pokemon_id: pkmnIcon === 'None' ? 'None' : `<img src='${pkmnIcon}' width=auto height=32 />&nbsp;${guard}`,
                     in_battle: inBattle,
                     city: city
                     // TODO: Updated
@@ -190,6 +199,7 @@ async function getQuests(filter) {
     if (results && results.length > 0) {
         var quests = [];
         results.forEach(function(row) {
+            var name = row.name;
             var imgUrl = getQuestIcon(row.quest_rewards);
             var reward = getQuestReward(row.quest_rewards);
             var task = getQuestTask(row.quest_type, row.quest_target);
@@ -200,11 +210,12 @@ async function getQuests(filter) {
             if (reward.toLowerCase().indexOf(filter.reward.toLowerCase()) > -1 &&
                 pokestop.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
                 (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                var mapLink = util.format(config.google.maps, row.lat, row.lon);
                 quests.push({
                     reward: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${reward}`,
                     quest: task,
                     conditions: conditions,
-                    pokestop_name: row.name,
+                    pokestop_name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
                     city: city
                     // TODO: Updated
                 });
@@ -242,9 +253,10 @@ async function getInvasions(filter) {
             if ((gruntType.toLowerCase().indexOf(filter.grunt.toLowerCase()) > -1 || filter.grunt.toLowerCase() === 'all') &&
                 name.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
                 (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                var mapLink = util.format(config.google.maps, row.lat, row.lon);
                 invasions.push({
                     grunt_type: `<img src='./img/grunts/${row.grunt_type}.png' width=auto height=32 />&nbsp;${gruntType}`,
-                    pokestop_name: name,
+                    pokestop_name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
                     expires: expires,
                     city: city
                     // TODO: Updated
@@ -283,8 +295,9 @@ async function getNests(filter) {
             if (name.toLowerCase().indexOf(filter.nest.toLowerCase()) > -1 &&
                 pokemon.toLowerCase().indexOf(filter.pokemon.toLowerCase()) > -1 &&
                 (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                var mapLink = util.format(config.google.maps, row.lat, row.lon);
                 nests.push({
-                    name: name,
+                    name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
                     pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${pokemon}`,
                     count: count,
                     average: average,

@@ -51,7 +51,12 @@
             "enabled": true,
             "roles": []
         }
-    }, 
+    },
+    "google": {
+        "maps": "https://maps.google.com/maps?q=%s,%s",
+        "analyticsId": "",
+        "adsenseId": ""
+    },
     "urls": {
         "pokemon": "https://cdn.example.com/images/original/monsters/%s_%s.png",
         "raids": "https://cdn.example.com/images/original/eggs/%s.png",
