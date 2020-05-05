@@ -44,11 +44,20 @@ function inArray(haystack, needle) {
         return false;
     }
     return needle.trim().indexOf(haystack.trim()) > -1;
-  }
+}
+
+function toHHMMSS(secs) {
+    var sec_num = parseInt(secs / 1000, 10);
+    var minutes = Math.floor(sec_num / 60) % 60;
+    //var seconds = sec_num % 60;
+    //return `${minutes}m ${seconds}s`;
+    return `${minutes}m`;
+}
 
 module.exports = {
     generateString,
     hasGuild,
     hasRole,
-    inArray
+    inArray,
+    toHHMMSS
 };

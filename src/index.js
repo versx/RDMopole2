@@ -25,7 +25,6 @@ const defaultData = require('./data/default.js');
 // TODO: Custom user settings (per user)
 // TODO: Double check discord role check
 // TODO: Max pokestop and gym name length
-// TODO: Cleanup API route class
 // TODO: Make sql class to connect with different config options
 
 run();
