@@ -19,16 +19,12 @@ const defaultData = require('./data/default.js');
 
 // TODO: Dark style filters
 // TODO: Raid list with pressable rows for more details
-// TODO: Login button/page
 // TODO: Cache filter settings
-// TODO: Finish localization
 // TODO: Home page basic stats
 // TODO: Mobile friendly
 // TODO: Custom user settings (per user)
 // TODO: Double check discord role check
 // TODO: Max pokestop and gym name length
-// TODO: Support multiple city filter selections
-// TODO: Support multiple grunt filter selections
 // TODO: Cleanup API route class
 // TODO: Make sql class to connect with different config options
 

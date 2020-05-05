@@ -32,8 +32,23 @@ function hasRole(userRoles, requiredRoles) {
     return false;
 }
 
+function inArray(haystack, needle) {
+    var array = haystack.split(',');
+    if (Array.isArray(array)) {
+        for (var i = 0; i < array.length; i++) {
+            var item = array[i].trim().toLowerCase();
+            if (needle.trim().toLowerCase().indexOf(item) > -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+    return needle.trim().indexOf(haystack.trim()) > -1;
+  }
+
 module.exports = {
     generateString,
     hasGuild,
-    hasRole
+    hasRole,
+    inArray
 };

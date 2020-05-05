@@ -9,6 +9,7 @@ const config = require('../config.json');
 const query = require('../services/db.js');
 const queryManual = require('../services/db-manual.js');
 const GeofenceService = require('../services/geofence.js');
+const utils = require('../services/utils.js');
 
 const svc = new GeofenceService.GeofenceService();
 
@@ -100,7 +101,7 @@ async function getRaids(filter) {
                     (team.toLowerCase().indexOf(filter.team.toLowerCase()) > -1 || filter.team.toLowerCase() === 'all') &&
                     (level.toLowerCase().indexOf(filter.level.toLowerCase()) > -1 || filter.level.toLowerCase() === 'all') &&
                     (ex.toLowerCase().indexOf(filter.ex.toLowerCase()) > -1 || filter.ex.toLowerCase() === 'all') &&
-                    (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                    (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                     var mapLink = util.format(config.google.maps, row.lat, row.lon);
                     raids.push({
                         pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${name}`,
@@ -154,7 +155,7 @@ async function getGyms(filter) {
                 (slots.toLowerCase().indexOf(filter.slots.toLowerCase()) > -1 || filter.slots.toLowerCase() === 'all') && // TODO: Accomodate for Full and Empty
                 //(guard.toLowerCase().indexOf(filter.guard.toLowerCase()) > -1 || filter.guard.toLowerCase() === 'all') &&
                 (inBattle.toLowerCase().indexOf(filter.battle.toLowerCase()) > -1 || filter.battle.toLowerCase() === 'all') &&
-                (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                 var mapLink = util.format(config.google.maps, row.lat, row.lon);
                 gyms.push({
                     name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
@@ -209,7 +210,7 @@ async function getQuests(filter) {
             var city = geofence ? geofence.name : 'Unknown';
             if (reward.toLowerCase().indexOf(filter.reward.toLowerCase()) > -1 &&
                 pokestop.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
-                (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                 var mapLink = util.format(config.google.maps, row.lat, row.lon);
                 quests.push({
                     reward: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${reward}`,
@@ -250,9 +251,9 @@ async function getInvasions(filter) {
             var expires = new Date(row.incident_expire_timestamp * 1000).toLocaleTimeString();
             var geofence = svc.getGeofence(row.lat, row.lon);
             var city = geofence ? geofence.name : 'Unknown';
-            if ((gruntType.toLowerCase().indexOf(filter.grunt.toLowerCase()) > -1 || filter.grunt.toLowerCase() === 'all') &&
+            if ((utils.inArray(filter.grunt, gruntType) || filter.grunt.toLowerCase() === 'all') &&
                 name.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
-                (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                 var mapLink = util.format(config.google.maps, row.lat, row.lon);
                 invasions.push({
                     grunt_type: `<img src='./img/grunts/${row.grunt_type}.png' width=auto height=32 />&nbsp;${gruntType}`,
@@ -294,7 +295,7 @@ async function getNests(filter) {
             var city = geofence ? geofence.name : 'Unknown';
             if (name.toLowerCase().indexOf(filter.nest.toLowerCase()) > -1 &&
                 pokemon.toLowerCase().indexOf(filter.pokemon.toLowerCase()) > -1 &&
-                (city.toLowerCase().indexOf(filter.city.toLowerCase()) > -1 || filter.city.toLowerCase() === 'all')) {
+                (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                 var mapLink = util.format(config.google.maps, row.lat, row.lon);
                 nests.push({
                     name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
