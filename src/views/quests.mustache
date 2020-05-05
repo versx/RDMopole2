@@ -15,7 +15,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="filtersModalLabel">Quest Filters</h5>
+                            <h5 class="modal-title" id="filtersModalLabel">{{Quest Filters}}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -24,19 +24,19 @@
                             <div class="row">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="filter-reward">Reward</label>
+                                        <label class="input-group-text" for="filter-reward">{{Reward}}</label>
                                     </div>
-                                    <input type="text" id="filter-reward" class="form-control input-lg" onkeyup="reload()" placeholder="Search by name.." title="Type in a name">
+                                    <input type="text" id="filter-reward" class="form-control input-lg" onkeyup="reload()" placeholder="Search by reward.." title="{{Type in a reward}}">
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="filter-pokestop">Pokestop</label>
+                                        <label class="input-group-text" for="filter-pokestop">{{Pokestop}}</label>
                                     </div>
-                                    <input type="text" id="filter-pokestop" class="form-control input-lg" onkeyup="reload()" placeholder="Search by pokestop.." title="Type in a pokestop name">
+                                    <input type="text" id="filter-pokestop" class="form-control input-lg" onkeyup="reload()" placeholder="{{Search by pokestop..}}" title="{{Type in a pokestop name}}">
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="filter-city">City</label>
+                                        <label class="input-group-text" for="filter-city">{{City}}</label>
                                     </div>
                                     <select multiple id="filter-city" class="custom-select" onchange="reload()">
                                         <option value="all" selected>All</option>
@@ -48,8 +48,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" id="reset-filters">Reset Filters</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" id="reset-filters">{{Reset Filters}}</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">{{Close}}</button>
                         </div>
                     </div>
                 </div>
@@ -58,13 +58,13 @@
             <br><br>
             <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                 <thead class="thead-dark">
-                <tr>
-                    <th>Reward</th>
-                    <th>Quest</th>
-                    <th>Condition(s)</th>
-                    <th>Pokestop Name</th>
-                    <th>City</th>
-                </tr>
+                    <tr>
+                        <th>{{Reward}}</th>
+                        <th>{{Quest}}</th>
+                        <th>{{Condition(s)}}</th>
+                        <th>{{Pokestop Name}}</th>
+                        <th>{{City}}</th>
+                    </tr>
                 </thead>
                 <tbody>
                 </tbody>

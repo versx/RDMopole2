@@ -15,7 +15,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="filtersModalLabel">Raid Filters</h5>
+                            <h5 class="modal-title" id="filtersModalLabel">{{Raid Filters}}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -24,19 +24,19 @@
                             <div class="row">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="filter-pokemon">Pokemon</label>
+                                        <label class="input-group-text" for="filter-pokemon">{{Pokemon}}</label>
                                     </div>
-                                    <input type="text" id="filter-pokemon" class="form-control input-lg" onkeyup="reload()" placeholder="Search by name.." title="Type in a name">
+                                    <input type="text" id="filter-pokemon" class="form-control input-lg" onkeyup="reload()" placeholder="{{Search by name..}}" title="{{Type in a name}}">
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="filter-gym">Gym</label>
+                                        <label class="input-group-text" for="filter-gym">{{Gym}}</label>
                                     </div>
-                                    <input type="text" id="filter-gym" class="form-control input-lg" onkeyup="reload()" placeholder="Search by gym.." title="Type in a gym name">
+                                    <input type="text" id="filter-gym" class="form-control input-lg" onkeyup="reload()" placeholder="{{Search by gym..}}" title="{{Type in a gym name}}">
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="filter-city">City</label>
+                                        <label class="input-group-text" for="filter-city">{{City}}</label>
                                     </div>
                                     <select multiple id="filter-city" class="custom-select" onchange="reload()">
                                         <option value="all" selected>All</option>
@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="filter-level">Raid Level</label>
+                                        <label class="input-group-text" for="filter-level">{{Raid Level}}</label>
                                     </div>
                                     <select id="filter-level" class="custom-select" onchange="reload()">
                                         <option value="all" selected>All</option>
@@ -60,10 +60,10 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="filter-team">Team</label>
+                                        <label class="input-group-text" for="filter-team">{{Team}}</label>
                                     </div>
                                     <select id="filter-team" class="custom-select"onchange="reload()">
-                                        <option value="all" selected>All</option>
+                                        <option value="all" selected>{{All}}</option>
                                         <option value="Neutral">Neutral</option>
                                         <option value="Mystic">Mystic</option>
                                         <option value="Valor">Valor</option>
@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="filter-ex">Ex-Eligible</label>
+                                        <label class="input-group-text" for="filter-ex">{{EX-Eligible}}</label>
                                     </div>
                                     <select id="filter-ex" class="custom-select" onchange="reload()">
                                         <option value="all" selected>All</option>
@@ -83,7 +83,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" id="reset-filters">Reset Filters</button>
+                            <button type="button" class="btn btn-danger" id="reset-filters">{{Reset Filters}}</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -93,16 +93,16 @@
             <br><br>
             <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                 <thead class="thead-dark">
-                <tr>
-                    <th>Pokemon</th>
-                    <th>Level</th>
-                    <th>Starts</th>
-                    <th>Ends</th>
-                    <th>Gym Name</th>
-                    <th>Team</th>
-                    <th>EX-Eligible</th>
-                    <th>City</th>
-                </tr>
+                    <tr>
+                        <th>{{Pokemon}}</th>
+                        <th>{{Level}}</th>
+                        <th>{{Starts}}</th>
+                        <th>{{Ends}}</th>
+                        <th>{{Gym Name}}</th>
+                        <th>{{Team}}</th>
+                        <th>{{EX-Eligible}}</th>
+                        <th>{{City}}</th>
+                    </tr>
                 </thead>
                 <tbody>
                 </tbody>
