@@ -63,7 +63,7 @@
                                         <label class="input-group-text" for="filter-team">{{Team}}</label>
                                     </div>
                                     <select id="filter-team" class="custom-select"onchange="reload()">
-                                        <option value="all" selected>{{All}}</option>
+                                        <option value="all" selected>All</option>
                                         <option value="Neutral">Neutral</option>
                                         <option value="Mystic">Mystic</option>
                                         <option value="Valor">Valor</option>
@@ -112,8 +112,27 @@
     </body>
 </html>
 
-<script>
-    // TODO: Load from localStorage
+<script type='text/javascript' src='./js/storage.js'></script>
+<script type='text/javascript'>
+    // Load values from local storage
+    if (get('raids_filter_pokemon')) {
+        $('#filter-pokemon').val(get('raids_filter_pokemon'));
+    }
+    if (get('raids_filter_gym')) {
+        $('#filter-gym').val(get('raids_filter_gym'));
+    }
+    if (get('raids_filter_level')) {
+        $('#filter-level').val(get('raids_filter_level'));
+    }
+    if (get('raids_filter_city')) {
+        $('#filter-city').val(JSON.parse(get('raids_filter_city')));
+    }
+    if (get('raids_filter_team')) {
+        $('#filter-team').val(get('raids_filter_team'));
+    }
+    if (get('raids_filter_ex')) {
+        $('#filter-ex').val(get('raids_filter_ex'));
+    }
     var pokemon = $('#filter-pokemon').val();
     var gym = $('#filter-gym').val();
     var level = $('#filter-level').val();
@@ -172,6 +191,14 @@
             var ex = $('#filter-ex').val();
             var query = `?pokemon=${pokemon}&gym=${gym}&level=${level}&city=${city}&team=${team}&ex=${ex}`;
             table.ajax.url('/api/raids' + query).load();
+
+            // Cache filter values
+            set('raids_filter_pokemon', pokemon);
+            set('raids_filter_gym', gym);
+            set('raids_filter_level', level);
+            set('raids_filter_city', JSON.stringify(city));
+            set('raids_filter_team', team);
+            set('raids_filter_ex', ex);
         }
     //});
 </script>

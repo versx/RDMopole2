@@ -106,7 +106,24 @@
     </body>
 </html>
 
-<script>
+<script type='text/javascript' src='./js/storage.js'></script>
+<script type='text/javascript'>
+    // Load values from local storage
+    if (get('gyms_filter_gym')) {
+        $('#filter-gym').val(get('gyms_filter_gym'));
+    }
+    if (get('gyms_filter_team')) {
+        $('#filter-team').val(get('gyms_filter_team'));
+    }
+    if (get('gyms_filter_slots')) {
+        $('#filter-slots').val(get('gyms_filter_slots'));
+    }
+    if (get('gyms_filter_battle')) {
+        $('#filter-battle').val(get('gyms_filter_battle'));
+    }
+    if (get('gyms_filter_city')) {
+        $('#filter-city').val(JSON.parse(get('gyms_filter_city')));
+    }
     var name = $('#filter-gym').val();
     var team = $('#filter-team').val();
     var slots = $('#filter-slots').val();
@@ -156,6 +173,13 @@
             var city = $('#filter-city').val();
             var query = `?gym=${name}&team=${team}&slots=${slots}&battle=${battle}&city=${city}`;
             table.ajax.url('/api/gyms' + query).load();
+
+            // Cache filter values
+            set('gyms_filter_name', name);
+            set('gyms_filter_team', team);
+            set('gyms_filter_slots', slots);
+            set('gyms_filter_battle', battle);
+            set('gyms_filter_city', JSON.stringify(city));
         }
     //});
 </script>

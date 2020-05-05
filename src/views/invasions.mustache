@@ -78,7 +78,18 @@
     </body>
 </html>
 
-<script>
+<script type='text/javascript' src='./js/storage.js'></script>
+<script type='text/javascript'>
+    // Load values from local storage
+    if (get('invasions_filter_grunt')) {
+        $('#filter-grunt').val(get('invasions_filter_grunt'));
+    }
+    if (get('invasions_filter_pokestop')) {
+        $('#filter-pokestop').val(get('invasions_filter_pokestop'));
+    }
+    if (get('invasions_filter_city')) {
+        $('#filter-city').val(JSON.parse(get('invasions_filter_city')));
+    }
     var grunt = $('#filter-grunt').val();
     var pokestop = $('#filter-pokestop').val();
     var city = $('#filter-city').val();
@@ -120,6 +131,11 @@
             var city = $('#filter-city').val();
             var query = `?grunt=${grunt}&pokestop=${pokestop}&city=${city}`;
             table.ajax.url('/api/invasions' + query).load();
+
+            // Cache filter values
+            set('invasions_filter_grunt', grunt);
+            set('invasions_filter_pokestop', pokestop);
+            set('invasions_filter_city', JSON.stringify(city));
         }
     //});
 </script>

@@ -74,7 +74,18 @@
     </body>
 </html>
 
-<script>
+<script type='text/javascript' src='./js/storage.js'></script>
+<script type='text/javascript'>
+    // Load values from local storage
+    if (get('quests_filter_reward')) {
+        $('#filter-reward').val(get('quests_filter_reward'));
+    }
+    if (get('quests_filter_pokestop')) {
+        $('#filter-pokestop').val(get('quests_filter_pokestop'));
+    }
+    if (get('quests_filter_city')) {
+        $('#filter-city').val(JSON.parse(get('quests_filter_city')));
+    }
     var reward = $('#filter-reward').val();
     var pokestop = $('#filter-pokestop').val();
     var city = $('#filter-city').val();
@@ -117,6 +128,11 @@
             var city = $('#filter-city').val();
             var query = `?reward=${reward}&pokestop=${pokestop}&city=${city}`;
             table.ajax.url('/api/quests' + query).load();
+
+            // Cache filter values
+            set('quests_filter_reward', reward);
+            set('quests_filter_pokestop', pokestop);
+            set('quests_filter_city', JSON.stringify(city));
         }
     //});
 </script>

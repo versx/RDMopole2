@@ -6,7 +6,7 @@ const i18n = require('i18n');
 
 const config = require('../config.json');
 const defaultData = require('../data/default.js');
-
+const map = require('../data/map.js');
 const GeofenceService = require('../services/geofence.js');
 
 const svc = new GeofenceService.GeofenceService();
@@ -14,14 +14,15 @@ const svc = new GeofenceService.GeofenceService();
 
 router.get(['/', '/index'], async function(req, res) {
     var data = defaultData;
-    data.raids = 0;
-    data.gyms_total = 0;
-    data.quests = 0;
-    data.invasions = 0;
-    data.gyms_neutral = 0;
-    data.gyms_mystic = 0;
-    data.gyms_valor = 0;
-    data.gyms_instinct = 0;
+    var stats = await map.getStats();
+    data.raids = stats.raids.toLocaleString();
+    data.gyms = stats.gyms.toLocaleString();
+    data.quests = stats.quests.toLocaleString();
+    data.invasions = stats.invasions.toLocaleString();
+    data.neutral = stats.neutral.toLocaleString();
+    data.mystic = stats.mystic.toLocaleString();
+    data.valor = stats.valor.toLocaleString();
+    data.instinct = stats.instinct.toLocaleString();
     res.render('index', data);
 });
 

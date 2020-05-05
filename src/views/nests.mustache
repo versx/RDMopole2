@@ -79,7 +79,18 @@
 
 <script type="text/javascript" src="./js/moment.js"></script>
 <script type="text/javascript" src="./js/jquery.countdown.min.js"></script>
-<script>
+<script type='text/javascript' src='./js/storage.js'></script>
+<script type='text/javascript'>
+    // Load values from local storage
+    if (get('nests_filter_nest')) {
+        $('#filter-nest').val(get('nests_filter_grunt'));
+    }
+    if (get('nests_filter_pokemon')) {
+        $('#filter-pokemon').val(get('nests_filter_pokemon'));
+    }
+    if (get('nests_filter_city')) {
+        $('#filter-city').val(JSON.parse(get('nests_filter_city')));
+    }
     var nest = $('#filter-nest').val();
     var pokemon = $('#filter-pokemon').val();
     var city = $('#filter-city').val();
@@ -89,6 +100,7 @@
         $('body').css('color', 'rgb(255, 255, 255)');
     }
 
+    // Next migration time
     var lastMigrationDate = new Date("{{last_nest_migration}}");
     var migrationDate = new Date("{{last_nest_migration}}");
     while (migrationDate < new Date()) {
@@ -136,6 +148,11 @@
             var city = $('#filter-city').val();
             var query = `?nest=${nest}&pokemon=${pokemon}&city=${city}`;
             table.ajax.url('/api/nests' + query).load();
+
+            // Cache filter values
+            set('nests_filter_nest', nest);
+            set('nests_filter_pokemon', pokemon);
+            set('nests_filter_city', JSON.stringify(city));
         }
     //});
 </script>

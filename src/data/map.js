@@ -12,6 +12,58 @@ const svc = new GeofenceService.GeofenceService();
 
 const pokedex = require('../../static/data/pokedex.json');
 
+async function getStats() {
+    var sql = `
+    SELECT
+        (
+            SELECT COUNT(*)
+            FROM   gym
+        ) AS gyms,
+        (
+            SELECT COUNT(*)
+            FROM   gym
+            WHERE raid_end_timestamp > UNIX_TIMESTAMP()
+        ) AS raids,
+        (
+            SELECT COUNT(*)
+            FROM   pokestop
+            WHERE quest_reward_type IS NOT NULL
+        ) AS quests,
+        (
+            SELECT COUNT(*)
+            FROM   pokestop
+            WHERE incident_expire_timestamp > UNIX_TIMESTAMP()
+        ) AS invasions,
+        (
+            SELECT COUNT(*)
+            FROM   gym
+            WHERE  team_id = 0
+        ) AS neutral,
+        (
+            SELECT COUNT(*)
+            FROM   gym
+            WHERE  team_id = 1
+        ) AS mystic,
+        (
+            SELECT COUNT(*)
+            FROM   gym
+            WHERE  team_id = 2
+        ) AS valor,
+        (
+            SELECT COUNT(*)
+            FROM   gym
+            WHERE  team_id = 3
+        ) AS instinct
+    FROM rdmdb.metadata
+    LIMIT 1;
+    `;
+    var results = await query(sql);
+    if (results && results.length > 0) {
+        return results[0];        
+    }
+    return null;
+}
+
 async function getRaids(filter) {
     var sql = `
     SELECT
@@ -289,6 +341,7 @@ function getTeamIcon(teamId) {
 }
 
 module.exports = {
+    getStats,
     getRaids,
     getGyms,
     getQuests,
