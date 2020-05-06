@@ -3,7 +3,6 @@
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
-const bodyParser = require('body-parser');
 const app = express();
 const mustacheExpress = require('mustache-express');
 const i18n = require('i18n');
@@ -37,8 +36,8 @@ async function run() {
     app.use(express.static(path.resolve(__dirname, '../static')));
     
     // Body parser middlewares
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' })); // for parsing application/x-www-form-urlencoded
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: false, limit: '50mb' })); // for parsing application/x-www-form-urlencoded
 
     // Initialize localzation handler
     i18n.configure({

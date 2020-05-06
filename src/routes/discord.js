@@ -19,7 +19,7 @@ const catchAsyncErrors = fn => ((req, res, next) => {
 });
 
 router.get('/login', (req, res) => {
-    var scope = 'guilds%20identify%20email';
+    const scope = 'guilds%20identify%20email';
     res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${config.discord.clientId}&scope=${scope}&response_type=code&redirect_uri=${redirect}`);
 });
 
