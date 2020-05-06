@@ -109,4 +109,5 @@ config.json
 # No logs
 logs
 
+# No geofences
 geofences/*
