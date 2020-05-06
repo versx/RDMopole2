@@ -156,5 +156,11 @@
             set('nests_filter_pokemon', pokemon);
             set('nests_filter_city', JSON.stringify(city));
         }
+        $('#reset-filters').on('click', function() {
+            $('#filter-nest').val('');
+            $('#filter-pokemon').val('');
+            $('#filter-city').val('all');
+            reload();
+        });
     //});
 </script>

@@ -183,5 +183,13 @@
             set('gyms_filter_battle', battle);
             set('gyms_filter_city', JSON.stringify(city));
         }
+        $('#reset-filters').on('click', function() {
+            $('#filter-gym').val('');
+            $('#filter-team').val('all');
+            $('#filter-slots').val('all');
+            $('#filter-battle').val('all');
+            $('#filter-city').val('all');
+            reload();
+        });
     //});
 </script>

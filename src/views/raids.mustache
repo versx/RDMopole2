@@ -172,10 +172,34 @@
             "search.caseInsensitive": true,
             "responsive": true,
             /*
-            "createdRow": function (row, data, index) {
-                $('td', row).eq(2).css('color', 'blue');
-                $('td', row).eq(2).css('font-weight', 'bold');
+            "createdRow": function(row, data, index) {
+                //$('td', row).eq(2).css('color', 'blue');
+                //$('td', row).eq(2).css('font-weight', 'bold');
                 $(row).css('height', 128);
+                var html = `
+                <tr class="odd gradeX">
+                    <td style="vertical-align:middle;" class="col-md-2">
+                        ${data.pokemon}
+                        <br>
+                        ${data.team}
+                        <br>
+                        ${data.raid_level}
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <span>Starts: ${data.raid_starts}</span>
+                        <br>
+                        <span>Ends: ${data.raid_ends}</span>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <span>Gym Name: ${data.gym_name}</span>
+                        <br>
+                        <span>EX-Eligible: ${data.ex_eligible}</span>
+                        <br>
+                        ${data.city}
+                    </td>
+                </tr">
+                `;
+                $(row).html(html);
             }
             */
         });
@@ -202,5 +226,14 @@
             set('raids_filter_team', team);
             set('raids_filter_ex', ex);
         }
+        $('#reset-filters').on('click', function() {
+            $('#filter-pokemon').val('');
+            $('#filter-gym').val('');
+            $('#filter-city').val('all');
+            $('#filter-level').val('all');
+            $('#filter-team').val('all');
+            $('#filter-ex').val('all');
+            reload();
+        });
     //});
 </script>

@@ -139,5 +139,11 @@
             set('invasions_filter_pokestop', pokestop);
             set('invasions_filter_city', JSON.stringify(city));
         }
+        $('#reset-filters').on('click', function() {
+            $('#filter-grunt').val('all');
+            $('#filter-pokestop').val('');
+            $('#filter-city').val('all');
+            reload();
+        });
     //});
 </script>

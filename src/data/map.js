@@ -54,7 +54,7 @@ async function getStats() {
             FROM   gym
             WHERE  team_id = 3
         ) AS instinct
-    FROM rdmdb.metadata
+    FROM metadata
     LIMIT 1;
     `;
     var results = await query(sql);
@@ -85,7 +85,7 @@ async function getRaids(filter) {
         raid_pokemon_id IS NOT NULL
         AND name IS NOT NULL
         AND raid_end_timestamp > UNIX_TIMESTAMP()
-    ORDER BY raid_end_timestamp;
+    ORDER BY raid_end_timestamp
     `;
     var results = await query(sql);
     if (results && results.length > 0) {
