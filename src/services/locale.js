@@ -164,11 +164,10 @@ function getQuestCondition(condition) {
 
 function getPokemonIcon(pokemonId, formId) {
     var padId = (pokemonId + '').padStart(3, '0');
-    var padForm = (formId + '').padStart(3, '0');
     if (formId > 0) {
-        return util.format(config.urls.images.pokemon, padId, padForm);
+        return util.format(config.urls.images.pokemon, padId, formId);
     }
-    return util.format(config.urls.images.pokemon, padId, '000');
+    return util.format(config.urls.images.pokemon, padId, '00');
 }
 
 function getRaidIcon(pokemonId, raidLevel) {

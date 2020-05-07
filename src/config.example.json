@@ -65,7 +65,7 @@
     "urls": {
         "images": {
             "pokemon": "https://cdn.example.com/images/original/monsters/%s_%s.png",
-            "eggs": "https://cdn.example.com/images/original/eggs/%s.png"
+            "eggs": "../img/original/eggs/%s.png"
         },
         "map": "",
         "paypal": ""
