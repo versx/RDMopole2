@@ -221,6 +221,64 @@ async function getShinyRates() {
     return [];
 }
 
+async function getCommunityDayStats(filter) {
+    var start = filter.start;
+    var end = filter.end;
+    var pokemonId = filter.pokemon_id;
+    var sql = `
+    SELECT
+        COUNT(id) AS total,
+        SUM(iv > 0) AS with_iv,
+        SUM(iv IS NULL) AS without_iv,
+        SUM(iv = 0) AS iv_0,
+        SUM(iv >= 1 AND iv < 10) AS iv_1_9,
+        SUM(iv >= 10 AND iv < 20) AS iv_10_19,
+        SUM(iv >= 20 AND iv < 30) AS iv_20_29,
+        SUM(iv >= 30 AND iv < 40) AS iv_30_39,
+        SUM(iv >= 40 AND iv < 50) AS iv_40_49,
+        SUM(iv >= 50 AND iv < 60) AS iv_50_59,
+        SUM(iv >= 60 AND iv < 70) AS iv_60_69,
+        SUM(iv >= 70 AND iv < 80) AS iv_70_79,
+        SUM(iv >= 80 AND iv < 90) AS iv_80_89,
+        SUM(iv >= 90 AND iv < 100) AS iv_90_99,
+        SUM(iv = 100) AS iv_100,
+        SUM(gender = 1) AS male,
+        SUM(gender = 2) AS female,
+        SUM(gender = 3) AS genderless,
+        SUM(level >= 1 AND level <= 9) AS level_1_9,
+        SUM(level >= 10 AND level <= 19) AS level_10_19,
+        SUM(level >= 20 AND level <= 29) AS level_20_29,
+        SUM(level >= 30 AND level <= 35) AS level_30_35
+    FROM pokemon
+    WHERE pokemon_id = ?
+        AND first_seen_timestamp >= ?
+        AND first_seen_timestamp <= ?
+    `;
+    var args = [pokemonId, start, end];
+    var results = await query(sql, args);
+    if (results && results.length > 0) {
+        var data = results[0];
+        data.pokemon_id = pokemonId;
+        data.start = start;
+        data.end = end;
+        var id = parseInt(pokemonId);
+        data.evo1 = {
+            name: `${pokedex[id]} (#${id})`,
+            image: locale.getPokemonIcon(id, 0)
+        };
+        data.evo2 = {
+            name: `${pokedex[id + 1]} (#${id + 1})`,
+            image: locale.getPokemonIcon(id + 1, 0)
+        };
+        data.evo3 = {
+            name: `${pokedex[id + 2]} (#${id + 2})`,
+            image: locale.getPokemonIcon(id + 2, 0)
+        };
+        return data;
+    }
+    return null
+}
+
 async function getRaidStats(filter) {
     var start = filter.start;
     var end = filter.end;
@@ -564,6 +622,7 @@ function getPokemonNameIdsList() {
 module.exports = {
     getStats,
     getShinyRates,
+    getCommunityDayStats,
     getRaids,
     getRaidStats,
     getGyms,

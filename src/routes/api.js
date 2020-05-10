@@ -11,6 +11,10 @@ if (config.pages.pokemon.enabled) {
         var shinyRates = await map.getShinyRates();
         res.json({ data: { pokemon: shinyRates } });
     });
+    router.get('/pokemon/commday', async function(req, res) {
+        var commdayStats = await map.getCommunityDayStats(req.query);
+        res.json({ data: { stats: commdayStats } });
+    })
 }
 
 if (config.pages.raids.enabled) {

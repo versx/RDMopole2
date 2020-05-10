@@ -4,7 +4,7 @@ function addDataset(chart, labels, data) {
     chart.update();
 }
 function removeDataset(chart) {
-    chart.data.labels = [];
+    //chart.data.labels = [];
     chart.data.datasets = [];
     chart.update();
 }

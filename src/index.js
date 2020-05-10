@@ -23,6 +23,7 @@ const utils = require('./services/utils.js');
 // TODO: Make sql class to connect with different config options
 // TODO: Restrict data to specific areas
 // TODO: Lifetime raids/quests/invasions stats
+// TODO: Check csrf token with `/api/`
 
 
 run();

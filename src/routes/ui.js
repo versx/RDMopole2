@@ -79,7 +79,9 @@ if (config.discord.enabled) {
 
 if (config.pages.pokemon.enabled) {
     router.get('/pokemon', function(req, res) {
-        res.render('pokemon', defaultData);
+        var data = defaultData;
+        data.pokemon = map.getPokemonNameIdsList();
+        res.render('pokemon', data);
     });
 }
 
