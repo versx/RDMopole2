@@ -173,7 +173,6 @@ async function getTopPokemonStats(lifetime = false, limit = 10) {
     var args = [limit];
     var results = await query(sql, args);
     return results;
-
 }
 
 async function getRaidStats(filter) {

@@ -23,6 +23,7 @@ const defaultData = require('./data/default.js');
 // TODO: Max pokestop and gym name length
 // TODO: Make sql class to connect with different config options
 // TODO: Restrict data to specific areas
+// TODO: Lifetime raids/quests/invasions stats
 
 
 run();
@@ -101,6 +102,7 @@ async function run() {
             defaultData.logged_in = true;
             defaultData.username = req.session.username;
             defaultData.home_page = config.pages.home.enabled && utils.hasRole(req.roles, config.pages.home.roles);
+            defaultData.pokemon_page = config.pages.pokemon.enabled && utils.hasRole(req.roles, config.pages.pokemon.roles);
             defaultData.raids_page = config.pages.raids.enabled && utils.hasRole(req.roles, config.pages.raids.roles);
             defaultData.gyms_page = config.pages.gyms.enabled && utils.hasRole(req.roles, config.pages.gyms.roles);
             defaultData.quests_page = config.pages.quests.enabled && utils.hasRole(req.roles, config.pages.quests.roles);

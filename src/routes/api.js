@@ -6,8 +6,14 @@ const router = express.Router();
 const config = require('../config.json');
 const map = require('../data/map.js');
 
+if (config.pages.pokemon.enabled) {
+    router.get('/pokemon', async function(req, res) {
+        res.json({ data: { pokemon: [] } });
+    });
+}
+
 if (config.pages.raids.enabled) {
-    router.get('/raids*', async function(req, res) { // TODO: Remove asterisk
+    router.get('/raids', async function(req, res) {
         var raids = await map.getRaids(req.query);
         res.json({ data: { raids: raids } });
     });
@@ -50,8 +56,7 @@ router.post('/stats', async function(req, res) {
             case 'raids':
                 var raidStats = await map.getRaidStats(req.query);
                 data = {
-                    stats: raidStats,
-                    pokemon: map.getPokemonNameIdsList() // TODO: Array of objects containing pokemon names and ids
+                    stats: raidStats
                 };
                 break;
         }

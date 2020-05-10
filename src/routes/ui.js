@@ -77,6 +77,12 @@ if (config.discord.enabled) {
     });
 }
 
+if (config.pages.pokemon.enabled) {
+    router.get('/pokemon', function(req, res) {
+        res.render('pokemon', defaultData);
+    });
+}
+
 if (config.pages.raids.enabled) {
     router.get('/raids', function(req, res) {
         var data = defaultData;

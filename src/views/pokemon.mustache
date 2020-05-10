@@ -1,0 +1,20 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Pokemon}}</h1>
+        <br>
+        <div style="width:90%; margin-left:calc(5%);">
+            <br><br>
+        </div>
+        <br>
+    </body>
+</html>
+
+<script type='text/javascript'>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+    }
+</script>
