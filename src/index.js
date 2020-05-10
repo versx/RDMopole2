@@ -22,7 +22,7 @@ const defaultData = require('./data/default.js');
 // TODO: Double check discord role check
 // TODO: Max pokestop and gym name length
 // TODO: Make sql class to connect with different config options
-// TODO: Fix pokemon icons
+
 
 run();
 

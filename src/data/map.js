@@ -16,44 +16,82 @@ async function getStats() {
     var sql = `
     SELECT
         (
-            SELECT COUNT(*)
+            SELECT COUNT(id)
+            FROM   pokestop
+        ) AS pokestops,
+        (
+            SELECT COUNT(id)
             FROM   gym
         ) AS gyms,
         (
-            SELECT COUNT(*)
+            SELECT COUNT(id)
             FROM   gym
             WHERE raid_end_timestamp > UNIX_TIMESTAMP()
         ) AS raids,
         (
-            SELECT COUNT(*)
+            SELECT COUNT(id)
             FROM   pokestop
             WHERE quest_reward_type IS NOT NULL
         ) AS quests,
         (
-            SELECT COUNT(*)
+            SELECT COUNT(id)
             FROM   pokestop
             WHERE incident_expire_timestamp > UNIX_TIMESTAMP()
         ) AS invasions,
         (
-            SELECT COUNT(*)
+            SELECT COUNT(id)
             FROM   gym
             WHERE  team_id = 0
         ) AS neutral,
         (
-            SELECT COUNT(*)
+            SELECT COUNT(id)
             FROM   gym
             WHERE  team_id = 1
         ) AS mystic,
         (
-            SELECT COUNT(*)
+            SELECT COUNT(id)
             FROM   gym
             WHERE  team_id = 2
         ) AS valor,
         (
-            SELECT COUNT(*)
+            SELECT COUNT(id)
             FROM   gym
             WHERE  team_id = 3
-        ) AS instinct
+        ) AS instinct,
+        (
+            SELECT COUNT(id)
+            FROM   pokestop
+            WHERE  lure_expire_timestamp > UNIX_TIMESTAMP() AND lure_id=501
+        ) AS lures_normal,
+        (
+            SELECT COUNT(id)
+            FROM   pokestop
+            WHERE  lure_expire_timestamp > UNIX_TIMESTAMP() AND lure_id=502
+        ) AS lures_glacial,
+        (
+            SELECT COUNT(id)
+            FROM   pokestop
+            WHERE  lure_expire_timestamp > UNIX_TIMESTAMP() AND lure_id=503
+        ) AS lures_mossy,
+        (
+            SELECT COUNT(id)
+            FROM   pokestop
+            WHERE  lure_expire_timestamp > UNIX_TIMESTAMP() AND lure_id=504
+        ) AS lures_magnetic,
+        (
+            SELECT COUNT(id)
+            FROM   spawnpoint
+        ) AS spawnpoints_total,
+        (
+            SELECT COUNT(id)
+            FROM   spawnpoint
+            WHERE despawn_sec IS NOT NULL
+        ) AS spawnpoints_found,
+        (
+            SELECT COUNT(id)
+            FROM   spawnpoint
+            WHERE despawn_sec IS NULL
+        ) AS spawnpoints_missing
     FROM metadata
     LIMIT 1;
     `;
@@ -62,6 +100,80 @@ async function getStats() {
         return results[0];        
     }
     return null;
+}
+
+async function getPokemonStats() {
+    var sql = `
+    SELECT * FROM (
+        SELECT SUM(count) AS pokemon_total
+        FROM pokemon_stats
+    ) AS A
+    JOIN (
+        SELECT SUM(count) AS iv_total
+        FROM pokemon_iv_stats
+    ) AS B
+    JOIN (
+        SELECT SUM(count) AS shiny_total
+        FROM pokemon_shiny_stats
+    ) AS C
+    JOIN (
+        SELECT
+            COUNT(id) AS active,
+            SUM(iv IS NOT NULL) AS active_iv,
+            SUM(iv = 100) AS active_100iv,
+            SUM(iv >= 90 AND iv < 100) AS active_90iv,
+            SUM(iv = 0) AS active_0iv,
+            SUM(shiny = 1) AS active_shiny
+        FROM pokemon
+        WHERE expire_timestamp >= UNIX_TIMESTAMP()
+    ) AS D
+    `;
+    var results = await query(sql);
+    return results;
+}
+
+async function getTopPokemonIVStats(iv = 100, limit = 10) {
+    var sql = `
+    SELECT pokemon_id, iv, COUNT(iv) AS count
+    FROM pokemon
+    WHERE first_seen_timestamp > UNIX_TIMESTAMP(NOW() - INTERVAL 24 HOUR) AND iv = ?
+    GROUP BY pokemon_id
+    ORDER BY count DESC
+    LIMIT ?
+    `;
+    var args = [iv, limit];
+    var results = await query(sql, args);
+    return results;
+}
+
+async function getTopPokemonStats(lifetime = false, limit = 10) {
+    var sql = '';
+    if (lifetime) {
+        sql = `
+        SELECT iv.pokemon_id, SUM(shiny.count) AS shiny, SUM(iv.count) AS count
+        FROM pokemon_iv_stats iv
+          LEFT JOIN pokemon_shiny_stats shiny
+          ON iv.date = shiny.date AND iv.pokemon_id = shiny.pokemon_id
+        GROUP BY iv.pokemon_id
+        ORDER BY count DESC
+        LIMIT ?
+        `;
+    } else {
+        sql = `
+        SELECT iv.pokemon_id, SUM(shiny.count) AS shiny, SUM(iv.count) AS count
+        FROM pokemon_iv_stats iv
+          LEFT JOIN pokemon_shiny_stats shiny
+          ON iv.date = shiny.date AND iv.pokemon_id = shiny.pokemon_id
+        WHERE iv.date = FROM_UNIXTIME(UNIX_TIMESTAMP(), '%Y-%m-%d')
+        GROUP BY iv.pokemon_id
+        ORDER BY count DESC
+        LIMIT ?
+        `;
+    }
+    var args = [limit];
+    var results = await query(sql, args);
+    return results;
+
 }
 
 async function getRaids(filter) {
@@ -326,6 +438,41 @@ async function getNests(filter) {
     return [];
 }
 
+async function getGymDefenders(limit = 10) {
+    var sql = `
+	SELECT guarding_pokemon_id, COUNT(guarding_pokemon_id) AS count
+	FROM gym
+	GROUP BY guarding_pokemon_id
+	ORDER BY count DESC
+	LIMIT ?
+    `;
+    var args = [limit]
+    var results = await query(sql, args);
+    return results;
+}
+
+async function getNewPokestops(lastHours = 24) {
+    var sql = `
+    SELECT id, lat, lon, name, url, first_seen_timestamp
+    FROM pokestop
+    WHERE first_seen_timestamp > UNIX_TIMESTAMP(NOW() - INTERVAL ? HOUR)
+    `;
+    var args = [lastHours];
+    var results = await query(sql, args);
+    return results;
+}
+
+async function getNewGyms(lastHours = 24) {
+    var sql = `
+    SELECT id, lat, lon, name, url, first_seen_timestamp
+    FROM gym
+    WHERE first_seen_timestamp > UNIX_TIMESTAMP(NOW() - INTERVAL ? HOUR)
+    `;
+    var args = [lastHours];
+    var results = await query(sql, args);
+    return results;
+}
+
 function getTeamIcon(teamId) {
     var teamName = locale.getTeamName(teamId);
     switch (teamId) {
@@ -346,5 +493,11 @@ module.exports = {
     getGyms,
     getQuests,
     getInvasions,
-    getNests
+    getNests,
+    getNewPokestops,
+    getNewGyms,
+    getPokemonStats,
+    getGymDefenders,
+    getTopPokemonIVStats,
+    getTopPokemonStats
 };

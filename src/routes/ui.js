@@ -8,21 +8,59 @@ const config = require('../config.json');
 const defaultData = require('../data/default.js');
 const map = require('../data/map.js');
 const GeofenceService = require('../services/geofence.js');
+const locale = require('../services/locale.js');
+const pokedex = require('../../static/data/pokedex.json');
 
 const svc = new GeofenceService.GeofenceService();
 
 
 router.get(['/', '/index'], async function(req, res) {
     var data = defaultData;
-    var stats = await map.getStats();
-    data.raids = stats.raids.toLocaleString();
-    data.gyms = stats.gyms.toLocaleString();
-    data.quests = stats.quests.toLocaleString();
-    data.invasions = stats.invasions.toLocaleString();
-    data.neutral = stats.neutral.toLocaleString();
-    data.mystic = stats.mystic.toLocaleString();
-    data.valor = stats.valor.toLocaleString();
-    data.instinct = stats.instinct.toLocaleString();
+    var newPokestops = await map.getNewPokestops();
+    var newGyms = await map.getNewGyms();
+    var topGymDefenders = await map.getGymDefenders(10);
+    var top10_100IVStats = await map.getTopPokemonIVStats(100, 10);
+    var lifetime = await map.getTopPokemonStats(true, 10);
+    var today = await map.getTopPokemonStats(false, 10);
+
+    var defenders = topGymDefenders.map(x => {
+        return {
+            id: x.guarding_pokemon_id,
+            name: pokedex[x.guarding_pokemon_id],
+            count: (x.count || 0).toLocaleString(),
+            image_url: locale.getPokemonIcon(x.guarding_pokemon_id, 0)
+        };
+    });
+    data.top10_100iv_pokemon = top10_100IVStats.map(x => {
+        return {
+            pokemon_id: x.pokemon_id,
+            name: pokedex[x.pokemon_id],
+            iv: x.iv,
+            count: (x.count || 0).toLocaleString(),
+            image_url: locale.getPokemonIcon(x.pokemon_id)
+        };
+    });
+    data.lifetime = lifetime.map(x => {
+        return {
+            pokemon_id: x.pokemon_id,
+            name: pokedex[x.pokemon_id],
+            shiny: (x.shiny || 0).toLocaleString(),
+            count: (x.count || 0).toLocaleString(),
+            image_url: locale.getPokemonIcon(x.pokemon_id)
+        };
+    });
+    data.today = today.map(x => {
+        return {
+            pokemon_id: x.pokemon_id,
+            name: pokedex[x.pokemon_id],
+            shiny: (x.shiny || 0).toLocaleString(),
+            count: (x.count || 0).toLocaleString(),
+            image_url: locale.getPokemonIcon(x.pokemon_id)
+        };
+    });
+    data.gym_defenders = defenders;
+    data.new_pokestops = newPokestops;
+    data.new_gyms = newGyms;
     res.render('index', data);
 });
 

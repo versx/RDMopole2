@@ -111,3 +111,6 @@ logs
 
 # No geofences
 geofences/*
+
+# No icons
+static/**/*.png
