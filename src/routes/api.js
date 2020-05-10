@@ -7,8 +7,9 @@ const config = require('../config.json');
 const map = require('../data/map.js');
 
 if (config.pages.pokemon.enabled) {
-    router.get('/pokemon', async function(req, res) {
-        res.json({ data: { pokemon: [] } });
+    router.get('/pokemon/shiny', async function(req, res) {
+        var shinyRates = await map.getShinyRates();
+        res.json({ data: { pokemon: shinyRates } });
     });
 }
 

@@ -175,6 +175,52 @@ async function getTopPokemonStats(lifetime = false, limit = 10) {
     return results;
 }
 
+async function getShinyRates() {
+    var sql = `
+    SELECT date, pokemon_id, count
+    FROM pokemon_shiny_stats
+    WHERE date = ?
+    `;
+    var today = utils.formatDate(new Date());
+    var args = [today];
+    var shinyResults = await query(sql, args);
+    sql = `
+    SELECT date, pokemon_id, count
+    FROM pokemon_iv_stats
+    WHERE date = ?
+    `;
+    var ivResults = await query(sql, args);
+    if (shinyResults) {
+        const getTotalCount = (x) => {
+            for (var i = 0; i < ivResults.length; i++) {
+                var row = ivResults[i];
+                if (row.pokemon_id === x) {
+                    return row.count;
+                }
+            }
+        };
+
+        var data = [];
+        for (var i = 0; i < shinyResults.length; i++) {
+            var row = shinyResults[i];
+            var pokemonId = row.pokemon_id;
+            var name = pokedex[pokemonId];
+            var shiny = (row.count || 0).toLocaleString();
+            var total = (getTotalCount(pokemonId) || 0).toLocaleString();
+            var rate = shiny === 0 || total === 0 ? 0 : Math.round(total / shiny);
+            var imageUrl = locale.getPokemonIcon(pokemonId, 0);
+            data.push({
+                id: `#${pokemonId}`,
+                pokemon: `<img src="${imageUrl}" width="auto" height="32" />&nbsp;${name}`,
+                rate: `1/${rate}`,
+                count: `${shiny}/${total}`
+            });
+        }
+        return data;
+    }
+    return [];
+}
+
 async function getRaidStats(filter) {
     var start = filter.start;
     var end = filter.end;
@@ -517,6 +563,7 @@ function getPokemonNameIdsList() {
 
 module.exports = {
     getStats,
+    getShinyRates,
     getRaids,
     getRaidStats,
     getGyms,
