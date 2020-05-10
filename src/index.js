@@ -24,6 +24,8 @@ const utils = require('./services/utils.js');
 // TODO: Restrict data to specific areas
 // TODO: Lifetime raids/quests/invasions stats
 // TODO: Check csrf token with `/api/`
+// TODO: Use POST for all ajax requests for tables
+// TODO: Allow choice between bar/line graph charts
 
 
 run();

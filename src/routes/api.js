@@ -7,6 +7,10 @@ const config = require('../config.json');
 const map = require('../data/map.js');
 
 if (config.pages.pokemon.enabled) {
+    router.get('/pokemon/overview', async function(req, res) {
+        var overviewStats = await map.getPokemonOverviewStats();
+        res.json({ data: { stats: overviewStats } });
+    });
     router.get('/pokemon/shiny', async function(req, res) {
         var shinyRates = await map.getShinyRates();
         res.json({ data: { pokemon: shinyRates } });
@@ -14,7 +18,7 @@ if (config.pages.pokemon.enabled) {
     router.get('/pokemon/commday', async function(req, res) {
         var commdayStats = await map.getCommunityDayStats(req.query);
         res.json({ data: { stats: commdayStats } });
-    })
+    });
 }
 
 if (config.pages.raids.enabled) {

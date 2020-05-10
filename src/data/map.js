@@ -132,6 +132,16 @@ async function getPokemonStats() {
     return results;
 }
 
+async function getPokemonOverviewStats() {
+    var sql = `
+    SELECT date, SUM(count) AS count
+    FROM pokemon_stats
+    GROUP BY date
+    `;
+    var results = await query(sql);
+    return results;
+}
+
 async function getTopPokemonIVStats(iv = 100, limit = 10) {
     var sql = `
     SELECT pokemon_id, iv, COUNT(iv) AS count
@@ -621,8 +631,13 @@ function getPokemonNameIdsList() {
 
 module.exports = {
     getStats,
+    getTopPokemonIVStats,
+    getTopPokemonStats,
+    getGymDefenders,
+    getPokemonOverviewStats,
     getShinyRates,
     getCommunityDayStats,
+    getPokemonStats,
     getRaids,
     getRaidStats,
     getGyms,
@@ -631,9 +646,5 @@ module.exports = {
     getNests,
     getNewPokestops,
     getNewGyms,
-    getPokemonStats,
-    getGymDefenders,
-    getTopPokemonIVStats,
-    getTopPokemonStats,
     getPokemonNameIdsList
 };
