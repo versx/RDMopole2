@@ -400,8 +400,8 @@
         </div>
     </body>
 </html>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>-->
+<script type='text/javascript' src='./js/utils.js'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0'></script>
 <script type='text/javascript'>
     if ("{{style}}" === 'dark') {
         $('body').css('background-color', 'rgb(33, 37, 41)');
@@ -490,30 +490,5 @@
                 }
             }
         });
-        function addDataset(chart, labels, data) {
-            //chart.data.labels.push(labels);
-            chart.data.datasets.push(data);
-            chart.update();
-        }
-        function removeDataset(chart) {
-            chart.data.labels = [];
-            chart.data.datasets = [];
-            chart.update();
-        }
     //});
-
-    function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    function updateCounter(name, value) {
-        $({ counter: 0 }).animate({ counter: value }, {
-            duration: 1500,
-            easing: 'swing', // can be anything
-            step: function() { // called on every step
-                // Update the element's text with rounded-up value:
-                $(name).text(numberWithCommas(Math.round(this.counter)));
-            }
-        });
-    }
 </script>

@@ -176,6 +176,29 @@ async function getTopPokemonStats(lifetime = false, limit = 10) {
 
 }
 
+async function getRaidStats(filter) {
+    var start = filter.start;
+    var end = filter.end;
+    var pokemonId = filter.pokemon_id;
+    /*
+    var sql_all = `
+    SELECT date, SUM(count) as count
+    FROM raid_stats
+    GROUP BY date
+    `;
+    */
+    var sql = `
+    SELECT date, pokemon_id, count
+    FROM raid_stats
+    WHERE date > ?
+        AND date < ?
+        AND pokemon_id = ?
+    `;
+    var args = [start, end, pokemonId];
+    var results = await query(sql, args);
+    return results;
+}
+
 async function getRaids(filter) {
     var sql = `
     SELECT
@@ -487,9 +510,16 @@ function getTeamIcon(teamId) {
     }
 }
 
+function getPokemonNameIdsList() {
+    var dex = pokedex;
+    var result = Object.keys(dex).map(x => { return { 'id': x, 'name': pokedex[x] }; })
+    return result;
+}
+
 module.exports = {
     getStats,
     getRaids,
+    getRaidStats,
     getGyms,
     getQuests,
     getInvasions,
@@ -499,5 +529,6 @@ module.exports = {
     getPokemonStats,
     getGymDefenders,
     getTopPokemonIVStats,
-    getTopPokemonStats
+    getTopPokemonStats,
+    getPokemonNameIdsList
 };

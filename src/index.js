@@ -22,6 +22,7 @@ const defaultData = require('./data/default.js');
 // TODO: Double check discord role check
 // TODO: Max pokestop and gym name length
 // TODO: Make sql class to connect with different config options
+// TODO: Restrict data to specific areas
 
 
 run();
@@ -37,7 +38,7 @@ async function run() {
     
     // Body parser middlewares
     app.use(express.json());
-    app.use(express.urlencoded({ extended: false, limit: '50mb' })); // for parsing application/x-www-form-urlencoded
+    app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
     // Initialize localzation handler
     i18n.configure({

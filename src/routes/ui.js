@@ -81,6 +81,7 @@ if (config.pages.raids.enabled) {
     router.get('/raids', function(req, res) {
         var data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
+        data.pokemon = map.getPokemonNameIdsList();
         res.render('raids', data);
     });
 }
