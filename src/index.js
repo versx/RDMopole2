@@ -7,13 +7,12 @@ const app = express();
 const mustacheExpress = require('mustache-express');
 const i18n = require('i18n');
 
+const config = require('./config.json');
+const defaultData = require('./data/default.js');
 const apiRoutes = require('./routes/api.js');
 const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
 const utils = require('./services/utils.js');
-
-const config = require('./config.json');
-const defaultData = require('./data/default.js');
 
 
 // TODO: Raid list with pressable rows for more details

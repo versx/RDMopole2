@@ -367,7 +367,7 @@
                                 <div class="col-lg-3 p-1">
                                     <a class="list-group-item">
                                         <h3 class="pull-right"><img src="./img/spawnpoints/spawnpoint.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading spawnpoints">0</h4>
+                                        <h4 class="list-group-item-heading spawnpoints-total">0</h4>
                                         <p class="list-group-item-text">Total</p>
                                     </a>
                                 </div>
@@ -447,7 +447,7 @@
             updateCounter(".lures-mossy", result.lures_mossy);
             updateCounter(".lures-magnetic", result.lures_magnetic);
     
-            updateCounter(".spawnpoints", result.spawnpoints);
+            updateCounter(".spawnpoints-total", result.spawnpoints_total);
             updateCounter(".spawnpoints-found", result.spawnpoints_found);
             updateCounter(".spawnpoints-missing", result.spawnpoints_missing);
             updateCounter(".spawnpoints-percentage", (result.spawnpoints_found / result.spawnpoints_total) * 100);
