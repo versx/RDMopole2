@@ -100,6 +100,10 @@ router.post('/stats', async function(req, res) {
             mystic: (stats.mystic || 0),
             valor: (stats.valor || 0),
             instinct: (stats.instinct || 0),
+            raids_ex: (stats.raids_ex || 0),
+            raids_male: (stats.raids_male || 0),
+            raids_female: (stats.raids_female || 0),
+            gyms_attack: (stats.gyms_attack || 0),
 
             lures_normal: (stats.lures_normal || 0),
             lures_glacial: (stats.lures_glacial || 0),

@@ -26,17 +26,17 @@ async function getStats() {
         (
             SELECT COUNT(id)
             FROM   gym
-            WHERE raid_end_timestamp > UNIX_TIMESTAMP()
+            WHERE  raid_end_timestamp > UNIX_TIMESTAMP()
         ) AS raids,
         (
             SELECT COUNT(id)
             FROM   pokestop
-            WHERE quest_reward_type IS NOT NULL
+            WHERE  quest_reward_type IS NOT NULL
         ) AS quests,
         (
             SELECT COUNT(id)
             FROM   pokestop
-            WHERE incident_expire_timestamp > UNIX_TIMESTAMP()
+            WHERE  incident_expire_timestamp > UNIX_TIMESTAMP()
         ) AS invasions,
         (
             SELECT COUNT(id)
@@ -58,6 +58,26 @@ async function getStats() {
             FROM   gym
             WHERE  team_id = 3
         ) AS instinct,
+        (
+            SELECT COUNT(id)
+            FROM   gym
+            WHERE  raid_end_timestamp > UNIX_TIMESTAMP() AND ex_raid_eligible=1
+        ) AS raids_ex,
+        (
+            SELECT COUNT(id)
+            FROM   gym
+            WHERE  raid_end_timestamp > UNIX_TIMESTAMP() AND raid_pokemon_gender=1
+        ) AS raids_male,
+        (
+            SELECT COUNT(id)
+            FROM   gym
+            WHERE  raid_end_timestamp > UNIX_TIMESTAMP() AND raid_pokemon_gender=2
+        ) AS raids_female,
+        (
+            SELECT COUNT(id)
+            FROM   gym
+            WHERE  in_battle=1
+        ) AS gyms_attack,
         (
             SELECT COUNT(id)
             FROM   pokestop
@@ -85,12 +105,12 @@ async function getStats() {
         (
             SELECT COUNT(id)
             FROM   spawnpoint
-            WHERE despawn_sec IS NOT NULL
+            WHERE  despawn_sec IS NOT NULL
         ) AS spawnpoints_found,
         (
             SELECT COUNT(id)
             FROM   spawnpoint
-            WHERE despawn_sec IS NULL
+            WHERE  despawn_sec IS NULL
         ) AS spawnpoints_missing
     FROM metadata
     LIMIT 1;

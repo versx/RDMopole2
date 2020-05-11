@@ -271,7 +271,51 @@
                                     </div>
                                 </div>
                             </div>
-                            <br>
+                            <div class="card text-center p-1 m-3">
+                                <div class="card-header bg-dark text-light"><b>Overview</b></div>
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-lg-3 p-1">
+                                                <div class="list-group">
+                                                    <a class="list-group-item">
+                                                        <h3 class="pull-right"><img src="./img/battle.png" width="64" height="64"/></h3>
+                                                        <h4 class="list-group-item-heading gyms-attack">0</h4>
+                                                        <p class="list-group-item-text">{{Gyms Under Attack!}}</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 p-1">
+                                                <div class="list-group">
+                                                    <a class="list-group-item">
+                                                        <h3 class="pull-right"><img src="./img/quests/1403.png" width="64" height="64"/></h3>
+                                                        <h4 class="list-group-item-heading raids-ex">0</h4>
+                                                        <p class="list-group-item-text">{{EX-Eligible Raids}}</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 p-1">
+                                                <div class="list-group">
+                                                    <a class="list-group-item">
+                                                        <h3 class="pull-right"><img src="./img/grunts/male.png" width="64" height="64"/></h3>
+                                                        <h4 class="list-group-item-heading raids-male">0</h4>
+                                                        <p class="list-group-item-text">Male Raids</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 p-1">
+                                                <div class="list-group">
+                                                    <a class="list-group-item">
+                                                        <h3 class="pull-right"><img src="./img/grunts/female.png" width="64" height="64"/></h3>
+                                                        <h4 class="list-group-item-heading raids-female">0</h4>
+                                                        <p class="list-group-item-text">Female Raids</p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row justify-content-center container">
                                 <div class="col-md-12">
                                     <div class="card">
@@ -441,6 +485,10 @@
             updateCounter(".mystic", result.mystic);
             updateCounter(".valor", result.valor);
             updateCounter(".instinct", result.instinct);
+            updateCounter(".raids-ex", result.raids_ex);
+            updateCounter(".raids-male", result.raid_male);
+            updateCounter(".raids-female", result.raids_female);
+            updateCounter(".gyms-attack", result.gyms_attack);
     
             updateCounter(".lures-normal", result.lures_normal);
             updateCounter(".lures-glacial", result.lures_glacial);
