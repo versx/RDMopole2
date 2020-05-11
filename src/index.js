@@ -28,8 +28,6 @@ const utils = require('./services/utils.js');
 // TODO: Allow choice between bar/line graph charts
 // TODO: Filter quests by task
 // TODO: Male/female raids, ex eligible raids, # of gyms being attacked
-// TODO: Fix shiny stats NaN values
-// TODO: Historical shiny stats lookup
 
 
 run();

@@ -487,6 +487,7 @@ async function getQuests(filter) {
             const pokestop = row.name;
             const city = geofence ? geofence.name : 'Unknown';
             if (reward.toLowerCase().indexOf(filter.reward.toLowerCase()) > -1 &&
+                task.toLowerCase().indexOf(filter.task.toLowerCase()) > -1 &&
                 pokestop.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
                 (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                 const mapLink = util.format(config.google.maps, row.lat, row.lon);
