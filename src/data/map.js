@@ -313,12 +313,11 @@ async function getPokemonStats(filter) {
     const start = filter.start;
     const end = filter.end;
     const pokemonId = filter.pokemon_id;
+    const all = pokemonId === 'all' ? '' : 'WHERE date > ? AND date < ? AND pokemon_id = ?';
     const sql = `
     SELECT date, pokemon_id, count
     FROM pokemon_stats
-    WHERE date > ?
-        AND date < ?
-        AND pokemon_id = ?
+    ${all}
     `;
     const args = [start, end, pokemonId];
     const results = await query(sql, args);
@@ -329,19 +328,11 @@ async function getRaidStats(filter) {
     const start = filter.start;
     const end = filter.end;
     const pokemonId = filter.pokemon_id;
-    /*
-    var sql_all = `
-    SELECT date, SUM(count) as count
-    FROM raid_stats
-    GROUP BY date
-    `;
-    */
+    const all = pokemonId === 'all' ? '' : 'WHERE date > ? AND date < ? AND pokemon_id = ?';
     const sql = `
     SELECT date, pokemon_id, count
     FROM raid_stats
-    WHERE date > ?
-        AND date < ?
-        AND pokemon_id = ?
+    ${all}
     `;
     const args = [start, end, pokemonId];
     const results = await query(sql, args);

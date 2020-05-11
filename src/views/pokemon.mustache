@@ -357,7 +357,7 @@
     var overviewChart = new Chart(ctx, {
         type: "line",//"bar",//'horizontalBar',
         data: {
-            labels: [],//['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: [],
             datasets: []
         },
         options: lineOptions
@@ -466,25 +466,25 @@
                 console.log("Result:", result);
                 if (result) {
                     var labels = [];
-                        var values = [];
-                        $.each(result.stats, function(key, value) {
-                            labels.push(value.date);
-                            var value = parseInt(value.count);
-                            values.push(value);
-                        });
-                        removeDataset(historicalChart);
-                        var obj = { 
-                            labels: labels, 
-                            datasets: [{
-                                data: values,
-                                backgroundColor: "dodgerblue",
-                                borderColor: "gray",
-                                label: "Pokemon",
-                                fill: false
-                            }]
-                        };
-                        historicalChart.data = obj;
-                        historicalChart.update();
+                    var values = [];
+                    $.each(result.stats, function(key, value) {
+                        labels.push(value.date);
+                        var value = parseInt(value.count);
+                        values.push(value);
+                    });
+                    removeDataset(historicalChart);
+                    var obj = { 
+                        labels: labels, 
+                        datasets: [{
+                            data: values,
+                            backgroundColor: "dodgerblue",
+                            borderColor: "gray",
+                            label: "Pokemon",
+                            fill: false
+                        }]
+                    };
+                    historicalChart.data = obj;
+                    historicalChart.update();
                     /*
                     removeDataset(historicalChart);
                     for (var i = 0; i < result.stats.length; i++) {
