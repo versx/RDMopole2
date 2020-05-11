@@ -33,13 +33,13 @@ class GeofenceService {
         this.loadGeofences();
     }
     loadGeofences() {
-        var files = fs.readdirSync(geofencesDir);
+        const files = fs.readdirSync(geofencesDir);
         if (files) {
             for (var i = 0; i < files.length; i++) {
-                var file = files[i];
+                const file = files[i];
                 if (file !== '.' && file !== '..') {
-                    var filepath = path.resolve(geofencesDir, file);
-                    var geofence = this.loadGeofence(filepath);
+                    const filepath = path.resolve(geofencesDir, file);
+                    const geofence = this.loadGeofence(filepath);
                     if (geofence) {
                         this.geofences.push(geofence);
                     }
@@ -49,30 +49,30 @@ class GeofenceService {
         return this.geofences;
     }
     loadGeofence(file) {
-        var data = fs.readFileSync(file, 'UTF-8');
-        var lines = data.split(/\r?\n/);
-        var name = 'Unknown';
+        const data = fs.readFileSync(file, 'UTF-8');
+        const lines = data.split(/\r?\n/);
+        let name = 'Unknown';
         if (lines.length > 0 && lines[0].indexOf('[', 0) === 0) {
             name = lines[0].replace('[', '');
             name = name.replace(']', '');
         }
   
-        var geofence = new Geofence();
+        const geofence = new Geofence();
         geofence.name = name;
         geofence.polygon = this.buildPolygon(lines.slice(1));
         return geofence;
     }
     buildPolygon(lines) {
-        var latlngs = [];
-        var first = [];
-        for (var i = 0; i < lines.length; i++) {
-            var line = lines[i];
+        const latlngs = [];
+        let first = [];
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
             if (line.indexOf('[', 0) === 0)
                 continue;
 
-            var parts = line.split(',');
-            var lat = parseFloat(parts[0]);
-            var lon = parseFloat(parts[1]);
+            const parts = line.split(',');
+            const lat = parseFloat(parts[0]);
+            const lon = parseFloat(parts[1]);
             if (i === 0) {
                 first = [lon, lat];
             }
@@ -86,17 +86,17 @@ class GeofenceService {
         //var result = checkcheck(lat, lon, geofence.polygon.filter(x => x[1]), geofence.polygon.filter(x => x[0]));
         //var result = classifyPoint(geofence.polygon, [lon, lat]);
         //var result = matchPointAndPolygon([lon, lat], geofence.polygon);
-        var result = isLatLngInZone(geofence, lat, lon);
+        const result = isLatLngInZone(geofence, lat, lon);
         //console.log("Result:", result);
         //return result === -1 || result === 0;
         return result;
     }
     contains(geofence, lat, lon) {
-        var polygon = geofence.polygon;
-        var numOfPoints = polygon.length;
-        var lats = polygon.map(x => x[1]);
-        var lngs = polygon.map(x => x[0]);
-        var polygonContainsPoint = false;
+        const polygon = geofence.polygon;
+        const numOfPoints = polygon.length;
+        const lats = polygon.map(x => x[1]);
+        const lngs = polygon.map(x => x[0]);
+        let polygonContainsPoint = false;
         for (var node = 0, altNode = (numOfPoints - 1); node < numOfPoints; altNode = node++) {
             if ((lngs[node] > lon !== (lngs[altNode] > lon))
                 && (lat < (lats[altNode] - lats[node])
@@ -112,9 +112,9 @@ class GeofenceService {
         return polygonContainsPoint;
     }
     getGeofence(lat, lon) {
-        var geofences = this.geofences;
-        for (var i = 0; i < geofences.length; i++) {
-            var geofence = geofences[i];
+        const geofences = this.geofences;
+        for (let i = 0; i < geofences.length; i++) {
+            const geofence = geofences[i];
             if (this.inGeofence(geofence, parseFloat(lat), parseFloat(lon))) {
                 return geofence;
             }
@@ -124,17 +124,17 @@ class GeofenceService {
 }
 
 function isLatLngInZone(geofence, lat, lng){
-    var latLngs = geofence.polygon;
-    var lngs = []; // TODO: .filter
-    var lats = [];
-    var polygonContainsPoint = 0;
-    for (var i = 0; i < latLngs.length; i++) {
+    const latLngs = geofence.polygon;
+    const lngs = []; // TODO: .filter
+    const lats = [];
+    let polygonContainsPoint = 0;
+    for (let i = 0; i < latLngs.length; i++) {
         lngs.push(latLngs[i][1]);
         lats.push(latLngs[i][0]);
     }
-    var numOfPoints = lats.length;
-    var point = 0;
-    for (var node = 0, altNode = numOfPoints; node < numOfPoints; altNode = node++) {
+    const numOfPoints = lats.length;
+    let point = 0;
+    for (let node = 0, altNode = numOfPoints; node < numOfPoints; altNode = node++) {
         point = node;
         if (point === numOfPoints) {
             point = 0;

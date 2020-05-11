@@ -26,6 +26,7 @@ const utils = require('./services/utils.js');
 // TODO: Check csrf token with `/api/`
 // TODO: Use POST for all ajax requests for tables
 // TODO: Allow choice between bar/line graph charts
+// TODO: Filter quests by task
 
 
 run();

@@ -45,7 +45,7 @@ function getQuestReward(rewards) {
     } else if (id === 4 && info !== undefined && info.amount !== undefined && info.pokemon_id !== undefined) {
         return i18n.__('quest_reward_4_formatted', { amount: info.amount, pokemon: pokedex[info.pokemon_id] });
     } else if (id === 7 && info !== undefined && info.pokemon_id !== undefined) {
-        var string = '';
+        let string = '';
         if (info.form_id !== 0 && info.form_id !== null) {
             // TODO: getFormName
             //string = getFormName(info.form_id) + ' ' + pokedex[info.pokemon_id];
@@ -75,10 +75,10 @@ function getQuestCondition(condition) {
     const id = condition.type;
     const info = condition.info;
     if (id === 1 && info !== undefined && info.pokemon_type_ids !== undefined) {
-        var typesString = '';
-        for (var i = 0; i < info.pokemon_type_ids.length; i++) {
-            var typeId = info.pokemon_type_ids[i];
-            var formatted = '';
+        let typesString = '';
+        for (let i = 0; i < info.pokemon_type_ids.length; i++) {
+            const typeId = info.pokemon_type_ids[i];
+            let formatted = '';
             if (i === 0) {
                 formatted = '';
             } else if (i === info.pokemon_type_ids.length - 1) {
@@ -90,10 +90,10 @@ function getQuestCondition(condition) {
         }
         return i18n.__('quest_condition_1_formatted', { types: typesString });
     } else if (id === 2 && info !== undefined && info.pokemon_ids !== undefined) {
-        var pokemonString = '';
-        for (var i = 0; i < info.pokemon_ids.length; i++) {
-            var pokemonId = info.pokemon_ids[i];
-            var formatted = '';
+        let pokemonString = '';
+        for (let i = 0; i < info.pokemon_ids.length; i++) {
+            const pokemonId = info.pokemon_ids[i];
+            let formatted = '';
             if (i === 0) {
                 formatted = '';
             } else if (i === info.pokemon_ids.length - 1) {
@@ -105,10 +105,10 @@ function getQuestCondition(condition) {
         }
         return i18n.__('quest_condition_2_formatted', { pokemon: pokemonString });
     } else if (id === 7 && info !== undefined && info.raid_levels !== undefined) {
-        var levelsString = '';
-        for (var i = 0; i < info.raid_levels.length; i++) {
-            var level = info.raid_levels[i];
-            var formatted = '';
+        let levelsString = '';
+        for (let i = 0; i < info.raid_levels.length; i++) {
+            const level = info.raid_levels[i];
+            let formatted = '';
             if (i === 0) {
                 formatted = '';
             } else if (i === info.raid_levels.length - 1) {
@@ -126,10 +126,10 @@ function getQuestCondition(condition) {
     } else if (id === 14 && info !== undefined && info.throw_type_id !== undefined) {
         return i18n.__('quest_condition_14_formatted', { throw_type: getThrowType(info.throw_type_id) });
     } else if (id === 26 && info !== undefined && info.alignment_ids !== undefined) {
-        var alignmentsString = '';
-        for (var i = 0; info.alignment_ids.length; i++) {
-            var alignment = info.alignment_ids[i];
-            var formatted = '';
+        let alignmentsString = '';
+        for (let i = 0; info.alignment_ids.length; i++) {
+            const alignment = info.alignment_ids[i];
+            let formatted = '';
             if (i === 0) {
                 formatted = '';
             } else if (i === info.alignment_ids.length - 1) {
@@ -141,10 +141,10 @@ function getQuestCondition(condition) {
         }
         return i18n.__('quest_condition_26_formatted', { alignments: alignmentsString });
     } else if (id === 27 && info !== undefined && info.character_category_ids !== undefined) {
-        var categoriesString = '';
-        for (var i = 0; i < info.character_category_ids.length; i++) {
-            var characterCategory = info.character_category_ids[i];
-            var formatted = '';
+        let categoriesString = '';
+        for (let i = 0; i < info.character_category_ids.length; i++) {
+            const characterCategory = info.character_category_ids[i];
+            let formatted = '';
             if (i === 0) {
                 formatted = '';
             } else if (i === info.character_category_ids.length - 1) {
@@ -163,7 +163,7 @@ function getQuestCondition(condition) {
 
 
 function getPokemonIcon(pokemonId, formId) {
-    var padId = (pokemonId + '').padStart(3, '0');
+    const padId = (pokemonId + '').padStart(3, '0');
     if (formId > 0) {
         return util.format(config.urls.images.pokemon, padId, formId);
     }
@@ -178,9 +178,9 @@ function getRaidIcon(pokemonId, raidLevel) {
 }
 
 function getQuestIcon(rewards) {
-    var iconIndex = 0;
-    var obj = JSON.parse(rewards);
-    var reward = obj[0];
+    let iconIndex = 0;
+    const obj = JSON.parse(rewards);
+    const reward = obj[0];
     switch (reward.type) {
     case 1://Experience
         iconIndex = -2;
@@ -199,7 +199,7 @@ function getQuestIcon(rewards) {
     case 6://Quest
         break;
     case 7://Pokemon
-        var padId = (reward.info.pokemon_id + '').padStart(3, '0');
+        const padId = (reward.info.pokemon_id + '').padStart(3, '0');
         return getPokemonIcon(padId, 0);
     default: //Unset/Unknown
         break;

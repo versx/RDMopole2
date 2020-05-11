@@ -13,7 +13,7 @@ const svc = new GeofenceService.GeofenceService();
 const pokedex = require('../../static/data/pokedex.json');
 
 async function getStats() {
-    var sql = `
+    const sql = `
     SELECT
         (
             SELECT COUNT(id)
@@ -95,7 +95,7 @@ async function getStats() {
     FROM metadata
     LIMIT 1;
     `;
-    var results = await query(sql);
+    const results = await query(sql);
     if (results && results.length > 0) {
         return results[0];        
     }
@@ -103,7 +103,7 @@ async function getStats() {
 }
 
 async function getPokemonStats() {
-    var sql = `
+    const sql = `
     SELECT * FROM (
         SELECT SUM(count) AS pokemon_total
         FROM pokemon_stats
@@ -128,22 +128,22 @@ async function getPokemonStats() {
         WHERE expire_timestamp >= UNIX_TIMESTAMP()
     ) AS D
     `;
-    var results = await query(sql);
+    const results = await query(sql);
     return results;
 }
 
 async function getPokemonOverviewStats() {
-    var sql = `
+    const sql = `
     SELECT date, SUM(count) AS count
     FROM pokemon_stats
     GROUP BY date
     `;
-    var results = await query(sql);
+    const results = await query(sql);
     return results;
 }
 
 async function getTopPokemonIVStats(iv = 100, limit = 10) {
-    var sql = `
+    const sql = `
     SELECT pokemon_id, iv, COUNT(iv) AS count
     FROM pokemon
     WHERE first_seen_timestamp > UNIX_TIMESTAMP(NOW() - INTERVAL 24 HOUR) AND iv = ?
@@ -151,13 +151,13 @@ async function getTopPokemonIVStats(iv = 100, limit = 10) {
     ORDER BY count DESC
     LIMIT ?
     `;
-    var args = [iv, limit];
-    var results = await query(sql, args);
+    const args = [iv, limit];
+    const results = await query(sql, args);
     return results;
 }
 
 async function getTopPokemonStats(lifetime = false, limit = 10) {
-    var sql = '';
+    let sql = '';
     if (lifetime) {
         sql = `
         SELECT iv.pokemon_id, SUM(shiny.count) AS shiny, SUM(iv.count) AS count
@@ -180,26 +180,26 @@ async function getTopPokemonStats(lifetime = false, limit = 10) {
         LIMIT ?
         `;
     }
-    var args = [limit];
-    var results = await query(sql, args);
+    const args = [limit];
+    const results = await query(sql, args);
     return results;
 }
 
 async function getShinyRates() {
-    var sql = `
+    let sql = `
     SELECT date, pokemon_id, count
     FROM pokemon_shiny_stats
     WHERE date = ?
     `;
-    var today = utils.formatDate(new Date());
-    var args = [today];
-    var shinyResults = await query(sql, args);
+    const today = utils.formatDate(new Date());
+    const args = [today];
+    const shinyResults = await query(sql, args);
     sql = `
     SELECT date, pokemon_id, count
     FROM pokemon_iv_stats
     WHERE date = ?
     `;
-    var ivResults = await query(sql, args);
+    const ivResults = await query(sql, args);
     if (shinyResults) {
         const getTotalCount = (x) => {
             for (var i = 0; i < ivResults.length; i++) {
@@ -210,15 +210,15 @@ async function getShinyRates() {
             }
         };
 
-        var data = [];
-        for (var i = 0; i < shinyResults.length; i++) {
-            var row = shinyResults[i];
-            var pokemonId = row.pokemon_id;
-            var name = pokedex[pokemonId];
-            var shiny = (row.count || 0).toLocaleString();
-            var total = (getTotalCount(pokemonId) || 0).toLocaleString();
-            var rate = shiny === 0 || total === 0 ? 0 : Math.round(total / shiny);
-            var imageUrl = locale.getPokemonIcon(pokemonId, 0);
+        const data = [];
+        for (let i = 0; i < shinyResults.length; i++) {
+            const row = shinyResults[i];
+            const pokemonId = row.pokemon_id;
+            const name = pokedex[pokemonId];
+            const shiny = (row.count || 0).toLocaleString();
+            const total = (getTotalCount(pokemonId) || 0).toLocaleString();
+            const rate = shiny === 0 || total === 0 ? 0 : Math.round(total / shiny);
+            const imageUrl = locale.getPokemonIcon(pokemonId, 0);
             data.push({
                 id: `#${pokemonId}`,
                 pokemon: `<img src="${imageUrl}" width="auto" height="32" />&nbsp;${name}`,
@@ -232,10 +232,10 @@ async function getShinyRates() {
 }
 
 async function getCommunityDayStats(filter) {
-    var start = filter.start;
-    var end = filter.end;
-    var pokemonId = filter.pokemon_id;
-    var sql = `
+    const start = filter.start;
+    const end = filter.end;
+    const pokemonId = filter.pokemon_id;
+    const sql = `
     SELECT
         COUNT(id) AS total,
         SUM(iv > 0) AS with_iv,
@@ -264,14 +264,14 @@ async function getCommunityDayStats(filter) {
         AND first_seen_timestamp >= ?
         AND first_seen_timestamp <= ?
     `;
-    var args = [pokemonId, start, end];
-    var results = await query(sql, args);
+    const args = [pokemonId, start, end];
+    const results = await query(sql, args);
     if (results && results.length > 0) {
-        var data = results[0];
+        const data = results[0];
         data.pokemon_id = pokemonId;
         data.start = start;
         data.end = end;
-        var id = parseInt(pokemonId);
+        const id = parseInt(pokemonId);
         data.evo1 = {
             name: `${pokedex[id]} (#${id})`,
             image: locale.getPokemonIcon(id, 0)
@@ -290,9 +290,9 @@ async function getCommunityDayStats(filter) {
 }
 
 async function getRaidStats(filter) {
-    var start = filter.start;
-    var end = filter.end;
-    var pokemonId = filter.pokemon_id;
+    const start = filter.start;
+    const end = filter.end;
+    const pokemonId = filter.pokemon_id;
     /*
     var sql_all = `
     SELECT date, SUM(count) as count
@@ -300,20 +300,20 @@ async function getRaidStats(filter) {
     GROUP BY date
     `;
     */
-    var sql = `
+   const sql = `
     SELECT date, pokemon_id, count
     FROM raid_stats
     WHERE date > ?
         AND date < ?
         AND pokemon_id = ?
     `;
-    var args = [start, end, pokemonId];
-    var results = await query(sql, args);
+    const args = [start, end, pokemonId];
+    const results = await query(sql, args);
     return results;
 }
 
 async function getRaids(filter) {
-    var sql = `
+    const sql = `
     SELECT
         id,
         raid_battle_timestamp,
@@ -335,36 +335,36 @@ async function getRaids(filter) {
         AND raid_end_timestamp > UNIX_TIMESTAMP()
     ORDER BY raid_end_timestamp
     `;
-    var results = await query(sql);
+    const results = await query(sql);
     if (results && results.length > 0) {
         var raids = [];
         results.forEach(function(row) {
-            var name = row.raid_pokemon_id === 0 ? 'Egg' : `${pokedex[row.raid_pokemon_id]} (#${row.raid_pokemon_id})`;
-            var imgUrl = locale.getRaidIcon(row.raid_pokemon_id, row.raid_level);
-            var geofence = svc.getGeofence(row.lat, row.lon);
-            var team = locale.getTeamName(row.team_id);
-            var teamIcon = getTeamIcon(row.team_id);
-            var gym = row.name;
-            var level = '' + row.raid_level;
-            var ex = row.ex_raid_eligible ? 'Yes' : 'No';
-            var city = geofence ? geofence.name : 'Unknown';
-            var now = new Date();
-            var starts = new Date(row.raid_battle_timestamp * 1000);
-            var started = starts < now;
-            var startTime = started ? '--' : starts.toLocaleTimeString();
-            var ends = new Date(row.raid_end_timestamp * 1000);
-            var secondsLeft = ends - now;
+            const name = row.raid_pokemon_id === 0 ? 'Egg' : `${pokedex[row.raid_pokemon_id]} (#${row.raid_pokemon_id})`;
+            const imgUrl = locale.getRaidIcon(row.raid_pokemon_id, row.raid_level);
+            const geofence = svc.getGeofence(row.lat, row.lon);
+            const team = locale.getTeamName(row.team_id);
+            const teamIcon = getTeamIcon(row.team_id);
+            const gym = row.name;
+            const level = '' + row.raid_level;
+            const ex = row.ex_raid_eligible ? 'Yes' : 'No';
+            const city = geofence ? geofence.name : 'Unknown';
+            const now = new Date();
+            const starts = new Date(row.raid_battle_timestamp * 1000);
+            const started = starts < now;
+            const startTime = started ? '--' : starts.toLocaleTimeString();
+            const ends = new Date(row.raid_end_timestamp * 1000);
+            const secondsLeft = ends - now;
             // Skip raids that have less than 60 seconds remaining.
             if (secondsLeft > 60 * 1000) {
-                var endTimeLeft = utils.toHHMMSS(secondsLeft);
-                var endTime = started ? endTimeLeft : ends.toLocaleTimeString();
+                const endTimeLeft = utils.toHHMMSS(secondsLeft);
+                const endTime = started ? endTimeLeft : ends.toLocaleTimeString();
                 if (name.toLowerCase().indexOf(filter.pokemon.toLowerCase()) > -1 &&
                     (gym.toLowerCase().indexOf(filter.gym.toLowerCase()) > -1 || filter.gym === '') &&
                     (team.toLowerCase().indexOf(filter.team.toLowerCase()) > -1 || filter.team.toLowerCase() === 'all') &&
                     (level.toLowerCase().indexOf(filter.level.toLowerCase()) > -1 || filter.level.toLowerCase() === 'all') &&
                     (ex.toLowerCase().indexOf(filter.ex.toLowerCase()) > -1 || filter.ex.toLowerCase() === 'all') &&
                     (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
-                    var mapLink = util.format(config.google.maps, row.lat, row.lon);
+                    const mapLink = util.format(config.google.maps, row.lat, row.lon);
                     raids.push({
                         pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${name}`,
                         raid_starts: startTime,
@@ -384,7 +384,7 @@ async function getRaids(filter) {
 }
 
 async function getGyms(filter) {
-    var sql = `
+    const sql = `
     SELECT 
         lat, 
         lon,
@@ -399,26 +399,26 @@ async function getGyms(filter) {
         name IS NOT NULL
         AND enabled = 1;
     `;
-    var results = await query(sql);
+    const results = await query(sql);
     if (results && results.length > 0) {
-        var gyms = [];
+        const gyms = [];
         results.forEach(function(row) {
-            var name = row.name;
-            var team = locale.getTeamName(row.team_id);
-            var teamIcon = getTeamIcon(row.team_id);
-            var slots = row.availble_slots === 0 ? 'Full' : row.availble_slots === 6 ? 'Empty' : '' + row.availble_slots;
-            var guard = row.guarding_pokemon_id === 0 ? 'None' : pokedex[row.guarding_pokemon_id];
-            var pkmnIcon = guard === 'None' ? 'None' : locale.getPokemonIcon(row.guarding_pokemon_id, 0);
-            var geofence = svc.getGeofence(row.lat, row.lon);
-            var city = geofence ? geofence.name : 'Unknown';
-            var inBattle = row.in_battle ? 'Yes' : 'No';
+            const name = row.name;
+            const team = locale.getTeamName(row.team_id);
+            const teamIcon = getTeamIcon(row.team_id);
+            const slots = row.availble_slots === 0 ? 'Full' : row.availble_slots === 6 ? 'Empty' : '' + row.availble_slots;
+            const guard = row.guarding_pokemon_id === 0 ? 'None' : pokedex[row.guarding_pokemon_id];
+            const pkmnIcon = guard === 'None' ? 'None' : locale.getPokemonIcon(row.guarding_pokemon_id, 0);
+            const geofence = svc.getGeofence(row.lat, row.lon);
+            const city = geofence ? geofence.name : 'Unknown';
+            const inBattle = row.in_battle ? 'Yes' : 'No';
             if (name.toLowerCase().indexOf(filter.gym.toLowerCase()) > -1 &&
                 (team.toLowerCase().indexOf(filter.team.toLowerCase()) > -1 || filter.team === 'all') &&
                 (slots.toLowerCase().indexOf(filter.slots.toLowerCase()) > -1 || filter.slots.toLowerCase() === 'all') && // TODO: Accomodate for Full and Empty
                 //(guard.toLowerCase().indexOf(filter.guard.toLowerCase()) > -1 || filter.guard.toLowerCase() === 'all') &&
                 (inBattle.toLowerCase().indexOf(filter.battle.toLowerCase()) > -1 || filter.battle.toLowerCase() === 'all') &&
                 (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
-                var mapLink = util.format(config.google.maps, row.lat, row.lon);
+                const mapLink = util.format(config.google.maps, row.lat, row.lon);
                 gyms.push({
                     name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
                     team: teamIcon,
@@ -436,7 +436,7 @@ async function getGyms(filter) {
 }
 
 async function getQuests(filter) {
-    var sql = `
+    const sql = `
     SELECT 
         lat, 
         lon,
@@ -458,22 +458,22 @@ async function getQuests(filter) {
         AND name IS NOT NULL
         AND enabled = 1;
     `;
-    var results = await query(sql);
+    const results = await query(sql);
     if (results && results.length > 0) {
-        var quests = [];
+        const quests = [];
         results.forEach(function(row) {
-            var name = row.name;
-            var imgUrl = locale.getQuestIcon(row.quest_rewards);
-            var reward = locale.getQuestReward(row.quest_rewards);
-            var task = locale.getQuestTask(row.quest_type, row.quest_target);
-            var conditions = locale.getQuestConditions(row.quest_conditions);
-            var geofence = svc.getGeofence(row.lat, row.lon);
-            var pokestop = row.name;
-            var city = geofence ? geofence.name : 'Unknown';
+            const name = row.name;
+            const imgUrl = locale.getQuestIcon(row.quest_rewards);
+            const reward = locale.getQuestReward(row.quest_rewards);
+            const task = locale.getQuestTask(row.quest_type, row.quest_target);
+            const conditions = locale.getQuestConditions(row.quest_conditions);
+            const geofence = svc.getGeofence(row.lat, row.lon);
+            const pokestop = row.name;
+            const city = geofence ? geofence.name : 'Unknown';
             if (reward.toLowerCase().indexOf(filter.reward.toLowerCase()) > -1 &&
                 pokestop.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
                 (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
-                var mapLink = util.format(config.google.maps, row.lat, row.lon);
+                const mapLink = util.format(config.google.maps, row.lat, row.lon);
                 quests.push({
                     reward: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${reward}`,
                     quest: task,
@@ -490,7 +490,7 @@ async function getQuests(filter) {
 }
 
 async function getInvasions(filter) {
-    var sql = `
+    const sql = `
     SELECT 
         lat, 
         lon,
@@ -504,19 +504,19 @@ async function getInvasions(filter) {
         incident_expire_timestamp > UNIX_TIMESTAMP()
         AND enabled = 1;
     `;
-    var results = await query(sql);
+    const results = await query(sql);
     if (results && results.length > 0) {
-        var invasions = [];
+        const invasions = [];
         results.forEach(function(row) {
-            var name = row.name || '';
-            var gruntType = locale.getGruntType(row.grunt_type);
-            var expires = new Date(row.incident_expire_timestamp * 1000).toLocaleTimeString();
-            var geofence = svc.getGeofence(row.lat, row.lon);
-            var city = geofence ? geofence.name : 'Unknown';
+            const name = row.name || '';
+            const gruntType = locale.getGruntType(row.grunt_type);
+            const expires = new Date(row.incident_expire_timestamp * 1000).toLocaleTimeString();
+            const geofence = svc.getGeofence(row.lat, row.lon);
+            const city = geofence ? geofence.name : 'Unknown';
             if ((utils.inArray(filter.grunt, gruntType) || filter.grunt.toLowerCase() === 'all') &&
                 name.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
                 (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
-                var mapLink = util.format(config.google.maps, row.lat, row.lon);
+                const mapLink = util.format(config.google.maps, row.lat, row.lon);
                 invasions.push({
                     grunt_type: `<img src='./img/grunts/${row.grunt_type}.png' width=auto height=32 />&nbsp;${gruntType}`,
                     pokestop_name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
@@ -532,7 +532,7 @@ async function getInvasions(filter) {
 }
 
 async function getNests(filter) {
-    var sql = `
+    const sql = `
     SELECT 
         lat, 
         lon,
@@ -544,21 +544,21 @@ async function getNests(filter) {
     FROM nests
     WHERE name IS NOT NULL
     `;
-    var results = await queryManual(sql);
+    const results = await queryManual(sql);
     if (results && results.length > 0) {
-        var nests = [];
+        const nests = [];
         results.forEach(function(row) {
-            var imgUrl = locale.getPokemonIcon(row.pokemon_id, 0);
-            var name = row.name;
-            var pokemon = pokedex[row.pokemon_id];
-            var count = row.pokemon_count;
-            var average = row.pokemon_avg;
-            var geofence = svc.getGeofence(row.lat, row.lon);
-            var city = geofence ? geofence.name : 'Unknown';
+            const imgUrl = locale.getPokemonIcon(row.pokemon_id, 0);
+            const name = row.name;
+            const pokemon = pokedex[row.pokemon_id];
+            const count = row.pokemon_count;
+            const average = row.pokemon_avg;
+            const geofence = svc.getGeofence(row.lat, row.lon);
+            const city = geofence ? geofence.name : 'Unknown';
             if (name.toLowerCase().indexOf(filter.nest.toLowerCase()) > -1 &&
                 pokemon.toLowerCase().indexOf(filter.pokemon.toLowerCase()) > -1 &&
                 (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
-                var mapLink = util.format(config.google.maps, row.lat, row.lon);
+                const mapLink = util.format(config.google.maps, row.lat, row.lon);
                 nests.push({
                     name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
                     pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${pokemon}`,
@@ -575,37 +575,37 @@ async function getNests(filter) {
 }
 
 async function getGymDefenders(limit = 10) {
-    var sql = `
+    const sql = `
 	SELECT guarding_pokemon_id, COUNT(guarding_pokemon_id) AS count
 	FROM gym
 	GROUP BY guarding_pokemon_id
 	ORDER BY count DESC
 	LIMIT ?
     `;
-    var args = [limit]
-    var results = await query(sql, args);
+    const args = [limit]
+    const results = await query(sql, args);
     return results;
 }
 
 async function getNewPokestops(lastHours = 24) {
-    var sql = `
+    const sql = `
     SELECT id, lat, lon, name, url, first_seen_timestamp
     FROM pokestop
     WHERE first_seen_timestamp > UNIX_TIMESTAMP(NOW() - INTERVAL ? HOUR)
     `;
-    var args = [lastHours];
-    var results = await query(sql, args);
+    const args = [lastHours];
+    const results = await query(sql, args);
     return results;
 }
 
 async function getNewGyms(lastHours = 24) {
-    var sql = `
+    const sql = `
     SELECT id, lat, lon, name, url, first_seen_timestamp
     FROM gym
     WHERE first_seen_timestamp > UNIX_TIMESTAMP(NOW() - INTERVAL ? HOUR)
     `;
-    var args = [lastHours];
-    var results = await query(sql, args);
+    const args = [lastHours];
+    const results = await query(sql, args);
     return results;
 }
 
@@ -624,8 +624,8 @@ function getTeamIcon(teamId) {
 }
 
 function getPokemonNameIdsList() {
-    var dex = pokedex;
-    var result = Object.keys(dex).map(x => { return { 'id': x, 'name': pokedex[x] }; })
+    const dex = pokedex;
+    const result = Object.keys(dex).map(x => { return { 'id': x, 'name': pokedex[x] }; })
     return result;
 }
 

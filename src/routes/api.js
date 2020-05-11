@@ -8,72 +8,73 @@ const map = require('../data/map.js');
 
 if (config.pages.pokemon.enabled) {
     router.get('/pokemon/overview', async function(req, res) {
-        var overviewStats = await map.getPokemonOverviewStats();
+        const overviewStats = await map.getPokemonOverviewStats();
         res.json({ data: { stats: overviewStats } });
     });
     router.get('/pokemon/shiny', async function(req, res) {
-        var shinyRates = await map.getShinyRates();
+        const shinyRates = await map.getShinyRates();
         res.json({ data: { pokemon: shinyRates } });
     });
     router.get('/pokemon/commday', async function(req, res) {
-        var commdayStats = await map.getCommunityDayStats(req.query);
+        console.log("Received commday stats");
+        const commdayStats = await map.getCommunityDayStats(req.query);
         res.json({ data: { stats: commdayStats } });
     });
 }
 
 if (config.pages.raids.enabled) {
     router.get('/raids', async function(req, res) {
-        var raids = await map.getRaids(req.query);
+        const raids = await map.getRaids(req.query);
         res.json({ data: { raids: raids } });
     });
 }
 
 if (config.pages.gyms.enabled) {
     router.get('/gyms', async function(req, res) {
-        var gyms = await map.getGyms(req.query);
+        const gyms = await map.getGyms(req.query);
         res.json({ data: { gyms: gyms } });
     });
 }
 
 if (config.pages.quests.enabled) {
     router.get('/quests', async function(req, res) {
-        var quests = await map.getQuests(req.query);
+        const quests = await map.getQuests(req.query);
         res.json({ data: { quests: quests } });
     });
 }
 
 if (config.pages.invasions.enabled) {
     router.get('/invasions', async function(req, res) {
-        var invasions = await map.getInvasions(req.query);
+        const invasions = await map.getInvasions(req.query);
         res.json({ data: { invasions: invasions } });
     });
 }
 
 if (config.pages.nests.enabled) {
     router.get('/nests', async function(req, res) {
-        var nests = await map.getNests(req.query);
+        const nests = await map.getNests(req.query);
         res.json({ data: { nests: nests } });
     });
 }
 
 router.post('/stats', async function(req, res) {
-    console.log("Query:", req.query);
-    var type = req.query.type;
-    var data;
+    //console.log("Query:", req.query);
+    const type = req.query.type;
+    let data;
     if (type) {
         switch (type) {
             case 'raids':
-                var raidStats = await map.getRaidStats(req.query);
+                const raidStats = await map.getRaidStats(req.query);
                 data = {
                     stats: raidStats
                 };
                 break;
         }
     } else {
-        var stats = await map.getStats();
-        var pokemonStats = await map.getPokemonStats();
-        var newPokestops = await map.getNewPokestops();
-        var newGyms = await map.getNewGyms();
+        const stats = await map.getStats();
+        const pokemonStats = await map.getPokemonStats();
+        const newPokestops = await map.getNewPokestops();
+        const newGyms = await map.getNewGyms();
         data = {
             raids: (stats.raids || 0),
             gyms: (stats.gyms || 0),

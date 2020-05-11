@@ -15,15 +15,15 @@ const svc = new GeofenceService.GeofenceService();
 
 
 router.get(['/', '/index'], async function(req, res) {
-    var data = defaultData;
-    var newPokestops = await map.getNewPokestops();
-    var newGyms = await map.getNewGyms();
-    var topGymDefenders = await map.getGymDefenders(10);
-    var top10_100IVStats = await map.getTopPokemonIVStats(100, 10);
-    var lifetime = await map.getTopPokemonStats(true, 10);
-    var today = await map.getTopPokemonStats(false, 10);
+    const data = defaultData;
+    const newPokestops = await map.getNewPokestops();
+    const newGyms = await map.getNewGyms();
+    const topGymDefenders = await map.getGymDefenders(10);
+    const top10_100IVStats = await map.getTopPokemonIVStats(100, 10);
+    const lifetime = await map.getTopPokemonStats(true, 10);
+    const today = await map.getTopPokemonStats(false, 10);
 
-    var defenders = topGymDefenders.map(x => {
+    const defenders = topGymDefenders.map(x => {
         return {
             id: x.guarding_pokemon_id,
             name: pokedex[x.guarding_pokemon_id],
@@ -79,7 +79,7 @@ if (config.discord.enabled) {
 
 if (config.pages.pokemon.enabled) {
     router.get('/pokemon', function(req, res) {
-        var data = defaultData;
+        const data = defaultData;
         data.pokemon = map.getPokemonNameIdsList();
         res.render('pokemon', data);
     });
@@ -87,7 +87,7 @@ if (config.pages.pokemon.enabled) {
 
 if (config.pages.raids.enabled) {
     router.get('/raids', function(req, res) {
-        var data = defaultData;
+        const data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         data.pokemon = map.getPokemonNameIdsList();
         res.render('raids', data);
@@ -96,7 +96,7 @@ if (config.pages.raids.enabled) {
 
 if (config.pages.gyms.enabled) {
     router.get('/gyms', function(req, res) {
-        var data = defaultData;
+        const data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         res.render('gyms', data);
     });
@@ -104,7 +104,7 @@ if (config.pages.gyms.enabled) {
 
 if (config.pages.quests.enabled) {
     router.get('/quests', function(req, res) {
-        var data = defaultData;
+        const data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         res.render('quests', data);
     });
@@ -112,10 +112,10 @@ if (config.pages.quests.enabled) {
 
 if (config.pages.invasions.enabled) {
     router.get('/invasions', function(req, res) {
-        var data = defaultData;
-        var gruntTypes = [];
-        for (var i = 0; i <= 50; i++) {
-            var grunt = i18n.__('grunt_' + i);
+        const data = defaultData;
+        const gruntTypes = [];
+        for (let i = 0; i <= 50; i++) {
+            const grunt = i18n.__('grunt_' + i);
             gruntTypes.push({ 'name': grunt });
         }
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
@@ -126,7 +126,7 @@ if (config.pages.invasions.enabled) {
 
 if (config.pages.nests.enabled) {
     router.get('/nests', function(req, res) {
-        var data = defaultData;
+        const data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         res.render('nests', data);
     });
