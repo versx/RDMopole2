@@ -102,7 +102,7 @@ async function getStats() {
     return null;
 }
 
-async function getPokemonStats() {
+async function getPokemonIVStats() {
     const sql = `
     SELECT * FROM (
         SELECT SUM(count) AS pokemon_total
@@ -287,6 +287,22 @@ async function getCommunityDayStats(filter) {
         return data;
     }
     return null
+}
+
+async function getPokemonStats(filter) {
+    const start = filter.start;
+    const end = filter.end;
+    const pokemonId = filter.pokemon_id;
+   const sql = `
+    SELECT date, pokemon_id, count
+    FROM pokemon_stats
+    WHERE date > ?
+        AND date < ?
+        AND pokemon_id = ?
+    `;
+    const args = [start, end, pokemonId];
+    const results = await query(sql, args);
+    return results;
 }
 
 async function getRaidStats(filter) {
@@ -631,6 +647,7 @@ function getPokemonNameIdsList() {
 
 module.exports = {
     getStats,
+    getPokemonIVStats,
     getTopPokemonIVStats,
     getTopPokemonStats,
     getGymDefenders,

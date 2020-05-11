@@ -27,6 +27,7 @@ const utils = require('./services/utils.js');
 // TODO: Use POST for all ajax requests for tables
 // TODO: Allow choice between bar/line graph charts
 // TODO: Filter quests by task
+// TODO: Male/female raids, ex eligible raids, # of gyms being attacked
 
 
 run();

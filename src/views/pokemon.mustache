@@ -24,6 +24,27 @@
                 <!-- Start Historical Pokemon Stats -->
                 <div class="tab-pane fade" id="historical">
                     <div class="justify-content-center">
+                        <br>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="stats-start">Start Date</label>
+                            </div>
+                            <input id="stats-start" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="stats-end">End Date</label>
+                            </div>
+                            <input id="stats-end" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="stats-pokemon">Pokemon</label>
+                            </div>
+                            <select id="stats-pokemon" class="custom-select" onchange="getHistoricalStats()">
+                                <option value="all" selected>All</option>
+                                {{#pokemon}}
+                                <option value="{{id}}">{{name}}</option>
+                                {{/pokemon}}
+                            </select>
+                        </div>
+                        <br>
                         <canvas id="canvas_historical"></canvas>
                     </div>
                 </div>
@@ -161,6 +182,13 @@
 		//$('.card-body').css('color', 'white');
     }
 
+    $("[data-toggle='datetimepicker']").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        enableTime: false
+    });
+
     $("#commday-start").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
@@ -233,6 +261,48 @@
         }
     };
 
+    var lineOptions = {
+        tooltips: true,
+        elements: {
+            rectangle: {
+                backgroundColor: "dodgerblue",
+                borderColor: colorize.bind(null, true, false),
+                borderWidth: 0.5
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: true,
+        legend: {
+            display: false,
+            position: 'bottom',
+        },
+        title: {
+            display: true,
+            text: 'Pokemon Statistics Overview'
+        },
+        tooltips: { mode: "index", intersect: false, },
+        hover: { mode: "nearest", intersect: true },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Date'
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                },
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Amount'
+                }
+            }]
+        }
+    };
+
     var scanChart = new Chart('scanChart', {
         type: 'pie',
         data: {
@@ -274,84 +344,17 @@
             labels: [],//['January', 'February', 'March', 'April', 'May', 'June', 'July'],
             datasets: []
         },
-        options: {
-            tooltips: true,
-            elements: {
-                rectangle: {
-                    backgroundColor: "dodgerblue",
-                    borderColor: colorize.bind(null, true, false),
-                    borderWidth: 0.5
-                }
-            },
-            responsive: true,
-            maintainAspectRatio: true,
-            //legend: {
-            //    position: 'bottom',
-            //},
-            title: {
-                display: true,
-                text: 'Pokemon Statistics Overview'
-            },
-            tooltips: { mode: "index", intersect: false, },
-            hover: { mode: "nearest", intersect: true },
-            scales: {
-                xAxes: [{
-						display: true,
-						scaleLabel: {
-							display: true,
-							labelString: 'Date'
-						}
-					}],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    },
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Amount'
-                    }
-                }]
-            }
-        }
+        options: lineOptions
     });
 
     var ctx = document.getElementById('canvas_historical').getContext('2d');
     var historicalChart = new Chart(ctx, {
-        type: 'horizontalBar',
+        type: "line",
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: [],
             datasets: []
         },
-        options: {
-            tooltips: true,
-            elements: {
-                rectangle: {
-                    backgroundColor: "dodgerblue",
-                    borderColor: colorize.bind(null, true, false),
-                    borderWidth: 0.5
-                }
-            },
-            //responsive: true,
-            //maintainAspectRatio: true,
-            legend: {
-                position: 'bottom',
-            },
-            title: {
-                display: true,
-                text: 'Historical Pokemon Statistics'
-            },
-            tooltips: { mode: "nearest", intersect: false, },
-            hover: { mode: "nearest", intersect: true },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize: 25
-                    }
-                }]
-            }
-        }
+        options: lineOptions
     });
 
     const table = $('#table').DataTable({
@@ -395,23 +398,62 @@
     });
 
     function getOverviewStats() {
-            $.ajax({
-                url: "/api/pokemon/overview",
-                type: "GET",
-                success: function(result) {
-                    if (result === null) {
-                        console.log("Failed to parse result value.");
-                        return;
-                    }
-                    if (result) {
-                        var labels = [];
+        $.ajax({
+            url: "/api/pokemon/overview",
+            type: "GET",
+            success: function(result) {
+                if (result === null) {
+                    console.log("Failed to parse result value.");
+                    return;
+                }
+                if (result) {
+                    var labels = [];
+                    var values = [];
+                    $.each(result.data.stats, function(key, value) {
+                        labels.push(value.date);
+                        var value = parseInt(value.count);
+                        values.push(value);
+                    });
+                    removeDataset(overviewChart);
+                    var obj = { 
+                        labels: labels, 
+                        datasets: [{
+                            data: values,
+                            backgroundColor: "dodgerblue",
+                            borderColor: "gray",
+                            label: "Pokemon",
+                            fill: false
+                        }]
+                    };
+                    overviewChart.data = obj;
+                    overviewChart.update();
+                }
+            }
+        });
+    }
+
+    function getHistoricalStats() {
+        var start = $('#stats-start').val();
+        var end = $('#stats-end').val();
+        var pokemon = $('#stats-pokemon').val();
+        $.ajax({
+            url: `/api/stats?type=pokemon&start=${start}&end=${end}&pokemon_id=${pokemon}`,
+            type: 'POST', 
+            success: function(result) {
+                if (result === null) {
+                    console.log("Failed to parse result value.");
+                    return;
+                }
+                console.log("Result:", result);
+                if (result) {
+                    var labels = [];
                         var values = [];
-                        $.each(result.data.stats, function(key, value) {
+                        $.each(result.stats, function(key, value) {
                             labels.push(value.date);
                             var value = parseInt(value.count);
                             values.push(value);
                         });
-                        removeDataset(overviewChart);
+                        removeDataset(historicalChart);
                         var obj = { 
                             labels: labels, 
                             datasets: [{
@@ -422,12 +464,19 @@
                                 fill: false
                             }]
                         };
-                        overviewChart.data = obj;
-                        overviewChart.update();
+                        historicalChart.data = obj;
+                        historicalChart.update();
+                    /*
+                    removeDataset(historicalChart);
+                    for (var i = 0; i < result.stats.length; i++) {
+                        var stat = result.stats[i];
+                        addDataset(historicalChart, [], { data: [stat.count], backgroundColor: '#' + randomColor(), borderColor: 'White', borderWidth: 0.3, label: stat.date });
                     }
+                    */
                 }
-            });
-        }
+            }
+        });
+    }
 
     function getCommDayStats() {
         var start = $('#commday-start').val();

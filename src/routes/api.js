@@ -63,6 +63,12 @@ router.post('/stats', async function(req, res) {
     let data;
     if (type) {
         switch (type) {
+            case 'pokemon':
+                const pokemonStats = await map.getPokemonStats(req.query);
+                data = {
+                    stats: pokemonStats
+                };
+                break;
             case 'raids':
                 const raidStats = await map.getRaidStats(req.query);
                 data = {
@@ -72,7 +78,7 @@ router.post('/stats', async function(req, res) {
         }
     } else {
         const stats = await map.getStats();
-        const pokemonStats = await map.getPokemonStats();
+        const pokemonStats = await map.getPokemonIVStats();
         const newPokestops = await map.getNewPokestops();
         const newGyms = await map.getNewGyms();
         data = {
