@@ -286,14 +286,14 @@ async function getCommunityDayStats(filter) {
         };
         return data;
     }
-    return null
+    return null;
 }
 
 async function getPokemonStats(filter) {
     const start = filter.start;
     const end = filter.end;
     const pokemonId = filter.pokemon_id;
-   const sql = `
+    const sql = `
     SELECT date, pokemon_id, count
     FROM pokemon_stats
     WHERE date > ?
@@ -316,7 +316,7 @@ async function getRaidStats(filter) {
     GROUP BY date
     `;
     */
-   const sql = `
+    const sql = `
     SELECT date, pokemon_id, count
     FROM raid_stats
     WHERE date > ?
@@ -598,7 +598,7 @@ async function getGymDefenders(limit = 10) {
 	ORDER BY count DESC
 	LIMIT ?
     `;
-    const args = [limit]
+    const args = [limit];
     const results = await query(sql, args);
     return results;
 }
@@ -641,7 +641,7 @@ function getTeamIcon(teamId) {
 
 function getPokemonNameIdsList() {
     const dex = pokedex;
-    const result = Object.keys(dex).map(x => { return { 'id': x, 'name': pokedex[x] }; })
+    const result = Object.keys(dex).map(x => { return { 'id': x, 'name': pokedex[x] }; });
     return result;
 }
 

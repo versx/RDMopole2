@@ -16,7 +16,6 @@ if (config.pages.pokemon.enabled) {
         res.json({ data: { pokemon: shinyRates } });
     });
     router.get('/pokemon/commday', async function(req, res) {
-        console.log("Received commday stats");
         const commdayStats = await map.getCommunityDayStats(req.query);
         res.json({ data: { stats: commdayStats } });
     });
@@ -63,18 +62,16 @@ router.post('/stats', async function(req, res) {
     let data;
     if (type) {
         switch (type) {
-            case 'pokemon':
-                const pokemonStats = await map.getPokemonStats(req.query);
-                data = {
-                    stats: pokemonStats
-                };
-                break;
-            case 'raids':
-                const raidStats = await map.getRaidStats(req.query);
-                data = {
-                    stats: raidStats
-                };
-                break;
+        case 'pokemon':
+            data = {
+                stats: await map.getPokemonStats(req.query)
+            };
+            break;
+        case 'raids':
+            data = {
+                stats: await map.getRaidStats(req.query)
+            };
+            break;
         }
     } else {
         const stats = await map.getStats();
@@ -120,6 +117,6 @@ router.post('/stats', async function(req, res) {
     }
     
     res.json(data);
-})
+});
 
 module.exports = router;

@@ -199,8 +199,7 @@ function getQuestIcon(rewards) {
     case 6://Quest
         break;
     case 7://Pokemon
-        const padId = (reward.info.pokemon_id + '').padStart(3, '0');
-        return getPokemonIcon(padId, 0);
+        return getPokemonIcon((reward.info.pokemon_id + '').padStart(3, '0'), 0);
     default: //Unset/Unknown
         break;
     }
