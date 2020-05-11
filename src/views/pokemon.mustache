@@ -54,6 +54,13 @@
                     <p class="text-center">
                         Live Shiny Stats for Pokémon Go from the last 24 hours.
                     </p>
+                    <br>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="shiny-date">Date</label>
+                        </div>
+                        <input id="shiny-date" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker" onchange="getShinyStats()">
+                    </div>
                     <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                         <thead class="thead-dark">
                             <tr>
@@ -195,11 +202,20 @@
         dateFormat: "U",//"Y-m-d h K",
         enableTime: true
     });
+
     $("#commday-end").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
         enableTime: true
+    });
+
+    $("#shiny-date").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        enableTime: false,
+        defaultDate: getTodaysDate()
     });
 
     var pieOptions = {
@@ -357,9 +373,12 @@
         options: lineOptions
     });
 
+    var shinyDate = $('#shiny-date').val();
+    var query = `?date=${shinyDate}`;
+
     const table = $('#table').DataTable({
         "ajax": {
-            "url": "/api/pokemon/shiny",
+            "url": "/api/pokemon/shiny" + query,
             "dataSrc": "data.pokemon",
             "async": true
         },
@@ -476,6 +495,12 @@
                 }
             }
         });
+    }
+
+    function getShinyStats() {
+        var date = $('#shiny-date').val();
+        var query = `?date=${date}`;
+        table.ajax.url('/api/pokemon/shiny' + query).load();
     }
 
     function getCommDayStats() {

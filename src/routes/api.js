@@ -12,7 +12,7 @@ if (config.pages.pokemon.enabled) {
         res.json({ data: { stats: overviewStats } });
     });
     router.get('/pokemon/shiny', async function(req, res) {
-        const shinyRates = await map.getShinyRates();
+        const shinyRates = await map.getShinyRates(req.query);
         res.json({ data: { pokemon: shinyRates } });
     });
     router.get('/pokemon/commday', async function(req, res) {

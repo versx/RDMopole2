@@ -185,14 +185,14 @@ async function getTopPokemonStats(lifetime = false, limit = 10) {
     return results;
 }
 
-async function getShinyRates() {
+async function getShinyRates(filter) {
+    const date = filter.date || utils.formatDate(new Date());
     let sql = `
     SELECT date, pokemon_id, count
     FROM pokemon_shiny_stats
     WHERE date = ?
     `;
-    const today = utils.formatDate(new Date());
-    const args = [today];
+    const args = [date];
     const shinyResults = await query(sql, args);
     sql = `
     SELECT date, pokemon_id, count
@@ -202,8 +202,8 @@ async function getShinyRates() {
     const ivResults = await query(sql, args);
     if (shinyResults) {
         const getTotalCount = (x) => {
-            for (var i = 0; i < ivResults.length; i++) {
-                var row = ivResults[i];
+            for (let i = 0; i < ivResults.length; i++) {
+                const row = ivResults[i];
                 if (row.pokemon_id === x) {
                     return row.count;
                 }
@@ -215,15 +215,15 @@ async function getShinyRates() {
             const row = shinyResults[i];
             const pokemonId = row.pokemon_id;
             const name = pokedex[pokemonId];
-            const shiny = (row.count || 0).toLocaleString();
-            const total = (getTotalCount(pokemonId) || 0).toLocaleString();
+            const shiny = (row.count || 0);
+            const total = (getTotalCount(pokemonId) || 0);
             const rate = shiny === 0 || total === 0 ? 0 : Math.round(total / shiny);
             const imageUrl = locale.getPokemonIcon(pokemonId, 0);
             data.push({
                 id: `#${pokemonId}`,
                 pokemon: `<img src="${imageUrl}" width="auto" height="32" />&nbsp;${name}`,
                 rate: `1/${rate}`,
-                count: `${shiny}/${total}`
+                count: `${shiny.toLocaleString()}/${total.toLocaleString()}`
             });
         }
         return data;
