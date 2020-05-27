@@ -380,7 +380,8 @@
         "ajax": {
             "url": "/api/pokemon/shiny" + query,
             "dataSrc": "data.pokemon",
-            "async": true
+            "async": true,
+            "type": "POST"
         },
         //"dom": "Bfrtip",
         // Reference: https://stackoverflow.com/a/43176143
@@ -419,7 +420,7 @@
     function getOverviewStats() {
         $.ajax({
             url: "/api/pokemon/overview",
-            type: "GET",
+            type: "POST",
             success: function(result) {
                 if (result === null) {
                     console.log("Failed to parse result value.");
@@ -510,7 +511,7 @@
         var query = `?start=${start}&end=${end}&pokemon_id=${pokemon}`;
         $.ajax({ 
             url: "/api/pokemon/commday" + query, 
-            type: "GET",
+            type: "POST",
             success: function(result) {
                 if (result === null) {
                     console.log("Failed to parse result value.");

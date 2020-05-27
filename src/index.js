@@ -27,6 +27,7 @@ const utils = require('./services/utils.js');
 // TODO: Use POST for all ajax requests for tables
 // TODO: Allow choice between bar/line graph charts
 // TODO: Use `mode: 'range'` for flatdatepickr to select a range
+// TODO: Pokemon historical all doesn't work
 
 
 run();

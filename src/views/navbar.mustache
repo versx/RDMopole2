@@ -82,7 +82,7 @@
         $('#navbar > ul > li > a[href="'+pathname+'"]').parent().addClass('active');
 
         {{^home_page}}
-            $('.home_page').removeClass('active'});
+            $('.home_page').removeClass('active');
         {{/home_page}}
         {{^pokemon_page}}
             $('.pokemon_page').css('hidden', {{pokemon_page}});
