@@ -21,6 +21,9 @@ function getThrowType(throwTypeId) {
 function getItem(itemId) {
     return i18n.__('item_' + itemId);
 }
+function getPokemonName(pokemonId) {
+    return i18n.__('poke_' + pokemonId);
+}
 function getPokemonType(type) {
     return i18n.__('pokemon_type_' + type);
 }
@@ -212,6 +215,7 @@ module.exports = {
     getCharacterCategoryName,
     getThrowType,
     getItem,
+    getPokemonName,
     getPokemonType,
     getTeamName,
     getQuestTask,

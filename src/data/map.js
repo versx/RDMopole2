@@ -339,6 +339,41 @@ async function getRaidStats(filter) {
     return results;
 }
 
+async function getQuestStats(filter) {
+    const start = filter.start;
+    const end = filter.end;
+    let reward = filter.reward;
+    let sql;
+    if (reward.includes('poke_')) {
+        // Pokemon
+        sql = `
+        SELECT date, pokemon_id, count
+        FROM quest_stats
+        WHERE reward_type = 7 AND pokemon_id = ? ${reward === 'all' ? '' : ' AND date > ? AND date < ?'}
+        `;
+        reward = reward.replace('poke_', '');
+    } else if (reward.includes('item_')) {
+        // Item
+        sql = `
+        SELECT date, item_id, count
+        FROM quest_stats
+        WHERE reward_type = 2 AND item_id = ? ${reward === 'all' ? '' : ' AND date > ? AND date < ?'}
+        `;
+        reward = reward.replace('item_', '');
+    } else {
+        // Stardust
+        sql = `
+        SELECT date, item_id, count
+        FROM quest_stats
+        WHERE reward_type = 3 AND item_id = ? ${reward === 'all' ? '' : ' AND date > ? AND date < ?'}
+        `;
+        reward = '0';
+    }
+    const args = [reward, start, end];
+    const results = await query(sql, args);
+    return results;
+}
+
 async function getRaids(filter) {
     const sql = `
     SELECT
@@ -657,6 +692,37 @@ function getPokemonNameIdsList() {
     return result;
 }
 
+async function getQuestRewardsList() {
+    const rewards = [{ id: 'stardust', name: 'Stardust' }]; // TODO: Localize
+    let sql = 'SELECT item_id AS id FROM quest_stats WHERE reward_type=2 GROUP BY item_id';
+    const itemResults = await query(sql);
+    if (itemResults && itemResults.length > 0) {
+        itemResults.forEach(reward => rewards.push({
+            id: 'item_' + reward.id,
+            name: locale.getItem(reward.id)
+        }));
+    }
+    sql = 'SELECT pokemon_id AS id FROM quest_stats WHERE reward_type=7 GROUP BY pokemon_id';
+    const pokemonResults = await query(sql);
+    if (pokemonResults && pokemonResults.length > 0) {
+        pokemonResults.forEach(reward => rewards.push({
+            id: 'poke_' + reward.id,
+            name: locale.getPokemonName(reward.id)
+        }));
+    }
+    return rewards;
+}
+
+function parseQuestId(value) {
+    if (value.startsWith('p')) {
+        // TODO: Pokemon reward
+    } else if (value.startsWith('i')) {
+        // TODO: Item reward
+    } else {
+        // TODO: Stardust reward
+    }
+}
+
 module.exports = {
     getStats,
     getPokemonIVStats,
@@ -671,9 +737,11 @@ module.exports = {
     getRaidStats,
     getGyms,
     getQuests,
+    getQuestStats,
     getInvasions,
     getNests,
     getNewPokestops,
     getNewGyms,
-    getPokemonNameIdsList
+    getPokemonNameIdsList,
+    getQuestRewardsList
 };

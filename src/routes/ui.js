@@ -103,9 +103,10 @@ if (config.pages.gyms.enabled) {
 }
 
 if (config.pages.quests.enabled) {
-    router.get('/quests', function(req, res) {
+    router.get('/quests', async function(req, res) {
         const data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
+        data.rewards = await map.getQuestRewardsList();
         res.render('quests', data);
     });
 }

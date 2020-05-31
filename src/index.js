@@ -9,6 +9,7 @@ const i18n = require('i18n');
 
 const config = require('./config.json');
 const defaultData = require('./data/default.js');
+const map = require('./data/map.js');
 const apiRoutes = require('./routes/api.js');
 const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
@@ -24,10 +25,10 @@ const utils = require('./services/utils.js');
 // TODO: Restrict data to specific areas
 // TODO: Lifetime raids/quests/invasions stats
 // TODO: Check csrf token with `/api/`
-// TODO: Use POST for all ajax requests for tables
 // TODO: Allow choice between bar/line graph charts
 // TODO: Use `mode: 'range'` for flatdatepickr to select a range
-// TODO: Pokemon historical all doesn't work
+// TODO: Load button for stats instead of onchange event
+// TODO: If stats not available then show message
 
 
 run();
