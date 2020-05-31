@@ -5,11 +5,11 @@ const express = require('express');
 const session = require('express-session');
 const app = express();
 const mustacheExpress = require('mustache-express');
+const helmet = require('helmet');
 const i18n = require('i18n');
 
 const config = require('./config.json');
 const defaultData = require('./data/default.js');
-const map = require('./data/map.js');
 const apiRoutes = require('./routes/api.js');
 const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
@@ -23,7 +23,6 @@ const utils = require('./services/utils.js');
 // TODO: Max pokestop and gym name length
 // TODO: Make sql class to connect with different config options
 // TODO: Restrict data to specific areas
-// TODO: Lifetime raids/quests/invasions stats
 // TODO: Check csrf token with `/api/`
 // TODO: Allow choice between bar/line graph charts
 // TODO: Use `mode: 'range'` for flatdatepickr to select a range
@@ -34,6 +33,9 @@ const utils = require('./services/utils.js');
 run();
 
 async function run() {
+    // Basic security protections
+    app.use(helmet());
+
     // View engine
     app.set('view engine', 'mustache');
     app.set('views', path.resolve(__dirname, 'views'));
