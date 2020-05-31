@@ -117,7 +117,7 @@ if (config.pages.invasions.enabled) {
         const gruntTypes = [];
         for (let i = 0; i <= 50; i++) {
             const grunt = i18n.__('grunt_' + i);
-            gruntTypes.push({ 'name': grunt });
+            gruntTypes.push({ 'id': i, 'name': grunt });
         }
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         data.grunt_types = gruntTypes;

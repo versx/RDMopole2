@@ -77,6 +77,11 @@ router.post('/stats', async function(req, res) {
                 stats: await map.getQuestStats(req.query)
             };
             break;
+        case 'invasions':
+            data = {
+                stats: await map.getInvasionStats(req.query)
+            };
+            break;
         }
     } else {
         const stats = await map.getStats();

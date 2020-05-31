@@ -374,6 +374,21 @@ async function getQuestStats(filter) {
     return results;
 }
 
+async function getInvasionStats(filter) {
+    const start = filter.start;
+    const end = filter.end;
+    const grunt = filter.grunt;
+    const all = grunt === 'all' ? '' : 'WHERE date > ? AND date < ? AND grunt_type = ?';
+    const sql = `
+    SELECT date, grunt_type, count
+    FROM invasion_stats
+    ${all}
+    `;
+    const args = [start, end, grunt];
+    const results = await query(sql, args);
+    return results;
+}
+
 async function getRaids(filter) {
     const sql = `
     SELECT
@@ -713,16 +728,6 @@ async function getQuestRewardsList() {
     return rewards;
 }
 
-function parseQuestId(value) {
-    if (value.startsWith('p')) {
-        // TODO: Pokemon reward
-    } else if (value.startsWith('i')) {
-        // TODO: Item reward
-    } else {
-        // TODO: Stardust reward
-    }
-}
-
 module.exports = {
     getStats,
     getPokemonIVStats,
@@ -739,6 +744,7 @@ module.exports = {
     getQuests,
     getQuestStats,
     getInvasions,
+    getInvasionStats,
     getNests,
     getNewPokestops,
     getNewGyms,
