@@ -654,9 +654,14 @@
     }
 
     function initHeatmap() {
-        const split = (config.map.tileserver || '').split(';');
-        const tileserver = split[0] || darkMatter;
-        const attribution = split[1] || "Â© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors Â© <a href='https://carto.com/attributions'>CARTO</a>";
+        const split = ("{{{tileserver}}}" || '').split(';');
+        const style = '{{style}}';
+        const tileserver = split[0] || style === 'dark'
+            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+        const attribution = split[1] || style === 'dark'
+            ? "Â© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors Â© <a href='https://carto.com/attributions'>CARTO</a>"
+            : "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors";
         const tileLayer = L.tileLayer(tileserver, {
             attribution: attribution,
             minZoom: {{min_zoom}} || 10,
