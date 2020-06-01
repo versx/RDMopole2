@@ -17,7 +17,7 @@ const utils = require('./services/utils.js');
 
 
 // TODO: Raid list with pressable rows for more details
-// TODO: Mobile friendly
+// TODO: Mobile friendly (column prioritizing)
 // TODO: Custom user settings (per user)
 // TODO: Double check discord role check
 // TODO: Max pokestop and gym name length
