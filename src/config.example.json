@@ -35,7 +35,9 @@
         "tileserver": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png;Â© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors Â© <a href='https://carto.com/attributions'>CARTO</a>",
         "startLat": 48.861643,
         "startLon": 2.338716,
-        "startZoom": 9
+        "startZoom": 9,
+        "minZoom": 4,
+        "maxZoom": 18
     },
     "pages": {
         "home": {

@@ -84,6 +84,8 @@ if (config.pages.pokemon.enabled) {
         data.start_lat = config.map.startLat;
         data.start_lon = config.map.startLon;
         data.start_zoom = config.map.startZoom;
+        data.min_zoom = config.map.minZoom;
+        data.max_zoom = config.map.maxZoom;
         res.render('pokemon', data);
     });
 }
