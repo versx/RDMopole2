@@ -98,7 +98,8 @@
                             <label class="input-group-text" for="stats-reward">Reward</label>
                         </div>
                         <select id="stats-reward" class="custom-select" onchange="getStats()">
-                            <option value="all" selected>All</option>
+                            <option disabled selected>Select</option>
+                            <option value="all">All</option>
                             {{#rewards}}
                             <option value="{{id}}">{{name}}</option>
                             {{/rewards}}
