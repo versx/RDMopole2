@@ -1,3 +1,9 @@
+<style>
+ .leaflet-container {
+    height: 500px;
+    width: 100%;
+}
+</style>
 <!DOCTYPE html="{{locale}}">
     {{> header}}
     <body>
@@ -6,8 +12,10 @@
         <h1 align="center" id="header">{{Pokemon}}</h1>
         <br>
         <div style="width:90%; margin-left:calc(5%);">
+            <br>
             <ul class="nav nav-pills justify-content-center">
                 <li class="nav-item"><a class="nav-link active" data-toggle="pill" href="#overview">Overview</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#heatmap">Heatmap</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#historical">Historical Lookup</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#shinystats">Shiny Rates</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#commday">Community Day</a></li>
@@ -21,6 +29,31 @@
                     </div>
                 </div>
                 <!-- End Overview Pokemon Stats -->
+                <!-- Start Heatmap Stats -->
+                <div class="tab-pane" id="heatmap">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="heatmap-start">Start Date</label>
+                        </div>
+                        <input id="heatmap-start" class="flatpickr" placeholder="Select Date & Time.." data-toggle="datetimepicker">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="heatmap-end">End Date</label>
+                        </div>
+                        <input id="heatmap-end" class="flatpickr" placeholder="Select Date & Time.." data-toggle="datetimepicker">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="heatmap-pokemon">Pokemon</label>
+                        </div>
+                        <select id="heatmap-pokemon" class="custom-select" onchange="getHeatmapData()">
+                            <option disabled selected>Select</option>
+                            {{#pokemon}}
+                                <option value="{{id}}">{{name}}</option>
+                            {{/pokemon}}
+                        </select>
+                    </div>
+                    <br>
+                    <div id="canvas_heatmap" style="width:100%; height:500px;"></div>
+                </div>
+                <!-- End Heatmap Stats -->
                 <!-- Start Historical Pokemon Stats -->
                 <div class="tab-pane fade" id="historical">
                     <div class="justify-content-center">
@@ -64,10 +97,10 @@
                     <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                         <thead class="thead-dark">
                             <tr>
-                                <th>{{ID}}</th>
-                                <th>{{Pokemon}}</th>
-                                <th>{{Shiny Rate}}</th>
-                                <th>{{Shiny / Total}}</th>
+                                <th class="all">{{ID}}</th>
+                                <th class="all">{{Pokemon}}</th>
+                                <th class="all">{{Shiny Rate}}</th>
+                                <th class="min-desktop">{{Shiny / Total}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -179,6 +212,7 @@
 <script type='text/javascript' src='./js/utils.js'></script>
 <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0'></script>
 <script type='text/javascript'>
+    let heatmapReady = false;
     if ("{{style}}" === 'dark') {
         $('body').css('background-color', 'rgb(33, 37, 41)');
         $('body').css('color', 'rgb(255, 255, 255)');
@@ -194,6 +228,20 @@
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
         enableTime: false
+    });
+
+    $("#heatmap-start").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y h\:00 K",
+        dateFormat: "U",//"Y-m-d h K",
+        enableTime: true
+    });
+
+    $("#heatmap-end").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y h\:00 K",
+        dateFormat: "U",//"Y-m-d h K",
+        enableTime: true
     });
 
     $("#commday-start").flatpickr({
@@ -372,6 +420,31 @@
         },
         options: lineOptions
     });
+
+    const map = L.map('canvas_heatmap', {
+        preferCanvas: true,
+        updateWhenIdle: true,
+        updateWhenZooming: true
+    }).setView([{{start_lat}}, {{start_lon}}], {{start_zoom}});
+
+    const cfg = {
+        // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+        radius: .005,
+        maxOpacity: .8,
+        // scales the radius based on map zoom
+        scaleRadius: true,
+        // if set to false the heatmap uses the global maximum for colorization
+        // if activated: uses the data maximum within the current map boundaries
+        //   (there will always be a red spot with useLocalExtremas true)
+        useLocalExtrema: true,
+        // which field name in your data represents the latitude - default "lat"
+        latField: 'lat',
+        // which field name in your data represents the longitude - default "lng"
+        lngField: 'lng',
+        // which field name in your data represents the data value - default "value"
+        valueField: 'count'
+    };
+    const heatLayer = new HeatmapOverlay(cfg);
 
     var shinyDate = $('#shiny-date').val();
     var query = `?date=${shinyDate}`;
@@ -580,5 +653,57 @@
         });
     }
 
+    function initHeatmap() {
+        const split = (config.map.tileserver || '').split(';');
+        const tileserver = split[0] || darkMatter;
+        const attribution = split[1] || "Â© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors Â© <a href='https://carto.com/attributions'>CARTO</a>";
+        const tileLayer = L.tileLayer(tileserver, {
+            attribution: attribution,
+            minZoom: {{min_zoom}} || 10,
+            maxZoom: {{max_zoom}} || 18,
+            scale: L.Browser.retina ? '@2x' : '',
+            hq: L.Browser.retina
+        });
+        tileLayer.addTo(map);
+        $('.nav-link').on('click', function(event) {
+            if (heatmapReady) {
+                return;
+            }
+            heatmapReady = true;
+            setTimeout(function() {
+                map.invalidateSize();
+                map.addLayer(heatLayer);
+                map.invalidateSize();
+            }, 500);
+        });
+    }
+
+    function getHeatmapData() {
+        var start = $('#heatmap-start').val();
+        var end = $('#heatmap-end').val();
+        var pokemon = $('#heatmap-pokemon').val();
+        var query = `?start=${start}&end=${end}&pokemon_id=${pokemon}`;
+        $.ajax({ 
+            url: "/api/pokemon/heatmap" + query, 
+            type: "POST",
+            success: function(result) {
+                if (result === null) {
+                    console.log("Failed to parse result value.");
+                    return;
+                }
+                console.log('Result:', result);
+                const heatData = result.data.stats.map(stat => {
+                    return { pokemon_id: stat.pokemon_id, lat: stat.lat, lng: stat.lon, count: 1 }
+                });
+                heatLayer.setData({
+                    max: 8,
+                    data: heatData
+                });
+                map.invalidateSize();
+            }
+        });
+    }
+
     getOverviewStats();
+    initHeatmap();
 </script>

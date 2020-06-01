@@ -17,7 +17,7 @@ const utils = require('./services/utils.js');
 
 
 // TODO: Raid list with pressable rows for more details
-// TODO: Mobile friendly
+// TODO: Mobile friendly (column prioritizing)
 // TODO: Custom user settings (per user)
 // TODO: Double check discord role check
 // TODO: Max pokestop and gym name length
@@ -28,6 +28,7 @@ const utils = require('./services/utils.js');
 // TODO: Use `mode: 'range'` for flatdatepickr to select a range
 // TODO: Load button for stats instead of onchange event
 // TODO: If stats not available then show message
+// TODO: Add custom tile server selection to heatmap
 
 
 run();
