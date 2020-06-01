@@ -1,0 +1,709 @@
+<style>
+ .leaflet-container {
+    height: 500px;
+    width: 100%;
+}
+</style>
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Pokemon}}</h1>
+        <br>
+        <div style="width:90%; margin-left:calc(5%);">
+            <br>
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item"><a class="nav-link active" data-toggle="pill" href="#overview">Overview</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#heatmap">Heatmap</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#historical">Historical Lookup</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#shinystats">Shiny Rates</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#commday">Community Day</a></li>
+            </ul>
+            <br>
+            <div class="tab-content">
+                <!-- Start Overview Pokemon Stats -->
+                <div class="tab-pane active" id="overview">
+                    <div class="justify-content-center">
+                        <canvas id="canvas_overview"></canvas>
+                    </div>
+                </div>
+                <!-- End Overview Pokemon Stats -->
+                <!-- Start Heatmap Stats -->
+                <div class="tab-pane" id="heatmap">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="heatmap-start">Start Date</label>
+                        </div>
+                        <input id="heatmap-start" class="flatpickr" placeholder="Select Date & Time.." data-toggle="datetimepicker">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="heatmap-end">End Date</label>
+                        </div>
+                        <input id="heatmap-end" class="flatpickr" placeholder="Select Date & Time.." data-toggle="datetimepicker">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="heatmap-pokemon">Pokemon</label>
+                        </div>
+                        <select id="heatmap-pokemon" class="custom-select" onchange="getHeatmapData()">
+                            <option disabled selected>Select</option>
+                            {{#pokemon}}
+                                <option value="{{id}}">{{name}}</option>
+                            {{/pokemon}}
+                        </select>
+                    </div>
+                    <br>
+                    <div id="canvas_heatmap" style="width:100%; height:500px;"></div>
+                </div>
+                <!-- End Heatmap Stats -->
+                <!-- Start Historical Pokemon Stats -->
+                <div class="tab-pane fade" id="historical">
+                    <div class="justify-content-center">
+                        <br>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="stats-start">Start Date</label>
+                            </div>
+                            <input id="stats-start" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="stats-end">End Date</label>
+                            </div>
+                            <input id="stats-end" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="stats-pokemon">Pokemon</label>
+                            </div>
+                            <select id="stats-pokemon" class="custom-select" onchange="getHistoricalStats()">
+                                <option value="all" selected>All</option>
+                                {{#pokemon}}
+                                <option value="{{id}}">{{name}}</option>
+                                {{/pokemon}}
+                            </select>
+                        </div>
+                        <br>
+                        <canvas id="canvas_historical"></canvas>
+                    </div>
+                </div>
+                <!-- End Historical Pokemon Stats -->
+                <!-- Start Shiny Stats Tab -->
+                <div class="tab-pane fade" id="shinystats">
+                    <p class="text-center">
+                        Live Shiny Stats for Pokémon Go from the last 24 hours.
+                    </p>
+                    <br>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="shiny-date">Date</label>
+                        </div>
+                        <input id="shiny-date" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker" onchange="getShinyStats()">
+                    </div>
+                    <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="all">{{ID}}</th>
+                                <th class="all">{{Pokemon}}</th>
+                                <th class="all">{{Shiny Rate}}</th>
+                                <th class="min-desktop">{{Shiny / Total}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- End Shiny Stats Tab -->
+                <!-- Start Community Day Tab -->
+                <div class="tab-pane fade" id="commday">
+                    <h3 class="page-header text-center">Community Day Stats</h3>
+                    <div class="card text-center p-1 m-3">
+                        <div class="card-header bg-dark text-light"><b>Filters</b></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="commday-start">Start Date</label>
+                                    </div>
+                                    <input id="commday-start" class="flatpickr" placeholder="Select Date & Time.." data-toggle="datetimepicker">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="commday-end">End Date</label>
+                                    </div>
+                                    <input id="commday-end" class="flatpickr" placeholder="Select Date & Time.." data-toggle="datetimepicker">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="commday-pokemon">Pokemon</label>
+                                    </div>
+                                    <select id="commday-pokemon" class="custom-select" onchange="getCommDayStats()">
+                                        <option disabled selected>Select</option>
+                                        {{#pokemon}}
+                                            <option value="{{id}}">{{name}}</option>
+                                        {{/pokemon}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card text-center p-1 m-3">
+                        <div class="card-header bg-dark text-light"><b>Statistics</b></div>
+                        <div class="card-body">
+                            <div id="comday-stats" class="container" hidden>
+                                <div class="row m-2">
+                                    <div class="col-md-5">
+                                        <div class="row p-2">
+                                            <div class="col">
+                                                <h4 id="pkmn-title">Scans</h4>
+                                                <div class="row p-2">
+                                                    <div class="col-lg-6">
+                                                        <div class="wrapper"><canvas id="scanChart"></canvas></div>
+                                                    </div>
+                                                    <div class="col-lg-6 justify-content-right">
+                                                        <h5 id="total-seen">0 seen</h5>
+                                                        <h6 id="total-scanned">0 scanned</h6>
+                                                    </div>
+                                                </div>
+                                                <div class="row p-2">
+                                                    <div class="col">
+                                                        <span><b>100% IV:</b><span id="iv100">0</span></span>
+                                                        <span><b>90% IV:</b><span id="iv90">0</span></span>
+                                                        <span><b>0% IV:</b><span id="iv0">0</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2">
+                                            <div class="col">
+                                                <div class="wrapper"><canvas id="levelChart"></canvas></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7 p-2">
+                                        <div class="wrapper"><canvas id="ivChart"></canvas></div>
+                                    </div>
+                                </div>
+                                <div class="row p-2 m-2">
+                                    <div class="col-md-4">
+                                        <h3>Sex</h3>
+                                        <span><span id="total-male">0</span> male spawns</span><br>
+                                        <span><span id="total-female">0</span> female spawns</span>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <img id="evo1" src="#" height=72 width=72/><br>
+                                                <b id="evo1-text"></b>
+                                            </div>
+                                            <div class="col-4">
+                                                <img id="evo2" src="#" height=72 width=72/><br>
+                                                <b id="evo2-text"></b>
+                                            </div>
+                                            <div class="col-4 justify-content-end">
+                                                <img id="evo3" src="#" height=72 width=72/><br>
+                                                <b id="evo3-text"></b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Community Day Tab -->
+            </div>
+        </div>
+        <br>
+    </body>
+</html>
+
+<script type='text/javascript' src='./js/utils.js'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0'></script>
+<script type='text/javascript'>
+    let heatmapReady = false;
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+        $('.card').css('background-color', '#1a1a1a');
+        $('.list-group-item').css('background-color', 'rgb(33, 37, 41)');
+        $('.list-group-item').css('border-color', 'white');
+        $('.darkInvert').css('filter', 'invert(100%)');
+		//$('.card-body').css('color', 'white');
+    }
+
+    $("[data-toggle='datetimepicker']").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        enableTime: false
+    });
+
+    $("#heatmap-start").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y h\:00 K",
+        dateFormat: "U",//"Y-m-d h K",
+        enableTime: true
+    });
+
+    $("#heatmap-end").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y h\:00 K",
+        dateFormat: "U",//"Y-m-d h K",
+        enableTime: true
+    });
+
+    $("#commday-start").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y h\:00 K",
+        dateFormat: "U",//"Y-m-d h K",
+        enableTime: true
+    });
+
+    $("#commday-end").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y h\:00 K",
+        dateFormat: "U",//"Y-m-d h K",
+        enableTime: true
+    });
+
+    $("#shiny-date").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        enableTime: false,
+        defaultDate: getTodaysDate()
+    });
+
+    var pieOptions = {
+        responsive: true,
+        legend: false,
+        tooltips: true,
+        elements: {
+            arc: {
+                backgroundColor: colorize.bind(null, false, false),
+                hoverBackgroundColor: hoverColorize,
+                borderWidth: 1
+            }
+        },
+        animation: {
+            animateScale: true,
+            animateRotate: true
+        }
+    };
+
+    var barOptions = {
+        legend: {
+            position: 'bottom',
+        },
+        tooltips: true,
+        title: {
+            display: true,
+            text: 'IV Spread'
+        },
+        tooltips: { mode: "nearest", intersect: false, },
+        hover: { mode: "nearest", intersect: true },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        },
+        elements: {
+            rectangle: {
+                backgroundColor: colorize.bind(null, false, false),
+                borderColor: colorize.bind(null, true, false),
+                borderWidth: 1
+            }
+        }
+    };
+
+    var donutOptions = {
+        responsive: true,
+        legend: {
+            position: 'left',
+        },
+        title: {
+            display: true,
+            text: 'Level Spread'
+        },
+        animation: {
+            animateScale: true,
+            animateRotate: true
+        }
+    };
+
+    var lineOptions = {
+        tooltips: true,
+        elements: {
+            rectangle: {
+                backgroundColor: "dodgerblue",
+                borderColor: colorize.bind(null, true, false),
+                borderWidth: 0.5
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: true,
+        legend: {
+            display: false,
+            position: 'bottom',
+        },
+        title: {
+            display: true,
+            text: 'Pokemon Statistics Overview'
+        },
+        tooltips: { mode: "index", intersect: false, },
+        hover: { mode: "nearest", intersect: true },
+        scales: {
+            xAxes: [{
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Date'
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                },
+                display: true,
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Amount'
+                }
+            }]
+        }
+    };
+
+    var scanChart = new Chart('scanChart', {
+        type: 'pie',
+        data: {
+            datasets: [],
+            labels: [
+                'Seen',
+                'Scanned'
+            ]
+        },
+        options: pieOptions
+    });
+
+    var levelChart = new Chart('levelChart', {
+        type: 'pie', //'doughnut',
+        data: {
+            datasets: [],
+            labels: [
+                'Level 01-09',
+                'Level 10-19',
+                'Level 20-29',
+                'Level 30-35'
+            ]
+        },
+        options: donutOptions
+    });
+
+    var ivChart = new Chart('ivChart', {
+        type: 'bar',
+        data: {
+            datasets: []
+        },
+        options: barOptions
+    });
+
+    var ctx = document.getElementById('canvas_overview').getContext('2d');
+    var overviewChart = new Chart(ctx, {
+        type: "line",//"bar",//'horizontalBar',
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: lineOptions
+    });
+
+    var ctx = document.getElementById('canvas_historical').getContext('2d');
+    var historicalChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: lineOptions
+    });
+
+    const map = L.map('canvas_heatmap', {
+        preferCanvas: true,
+        updateWhenIdle: true,
+        updateWhenZooming: true
+    }).setView([{{start_lat}}, {{start_lon}}], {{start_zoom}});
+
+    const cfg = {
+        // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+        radius: .005,
+        maxOpacity: .8,
+        // scales the radius based on map zoom
+        scaleRadius: true,
+        // if set to false the heatmap uses the global maximum for colorization
+        // if activated: uses the data maximum within the current map boundaries
+        //   (there will always be a red spot with useLocalExtremas true)
+        useLocalExtrema: true,
+        // which field name in your data represents the latitude - default "lat"
+        latField: 'lat',
+        // which field name in your data represents the longitude - default "lng"
+        lngField: 'lng',
+        // which field name in your data represents the data value - default "value"
+        valueField: 'count'
+    };
+    const heatLayer = new HeatmapOverlay(cfg);
+
+    var shinyDate = $('#shiny-date').val();
+    var query = `?date=${shinyDate}`;
+
+    const table = $('#table').DataTable({
+        "ajax": {
+            "url": "/api/pokemon/shiny" + query,
+            "dataSrc": "data.pokemon",
+            "async": true,
+            "type": "POST"
+        },
+        //"dom": "Bfrtip",
+        // Reference: https://stackoverflow.com/a/43176143
+        /*
+        "dom": "<'row'<'col-sm-8'B><'col-sm-4'f>t>" +
+                "<'row'<'col-sm-4'li><'col-sm-8'p>>",
+        */
+        "dom": "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        "fixedHeader": {
+            "header": true,
+            "headerOffset": $('.navbar').height() + 15
+        },
+        "buttons": [
+            "colvis",
+            "pageLength"
+        ],
+        "colReorder": true,
+        "stateSave": true,
+        "paging":   true,
+        "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+        "pageLength": 100,
+        "columns": [
+            { "data": "id" },
+            { "data": "pokemon" },
+            { "data": "rate" },
+            { "data": "count" },
+        ],
+        "info": true,
+        "order": [[ 0, "asc" ]],
+        "search.caseInsensitive": true,
+        "responsive": true
+    });
+
+    function getOverviewStats() {
+        $.ajax({
+            url: "/api/pokemon/overview",
+            type: "POST",
+            success: function(result) {
+                if (result === null) {
+                    console.log("Failed to parse result value.");
+                    return;
+                }
+                if (result) {
+                    var labels = [];
+                    var values = [];
+                    $.each(result.data.stats, function(key, value) {
+                        labels.push(value.date);
+                        var value = parseInt(value.count);
+                        values.push(value);
+                    });
+                    removeDataset(overviewChart);
+                    var obj = { 
+                        labels: labels, 
+                        datasets: [{
+                            data: values,
+                            backgroundColor: "dodgerblue",
+                            borderColor: "gray",
+                            label: "Pokemon",
+                            fill: false
+                        }]
+                    };
+                    overviewChart.data = obj;
+                    overviewChart.update();
+                }
+            }
+        });
+    }
+
+    function getHistoricalStats() {
+        var start = $('#stats-start').val();
+        var end = $('#stats-end').val();
+        var pokemon = $('#stats-pokemon').val();
+        $.ajax({
+            url: `/api/stats?type=pokemon&start=${start}&end=${end}&pokemon_id=${pokemon}`,
+            type: 'POST', 
+            success: function(result) {
+                if (result === null) {
+                    console.log("Failed to parse result value.");
+                    return;
+                }
+                console.log("Result:", result);
+                if (result) {
+                    var labels = [];
+                    var values = [];
+                    $.each(result.stats, function(key, value) {
+                        labels.push(value.date);
+                        var value = parseInt(value.count);
+                        values.push(value);
+                    });
+                    removeDataset(historicalChart);
+                    var obj = { 
+                        labels: labels, 
+                        datasets: [{
+                            data: values,
+                            backgroundColor: "dodgerblue",
+                            borderColor: "gray",
+                            label: "Pokemon",
+                            fill: false
+                        }]
+                    };
+                    historicalChart.data = obj;
+                    historicalChart.update();
+                    /*
+                    removeDataset(historicalChart);
+                    for (var i = 0; i < result.stats.length; i++) {
+                        var stat = result.stats[i];
+                        addDataset(historicalChart, [], { data: [stat.count], backgroundColor: '#' + randomColor(), borderColor: 'White', borderWidth: 0.3, label: stat.date });
+                    }
+                    */
+                }
+            }
+        });
+    }
+
+    function getShinyStats() {
+        var date = $('#shiny-date').val();
+        var query = `?date=${date}`;
+        table.ajax.url('/api/pokemon/shiny' + query).load();
+    }
+
+    function getCommDayStats() {
+        var start = $('#commday-start').val();
+        var end = $('#commday-end').val();
+        var pokemon = $('#commday-pokemon').val();
+        var query = `?start=${start}&end=${end}&pokemon_id=${pokemon}`;
+        $.ajax({ 
+            url: "/api/pokemon/commday" + query, 
+            type: "POST",
+            success: function(result) {
+                if (result === null) {
+                    console.log("Failed to parse result value.");
+                    return;
+                }
+                $("#comday-stats").attr("hidden", false);
+                $("#pkmn-title").text(result.data.stats.evo1.name + " Scans");
+                $("#total-seen").text(numberWithCommas(result.data.stats.total || 0) + " seen");
+                $("#total-scanned").text(numberWithCommas(result.data.stats.with_iv || 0) + " scanned");
+                $("#iv100").text(result.data.stats.iv_100 || 0);
+                $("#iv90").text(result.data.stats.iv_90_99 || 0);
+                $("#iv0").text(result.data.stats.iv_0 || 0);
+                $("#total-male").text(numberWithCommas(result.data.stats.male || 0) + " (" + Math.round((result.data.stats.male / result.data.stats.total) * 100, 2) + "%)");
+                $("#total-female").text(numberWithCommas(result.data.stats.female || 0) + " (" + Math.round((result.data.stats.female / result.data.stats.total) * 100, 2) + "%)");
+                $("#evo1").attr("src", result.data.stats.evo1.image);
+                $("#evo2").attr("src", result.data.stats.evo2.image);
+                $("#evo3").attr("src", result.data.stats.evo3.image);
+                $("#evo1-text").text(result.data.stats.evo1.name);
+                $("#evo2-text").text(result.data.stats.evo2.name);
+                $("#evo3-text").text(result.data.stats.evo3.name);
+
+                removeDataset(scanChart);
+                var scanData = {
+                data: [result.data.stats.total || 0, result.data.stats.with_iv || 0],
+                backgroundColor: [
+                    'green',
+                    'blue'
+                ],
+                label: 'Seen'
+                };
+                addDataset(scanChart, [], scanData);
+        
+                removeDataset(levelChart);
+                var levelData = {
+                    data: [
+                        result.data.stats.level_1_9 || 0,
+                        result.data.stats.level_10_19 || 0,
+                        result.data.stats.level_20_29 || 0,
+                        result.data.stats.level_30_35 || 0
+                    ],
+                    backgroundColor: [
+                        'red',
+                        'yellow',
+                        'green',
+                        'blue'
+                    ],
+                    label: 'Levels'
+                };
+                addDataset(levelChart, [], levelData);
+        
+                removeDataset(ivChart);
+        
+                addDataset(ivChart, [], { data: [result.data.stats.iv_0], backgroundColor: 'black', label: '0% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_1_9], backgroundColor: 'brown', label: '1-9% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_10_19], backgroundColor: 'pink', label: '10-19% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_20_29], backgroundColor: 'gray', label: '20-29% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_30_39], backgroundColor: 'purple', label: '30-39% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_40_49], backgroundColor: 'blue', label: '40-49% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_50_59], backgroundColor: 'red', label: '50-59% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_60_69], backgroundColor: 'orange', label: '60-69% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_70_79], backgroundColor: 'lime', label: '70-79% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_80_89], backgroundColor: 'yellow', label: '80-89% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_90_99], backgroundColor: 'magenta', label: '90-99% IV' });
+                addDataset(ivChart, [], { data: [result.data.stats.iv_100], backgroundColor: 'green', label: '100% IV' });
+            }
+        });
+    }
+
+    function initHeatmap() {
+        const split = (config.map.tileserver || '').split(';');
+        const tileserver = split[0] || darkMatter;
+        const attribution = split[1] || "Â© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors Â© <a href='https://carto.com/attributions'>CARTO</a>";
+        const tileLayer = L.tileLayer(tileserver, {
+            attribution: attribution,
+            minZoom: {{min_zoom}} || 10,
+            maxZoom: {{max_zoom}} || 18,
+            scale: L.Browser.retina ? '@2x' : '',
+            hq: L.Browser.retina
+        });
+        tileLayer.addTo(map);
+        $('.nav-link').on('click', function(event) {
+            if (heatmapReady) {
+                return;
+            }
+            heatmapReady = true;
+            setTimeout(function() {
+                map.invalidateSize();
+                map.addLayer(heatLayer);
+                map.invalidateSize();
+            }, 500);
+        });
+    }
+
+    function getHeatmapData() {
+        var start = $('#heatmap-start').val();
+        var end = $('#heatmap-end').val();
+        var pokemon = $('#heatmap-pokemon').val();
+        var query = `?start=${start}&end=${end}&pokemon_id=${pokemon}`;
+        $.ajax({ 
+            url: "/api/pokemon/heatmap" + query, 
+            type: "POST",
+            success: function(result) {
+                if (result === null) {
+                    console.log("Failed to parse result value.");
+                    return;
+                }
+                console.log('Result:', result);
+                const heatData = result.data.stats.map(stat => {
+                    return { pokemon_id: stat.pokemon_id, lat: stat.lat, lng: stat.lon, count: 1 }
+                });
+                heatLayer.setData({
+                    max: 8,
+                    data: heatData
+                });
+                map.invalidateSize();
+            }
+        });
+    }
+
+    getOverviewStats();
+    initHeatmap();
+</script>

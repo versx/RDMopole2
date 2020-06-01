@@ -62,11 +62,11 @@
             <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                 <thead class="thead-dark">
                     <tr>
-                        <th>{{Nest}}</th>
-                        <th>{{Pokemon}}</th>
-                        <th>{{Count}}</th>
-                        <th>{{Average/h}}</th>
-                        <th>{{City}}</th>
+                        <th class="all">{{Nest}}</th>
+                        <th class="all">{{Pokemon}}</th>
+                        <th class="min-desktop">{{Count}}</th>
+                        <th class="all">{{Average/h}}</th>
+                        <th class="all">{{City}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -121,12 +121,31 @@
             "ajax": {
                 "url": "/api/nests" + query,
                 "dataSrc": "data.nests",
-                "async": true
+                "async": true,
+                "type": "POST"
             },
+            //"dom": "Bfrtip",
+            // Reference: https://stackoverflow.com/a/43176143
+            /*
+            "dom": "<'row'<'col-sm-8'B><'col-sm-4'f>t>" +
+                   "<'row'<'col-sm-4'li><'col-sm-8'p>>",
+            */
+            "dom": "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
+                   "<'row'<'col-sm-12'tr>>" +
+                   "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            "fixedHeader": {
+                "header": true,
+                "headerOffset": $('.navbar').height() + 15
+            },
+            "buttons": [
+                "colvis",
+                "pageLength"
+            ],
+            "colReorder": true,
             "stateSave": true,
             "paging":   true,
             "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
-            "pageLength": 50,
+            "pageLength": 100,
             "columns": [
                 { "data": "name" },
                 { "data": "pokemon" },

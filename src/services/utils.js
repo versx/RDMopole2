@@ -10,8 +10,8 @@ function hasGuild(guilds) {
     if (config.discord.guilds.length === 0) {
         return true;
     }
-    for (var i = 0; i < guilds.length; i++) {
-        var guild = guilds[i];
+    for (let i = 0; i < guilds.length; i++) {
+        const guild = guilds[i];
         if (config.discord.guilds.includes(guild)) {
             return true;
         }
@@ -23,8 +23,8 @@ function hasRole(userRoles, requiredRoles) {
     if (requiredRoles.length === 0) {
         return true;
     }
-    for (var i = 0; i < userRoles.length; i++) {
-        var role = userRoles[i];
+    for (let i = 0; i < userRoles.length; i++) {
+        const role = userRoles[i];
         if (requiredRoles.includes(role)) {
             return true;
         }
@@ -33,10 +33,10 @@ function hasRole(userRoles, requiredRoles) {
 }
 
 function inArray(haystack, needle) {
-    var array = haystack.split(',');
+    const array = haystack.split(',');
     if (Array.isArray(array)) {
-        for (var i = 0; i < array.length; i++) {
-            var item = array[i].trim().toLowerCase();
+        for (let i = 0; i < array.length; i++) {
+            const item = array[i].trim().toLowerCase();
             if (needle.trim().toLowerCase().indexOf(item) > -1) {
                 return true;
             }
@@ -47,11 +47,25 @@ function inArray(haystack, needle) {
 }
 
 function toHHMMSS(secs) {
-    var sec_num = parseInt(secs / 1000, 10);
-    var minutes = Math.floor(sec_num / 60) % 60;
+    const sec_num = parseInt(secs / 1000, 10);
+    const minutes = Math.floor(sec_num / 60) % 60;
     //var seconds = sec_num % 60;
     //return `${minutes}m ${seconds}s`;
     return `${minutes}m`;
+}
+
+function formatDate(date) {
+    let d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
 }
 
 module.exports = {
@@ -59,5 +73,6 @@ module.exports = {
     hasGuild,
     hasRole,
     inArray,
-    toHHMMSS
+    toHHMMSS,
+    formatDate
 };

@@ -28,14 +28,14 @@ class DiscordClient {
         return await oauth.getUser(this.accessToken);
     }
     async getGuilds() {
-        var guilds = await oauth.getUserGuilds(this.accessToken);
-        var guildIds = Array.from(guilds, x => x.id);
+        const guilds = await oauth.getUserGuilds(this.accessToken);
+        const guildIds = Array.from(guilds, x => x.id);
         return guildIds;
     }
     async getUserRoles(id) {
-        var user = await client.users.fetch(id);
-        var rolemgr = user.presence.member.roles;
-        var roles = rolemgr.member._roles;
+        const user = await client.users.fetch(id);
+        const rolemgr = user.presence.member.roles;
+        const roles = rolemgr.member._roles;
         return roles;
     }
 }

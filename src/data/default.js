@@ -8,6 +8,7 @@ data.style = config.style == 'dark' ? 'dark' : '';
 data.last_nest_migration = config.lastNestMigration;
 //data.logging = config.logging.enabled;
 data.home_page = config.pages.home.enabled;
+data.pokemon_page = config.pages.pokemon.enabled;
 data.raids_page = config.pages.raids.enabled;
 data.gyms_page = config.pages.gyms.enabled;
 data.quests_page = config.pages.quests.enabled;

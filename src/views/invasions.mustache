@@ -6,11 +6,11 @@
         <h1 align="center" id="header">{{Invasions}}</h1>
         <br>
         <div style="width:90%; margin-left:calc(5%);">
-            <div class="btn-group btn-group-sm float-right">
-                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#filtersModal">
-                    <i class="fa fa-fw fa-filter" aria-hidden="true"></i>
-                </button>
-            </div>
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item"><a class="nav-link active" data-toggle="pill" href="#billboard">Billboard</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#statistics">Statistics</a></li>
+            </ul>
+
             <div class="modal fade" id="filtersModal" tabindex="-1" role="dialog" aria-labelledby="filtersModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -60,26 +60,70 @@
                 </div>
             </div>
 
-            <br><br>
-            <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>{{Grunt Type}}</th>
-                        <th>{{Pokestop}}</th>
-                        <th>{{Expires}}</th>
-                        <th>{{City}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div class="tab-content">
+                <div class="tab-pane active" id="billboard">
+                    <div class="btn-group btn-group-sm float-right">
+                        <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#filtersModal">
+                            <i class="fa fa-fw fa-filter" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <br><br>
+                    <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="all">{{Grunt Type}}</th>
+                                <th class="all">{{Pokestop}}</th>
+                                <th class="all">{{Expires}}</th>
+                                <th class="all">{{City}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane" id="statistics">
+                    <br>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="stats-start">Start Date</label>
+                        </div>
+                        <input id="stats-start" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="stats-end">End Date</label>
+                        </div>
+                        <input id="stats-end" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="stats-grunt">Grunt</label>
+                        </div>
+                        <select id="stats-grunt" class="custom-select" onchange="getStats()">
+                            <option value="all" selected>All</option>
+                            {{#grunt_types}}
+                            <option value="{{id}}">{{name}}</option>
+                            {{/grunt_types}}
+                        </select>
+                    </div>
+                    <br>
+                    <div class="justify-content-center">
+                        <canvas id="canvas"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
         <br>
     </body>
 </html>
 
 <script type='text/javascript' src='./js/storage.js'></script>
+<script type='text/javascript' src='./js/utils.js'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0'></script>
 <script type='text/javascript'>
+    $("[data-toggle='datetimepicker']").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        enableTime: false
+    });
+
     // Load values from local storage
     if (get('invasions_filter_grunt')) {
         $('#filter-grunt').val(get('invasions_filter_grunt'));
@@ -105,12 +149,31 @@
             "ajax": {
                 "url": "/api/invasions" + query,
                 "dataSrc": "data.invasions",
-                "async": true
+                "async": true,
+                "type": "POST"
             },
+            //"dom": "Bfrtip",
+            // Reference: https://stackoverflow.com/a/43176143
+            /*
+            "dom": "<'row'<'col-sm-8'B><'col-sm-4'f>t>" +
+                   "<'row'<'col-sm-4'li><'col-sm-8'p>>",
+            */
+            "dom": "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
+                   "<'row'<'col-sm-12'tr>>" +
+                   "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            "fixedHeader": {
+                "header": true,
+                "headerOffset": $('.navbar').height() + 15
+            },
+            "buttons": [
+                "colvis",
+                "pageLength"
+            ],
+            "colReorder": true,
             "stateSave": true,
             "paging":   true,
             "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
-            "pageLength": 50,
+            "pageLength": 100,
             "columns": [
                 { "data": "grunt_type" },
                 { "data": "pokestop_name" },
@@ -145,5 +208,101 @@
             $('#filter-city').val('all');
             reload();
         });
+
+       var ctx = document.getElementById('canvas').getContext('2d');
+		var invasionChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                tooltips: true,
+                elements: {
+                    rectangle: {
+                        backgroundColor: "dodgerblue",
+                        borderColor: colorize.bind(null, true, false),
+                        borderWidth: 0.5
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: true,
+                legend: {
+                    display: false,
+                    position: 'right',
+                },
+                title: {
+                    display: true,
+                    text: 'Team Rocket Invasion Statistics'
+                },
+                tooltips: { mode: "index", intersect: false, },
+                hover: { mode: "nearest", intersect: true },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date'
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Amount'
+                        }
+                    }]
+                }
+            }
+        });
+        function getStats() {
+            var start = $('#stats-start').val();
+            var end = $('#stats-end').val();
+            var grunt = $('#stats-grunt').val();
+            $.ajax({
+                url: `/api/stats?type=invasions&start=${start}&end=${end}&grunt=${grunt}`,
+                type: 'POST', 
+                success: function(result) {
+                    if (result === null) {
+                        console.log("Failed to parse result value.");
+                        return;
+                    }
+                    console.log("Result:", result);
+                    if (result) {
+                        var labels = [];
+                        var values = [];
+                        $.each(result.stats, function(key, value) {
+                            labels.push(value.date);
+                            var value = parseInt(value.count);
+                            values.push(value);
+                        });
+                        removeDataset(invasionChart);
+                        var obj = { 
+                            labels: labels, 
+                            datasets: [{
+                                data: values,
+                                backgroundColor: "dodgerblue",
+                                borderColor: "gray",
+                                label: "Grunt Type", // TODO: Get quest reward name
+                                fill: false
+                            }]
+                        };
+                        invasionChart.data = obj;
+                        invasionChart.update();
+
+                        /*
+                        removeDataset(raidChart);
+                        for (var i = 0; i < result.stats.length; i++) {
+                            var stat = result.stats[i];
+                            addDataset(raidChart, [], { data: [stat.count], backgroundColor: '#' + randomColor(), borderColor: 'White', borderWidth: 0.3, label: stat.date });
+                        }
+                        */
+                    }
+                }
+            });
+        }
     //});
 </script>

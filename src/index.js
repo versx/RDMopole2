@@ -5,28 +5,38 @@ const express = require('express');
 const session = require('express-session');
 const app = express();
 const mustacheExpress = require('mustache-express');
+const helmet = require('helmet');
 const i18n = require('i18n');
 
+const config = require('./config.json');
+const defaultData = require('./data/default.js');
 const apiRoutes = require('./routes/api.js');
 const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
 const utils = require('./services/utils.js');
 
-const config = require('./config.json');
-const defaultData = require('./data/default.js');
-
 
 // TODO: Raid list with pressable rows for more details
-// TODO: Mobile friendly
+// TODO: Mobile friendly (column prioritizing)
 // TODO: Custom user settings (per user)
 // TODO: Double check discord role check
 // TODO: Max pokestop and gym name length
 // TODO: Make sql class to connect with different config options
-// TODO: Fix pokemon icons
+// TODO: Restrict data to specific areas
+// TODO: Check csrf token with `/api/`
+// TODO: Allow choice between bar/line graph charts
+// TODO: Use `mode: 'range'` for flatdatepickr to select a range
+// TODO: Load button for stats instead of onchange event
+// TODO: If stats not available then show message
+// TODO: Add custom tile server selection to heatmap
+
 
 run();
 
 async function run() {
+    // Basic security protections
+    app.use(helmet());
+
     // View engine
     app.set('view engine', 'mustache');
     app.set('views', path.resolve(__dirname, 'views'));
@@ -37,7 +47,7 @@ async function run() {
     
     // Body parser middlewares
     app.use(express.json());
-    app.use(express.urlencoded({ extended: false, limit: '50mb' })); // for parsing application/x-www-form-urlencoded
+    app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
     // Initialize localzation handler
     i18n.configure({
@@ -100,6 +110,7 @@ async function run() {
             defaultData.logged_in = true;
             defaultData.username = req.session.username;
             defaultData.home_page = config.pages.home.enabled && utils.hasRole(req.roles, config.pages.home.roles);
+            defaultData.pokemon_page = config.pages.pokemon.enabled && utils.hasRole(req.roles, config.pages.pokemon.roles);
             defaultData.raids_page = config.pages.raids.enabled && utils.hasRole(req.roles, config.pages.raids.roles);
             defaultData.gyms_page = config.pages.gyms.enabled && utils.hasRole(req.roles, config.pages.gyms.roles);
             defaultData.quests_page = config.pages.quests.enabled && utils.hasRole(req.roles, config.pages.quests.roles);

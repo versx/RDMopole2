@@ -1,3 +1,4 @@
+![Node.js CI](https://github.com/versx/RDMopole2/workflows/Node.js%20CI/badge.svg)
 # RDM-opole2  
 
 ## Installation
