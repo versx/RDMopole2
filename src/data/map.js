@@ -205,6 +205,20 @@ async function getTopPokemonStats(lifetime = false, limit = 10) {
     return results;
 }
 
+async function getPokemonHeatmapStats(filter) {
+    const start = filter.start;
+    const end = filter.end;
+    const pokemonId = filter.pokemon_id;
+    const sql = `
+    SELECT pokemon_id, lat, lon, expire_timestamp
+    FROM pokemon
+    WHERE pokemon_id = ? AND expire_timestamp >= ? AND expire_timestamp <= ?
+    `;
+    const args = [pokemonId, start, end];
+    const results = await query(sql, args);
+    return results;
+}
+
 async function getShinyRates(filter) {
     const date = filter.date || utils.formatDate(new Date());
     let sql = `
@@ -735,6 +749,7 @@ module.exports = {
     getTopPokemonStats,
     getGymDefenders,
     getPokemonOverviewStats,
+    getPokemonHeatmapStats,
     getShinyRates,
     getCommunityDayStats,
     getPokemonStats,

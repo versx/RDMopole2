@@ -11,6 +11,10 @@ if (config.pages.pokemon.enabled) {
         const overviewStats = await map.getPokemonOverviewStats();
         res.json({ data: { stats: overviewStats } });
     });
+    router.post('/pokemon/heatmap', async function(req, res) {
+        const heatmapStats = await map.getPokemonHeatmapStats(req.query);
+        res.json({ data: { stats: heatmapStats } });
+    });
     router.post('/pokemon/shiny', async function(req, res) {
         const shinyRates = await map.getShinyRates(req.query);
         res.json({ data: { pokemon: shinyRates } });

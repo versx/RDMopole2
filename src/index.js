@@ -28,6 +28,7 @@ const utils = require('./services/utils.js');
 // TODO: Use `mode: 'range'` for flatdatepickr to select a range
 // TODO: Load button for stats instead of onchange event
 // TODO: If stats not available then show message
+// TODO: Add custom tile server selection to heatmap
 
 
 run();
