@@ -71,7 +71,8 @@
                                 <label class="input-group-text" for="stats-pokemon">Pokemon</label>
                             </div>
                             <select id="stats-pokemon" class="custom-select" onchange="getHistoricalStats()">
-                                <option value="all" selected>All</option>
+                            <option disabled selected>Select</option>
+                            <option value="all">All</option>
                                 {{#pokemon}}
                                 <option value="{{id}}">{{name}}</option>
                                 {{/pokemon}}
