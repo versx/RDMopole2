@@ -81,6 +81,7 @@ if (config.pages.pokemon.enabled) {
     router.get('/pokemon', function(req, res) {
         const data = defaultData;
         data.pokemon = map.getPokemonNameIdsList();
+        data.tileserver = config.map.tileserver;
         data.start_lat = config.map.startLat;
         data.start_lon = config.map.startLon;
         data.start_zoom = config.map.startZoom;
