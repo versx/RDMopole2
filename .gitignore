@@ -114,3 +114,6 @@ geofences/
 
 # No icons
 static/pokemon/
+
+# No docker-compose.yml files
+docker-compose.yml
