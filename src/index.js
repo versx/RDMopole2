@@ -29,6 +29,7 @@ const utils = require('./services/utils.js');
 // TODO: Load button for stats instead of onchange event
 // TODO: If stats not available then show message
 // TODO: Add custom tile server selection to heatmap
+// TODO: Finish localization
 
 
 run();
