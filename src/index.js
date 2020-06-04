@@ -30,9 +30,7 @@ const utils = require('./services/utils.js');
 // TODO: If stats not available then show message
 // TODO: Add custom tile server selection to heatmap
 // TODO: Finish localization
-// TODO: Move spawnpoints to top of overview
-// TODO: Gyms under attack list (make fancy)
-// TODO: Modular front page
+// TODO: Make rest of pages modular, hide/show stats/billboard
 
 
 run();

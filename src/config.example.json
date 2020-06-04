@@ -43,7 +43,35 @@
     "pages": {
         "home": {
             "enabled": true,
-            "roles": []
+            "roles": [],
+            "custom": {
+                "overview": true,
+                "spawnpoints": true,
+                "pokemon": {
+                    "enabled": true,
+                    "active": true,
+                    "lifetime": true,
+                    "top10": {
+                        "enabled": true,
+                        "lifetime": true,
+                        "today": true,
+                        "iv": true
+                    }
+                },
+                "gyms": {
+                    "enabled": true,
+                    "teams": true,
+                    "defenders": true,
+                    "overview": true,
+                    "underAttack": true,
+                    "newGyms": true
+                },
+                "pokestops": {
+                    "enabled": true,
+                    "overview": true,
+                    "newPokestops": true
+                }
+            }
         },
         "pokemon": {
             "enabled": true,
