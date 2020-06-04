@@ -9,6 +9,7 @@ const defaultData = require('../data/default.js');
 const map = require('../data/map.js');
 const GeofenceService = require('../services/geofence.js');
 const locale = require('../services/locale.js');
+const utils = require('../services/utils.js');
 const pokedex = require('../../static/data/pokedex.json');
 
 const svc = new GeofenceService.GeofenceService();
@@ -19,10 +20,11 @@ router.get(['/', '/index'], async function(req, res) {
     const newPokestops = await map.getNewPokestops();
     const newGyms = await map.getNewGyms();
     const topGymDefenders = await map.getGymDefenders(10);
-    const gymsUnderAttack = await map.getGymsUnderAttack(10);
+    const gymsUnderAttack = await map.getGymsUnderAttack(15);
     gymsUnderAttack.forEach(x => {
         x.team = locale.getTeamName(x.team_id).toLowerCase();
         x.slots_available = x.availble_slots === 0 ? 'Full' : x.availble_slots + '/6';
+        x.raid_battle_timestamp = utils.toHHMMSS(x.raid_battle_timestamp * 1000);
     });
     const top10_100IVStats = await map.getTopPokemonIVStats(100, 10);
     const lifetime = await map.getTopPokemonStats(true, 10);

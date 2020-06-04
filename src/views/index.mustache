@@ -360,14 +360,19 @@
                                         <div class="card-body p-1 m-3">
                                             <ul class="list-group">
                                             {{#gyms_under_attack}}
-                                                <li class="list-group-item d-flex">
-                                                    <a href="https://maps.google.com/maps?q={{lat}},{{lon}}" target="_blank">
-                                                        <span><img src="/img/teams/{{team}}.png" width="32" height="32" />&nbsp;{{name}} {{id}}</span>
-                                                        <span>({{slots_available}})</span>
-                                                        <!--{{#has_egg}}-->
-                                                            <span class='float-right' style='float:right;'>Starts: {{raid_battle_timestamp}}</span>
-                                                        <!--{{/has_egg}}-->
-                                                    </a>
+                                                <li class="list-group-item">
+                                                    <div class="row text-nowrap">
+                                                        <div class="col text-left">
+                                                            <a href="https://maps.google.com/maps?q={{lat}},{{lon}}" target="_blank">
+                                                                <img src="/img/teams/{{team}}.png" width="auto" height="32" />&nbsp;{{name}} ({{slots_available}})&nbsp;
+                                                            </a>
+                                                        </div>
+                                                        {{#has_egg}}
+                                                        <div class="col text-right">
+                                                            Level {{raid_level}} hatching in {{raid_battle_timestamp}}
+                                                        </div>
+                                                        {{/has_egg}}
+                                                    </div>
                                                 </li>
                                             {{/gyms_under_attack}}
                                             </ul>

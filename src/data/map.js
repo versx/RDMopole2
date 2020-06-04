@@ -681,9 +681,10 @@ async function getGymDefenders(limit = 10) {
 
 async function getGymsUnderAttack(limit = 10) {
     const sql = `
-    SELECT name, lat, lon, team_id, availble_slots, IF(raid_battle_timestamp > UNIX_TIMESTAMP(), 1, 0) AS has_egg, raid_battle_timestamp
+    SELECT name, lat, lon, team_id, availble_slots, IF(raid_battle_timestamp > UNIX_TIMESTAMP(), 1, 0) AS has_egg, raid_level, raid_battle_timestamp
     FROM gym
     WHERE in_battle = 1
+    ORDER BY name ASC
     LIMIT ?
     `;
     const args = [limit];
