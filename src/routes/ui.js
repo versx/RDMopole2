@@ -19,6 +19,11 @@ router.get(['/', '/index'], async function(req, res) {
     const newPokestops = await map.getNewPokestops();
     const newGyms = await map.getNewGyms();
     const topGymDefenders = await map.getGymDefenders(10);
+    const gymsUnderAttack = await map.getGymsUnderAttack(10);
+    gymsUnderAttack.forEach(x => {
+        x.team = locale.getTeamName(x.team_id).toLowerCase();
+        x.slots_available = x.availble_slots === 0 ? 'Full' : x.availble_slots + '/6';
+    });
     const top10_100IVStats = await map.getTopPokemonIVStats(100, 10);
     const lifetime = await map.getTopPokemonStats(true, 10);
     const today = await map.getTopPokemonStats(false, 10);
@@ -59,6 +64,7 @@ router.get(['/', '/index'], async function(req, res) {
         };
     });
     data.gym_defenders = defenders;
+    data.gyms_under_attack = gymsUnderAttack;
     data.new_pokestops = newPokestops;
     data.new_gyms = newGyms;
     res.render('index', data);

@@ -53,6 +53,43 @@
                     </div>
                 </div>
                 <div class="card text-center p-1 m-3">
+                    <div class="card-header bg-dark text-light"><b>Spawnpoints</b></div>
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-3 p-1">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/spawnpoints/spawnpoint.png" width="64" height="64"/></h3>
+                                        <h4 class="list-group-item-heading spawnpoints-total">0</h4>
+                                        <p class="list-group-item-text">Total</p>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3 p-1">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/spawnpoints/found.png" width="64" height="64"/></h3>
+                                        <h4 class="list-group-item-heading spawnpoints-found">0</h4>
+                                        <p class="list-group-item-text">Found</p>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3 p-1">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/spawnpoints/missing.png" width="64" height="64"/></h3>
+                                        <h4 class="list-group-item-heading spawnpoints-missing">0</h4>
+                                        <p class="list-group-item-text">Missing</p>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3 p-1">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/spawnpoints/percentage.png" width="64" height="64"/></h3>
+                                        <h4 class="list-group-item-heading spawnpoints-percentage">0</h4>
+                                        <p class="list-group-item-text">Percentage</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card text-center p-1 m-3">
                     <div class="card-header bg-dark text-light"><b>Pokemon</b></div>
                     <!--
                     <div class="card-body">
@@ -319,6 +356,28 @@
                             <div class="row justify-content-center container">
                                 <div class="col-md-12">
                                     <div class="card">
+                                        <div class="card-header bg-dark text-light"><b>Gyms Under Attack</b></div>
+                                        <div class="card-body p-1 m-3">
+                                            <ul class="list-group">
+                                            {{#gyms_under_attack}}
+                                                <li class="list-group-item d-flex">
+                                                    <a href="https://maps.google.com/maps?q={{lat}},{{lon}}" target="_blank">
+                                                        <span><img src="/img/teams/{{team}}.png" width="32" height="32" />&nbsp;{{name}} {{id}}</span>
+                                                        <span>({{slots_available}})</span>
+                                                        <!--{{#has_egg}}-->
+                                                            <span class='float-right' style='float:right;'>Starts: {{raid_battle_timestamp}}</span>
+                                                        <!--{{/has_egg}}-->
+                                                    </a>
+                                                </li>
+                                            {{/gyms_under_attack}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center container">
+                                <div class="col-md-12">
+                                    <div class="card">
                                         <div class="card-header bg-dark text-light"><b>New Gyms (Last 24 Hours)</b></div>
                                         <div class="card-body">
                                             <ul class="list-group list-group-flush">
@@ -398,43 +457,6 @@
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card text-center p-1 m-3">
-                    <div class="card-header bg-dark text-light"><b>Spawnpoints</b></div>
-                    <div class="card-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-3 p-1">
-                                    <a class="list-group-item">
-                                        <h3 class="pull-right"><img src="./img/spawnpoints/spawnpoint.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading spawnpoints-total">0</h4>
-                                        <p class="list-group-item-text">Total</p>
-                                    </a>
-                                </div>
-                                <div class="col-lg-3 p-1">
-                                    <a class="list-group-item">
-                                        <h3 class="pull-right"><img src="./img/spawnpoints/found.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading spawnpoints-found">0</h4>
-                                        <p class="list-group-item-text">Found</p>
-                                    </a>
-                                </div>
-                                <div class="col-lg-3 p-1">
-                                    <a class="list-group-item">
-                                        <h3 class="pull-right"><img src="./img/spawnpoints/missing.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading spawnpoints-missing">0</h4>
-                                        <p class="list-group-item-text">Missing</p>
-                                    </a>
-                                </div>
-                                <div class="col-lg-3 p-1">
-                                    <a class="list-group-item">
-                                        <h3 class="pull-right"><img src="./img/spawnpoints/percentage.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading spawnpoints-percentage">0</h4>
-                                        <p class="list-group-item-text">Percentage</p>
-                                    </a>
                                 </div>
                             </div>
                         </div>
