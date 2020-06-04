@@ -30,6 +30,9 @@ const utils = require('./services/utils.js');
 // TODO: If stats not available then show message
 // TODO: Add custom tile server selection to heatmap
 // TODO: Finish localization
+// TODO: Move spawnpoints to top of overview
+// TODO: Gyms under attack list (make fancy)
+// TODO: Modular front page
 
 
 run();
@@ -86,6 +89,7 @@ async function run() {
         // Discord error middleware
         /* eslint-disable no-unused-vars */
         app.use(function(err, req, res, next) {
+        /* eslint-enable no-unused-vars */
             switch (err.message) {
             case 'NoCodeProvided':
                 return res.status(400).send({
@@ -99,7 +103,6 @@ async function run() {
                 });
             }
         });
-        /* eslint-enable no-unused-vars */
     }
     
     // Login middleware

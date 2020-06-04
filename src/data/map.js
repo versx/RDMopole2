@@ -679,6 +679,18 @@ async function getGymDefenders(limit = 10) {
     return results;
 }
 
+async function getGymsUnderAttack(limit = 10) {
+    const sql = `
+    SELECT name, lat, lon, team_id, availble_slots, IF(raid_battle_timestamp > UNIX_TIMESTAMP(), 1, 0) AS has_egg, raid_battle_timestamp
+    FROM gym
+    WHERE in_battle = 1
+    LIMIT ?
+    `;
+    const args = [limit];
+    const results = await query(sql, args);
+    return results;
+}
+
 async function getNewPokestops(lastHours = 24) {
     const sql = `
     SELECT id, lat, lon, name, url, first_seen_timestamp
@@ -748,6 +760,7 @@ module.exports = {
     getTopPokemonIVStats,
     getTopPokemonStats,
     getGymDefenders,
+    getGymsUnderAttack,
     getPokemonOverviewStats,
     getPokemonHeatmapStats,
     getShinyRates,
