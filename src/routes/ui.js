@@ -9,6 +9,7 @@ const defaultData = require('../data/default.js');
 const map = require('../data/map.js');
 const GeofenceService = require('../services/geofence.js');
 const locale = require('../services/locale.js');
+const utils = require('../services/utils.js');
 const pokedex = require('../../static/data/pokedex.json');
 
 const svc = new GeofenceService.GeofenceService();
@@ -19,10 +20,11 @@ router.get(['/', '/index'], async function(req, res) {
     const newPokestops = await map.getNewPokestops();
     const newGyms = await map.getNewGyms();
     const topGymDefenders = await map.getGymDefenders(10);
-    const gymsUnderAttack = await map.getGymsUnderAttack(10);
+    const gymsUnderAttack = await map.getGymsUnderAttack(15);
     gymsUnderAttack.forEach(x => {
         x.team = locale.getTeamName(x.team_id).toLowerCase();
         x.slots_available = x.availble_slots === 0 ? 'Full' : x.availble_slots + '/6';
+        x.raid_battle_timestamp = utils.toHHMMSS(x.raid_battle_timestamp * 1000);
     });
     const top10_100IVStats = await map.getTopPokemonIVStats(100, 10);
     const lifetime = await map.getTopPokemonStats(true, 10);
@@ -67,6 +69,27 @@ router.get(['/', '/index'], async function(req, res) {
     data.gyms_under_attack = gymsUnderAttack;
     data.new_pokestops = newPokestops;
     data.new_gyms = newGyms;
+    data.custom_overview = config.pages.home.custom.overview;
+    data.custom_spawnpoints = config.pages.home.custom.spawnpoints;
+    data.custom_pokemon = config.pages.home.custom.pokemon.enabled;
+    data.custom_active_iv = config.pages.home.custom.pokemon.active;
+    data.custom_lifetime_iv = config.pages.home.custom.pokemon.lifetime;
+
+    data.custom_pokemon_top10 = config.pages.home.custom.pokemon.top10.enabled;
+    data.custom_pokemon_top10_lifetime = config.pages.home.custom.pokemon.top10.lifetime;
+    data.custom_pokemon_top10_today = config.pages.home.custom.pokemon.top10.today;
+    data.custom_pokemon_top10_iv = config.pages.home.custom.pokemon.top10.iv;
+
+    data.custom_gyms = config.pages.home.custom.gyms.enabled;
+    data.custom_gyms_new = config.pages.home.custom.gyms.newGyms;
+    data.custom_gyms_teams = config.pages.home.custom.gyms.teams;
+    data.custom_gyms_defenders = config.pages.home.custom.gyms.defenders;
+    data.custom_gyms_under_attack = config.pages.home.custom.gyms.underAttack;
+    data.custom_gyms_overview = config.pages.home.custom.gyms.overview;
+
+    data.custom_pokestops = config.pages.home.custom.pokestops.enabled;
+    data.custom_pokestops_overview = config.pages.home.custom.pokestops.overview;
+    data.custom_pokestops_new = config.pages.home.custom.pokestops.newPokestops;
     res.render('index', data);
 });
 

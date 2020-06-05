@@ -30,9 +30,7 @@ const utils = require('./services/utils.js');
 // TODO: If stats not available then show message
 // TODO: Add custom tile server selection to heatmap
 // TODO: Finish localization
-// TODO: Move spawnpoints to top of overview
-// TODO: Gyms under attack list (make fancy)
-// TODO: Modular front page
+// TODO: Make rest of pages modular, hide/show stats/billboard
 
 
 run();
@@ -113,13 +111,13 @@ async function run() {
         if (!config.discord.enabled || req.session.logged_in) {
             defaultData.logged_in = true;
             defaultData.username = req.session.username;
-            defaultData.home_page = config.pages.home.enabled && utils.hasRole(req.roles, config.pages.home.roles);
-            defaultData.pokemon_page = config.pages.pokemon.enabled && utils.hasRole(req.roles, config.pages.pokemon.roles);
-            defaultData.raids_page = config.pages.raids.enabled && utils.hasRole(req.roles, config.pages.raids.roles);
-            defaultData.gyms_page = config.pages.gyms.enabled && utils.hasRole(req.roles, config.pages.gyms.roles);
-            defaultData.quests_page = config.pages.quests.enabled && utils.hasRole(req.roles, config.pages.quests.roles);
-            defaultData.invasions_page = config.pages.quests.enabled && utils.hasRole(req.roles, config.pages.invasions.roles);
-            defaultData.nests_page = config.pages.nests.enabled && utils.hasRole(req.roles, config.pages.nests.roles);
+            defaultData.home_page = config.pages.home.enabled && utils.hasRole(req.session.roles, config.pages.home.roles);
+            defaultData.pokemon_page = config.pages.pokemon.enabled && utils.hasRole(req.session.roles, config.pages.pokemon.roles);
+            defaultData.raids_page = config.pages.raids.enabled && utils.hasRole(req.session.roles, config.pages.raids.roles);
+            defaultData.gyms_page = config.pages.gyms.enabled && utils.hasRole(req.session.roles, config.pages.gyms.roles);
+            defaultData.quests_page = config.pages.quests.enabled && utils.hasRole(req.session.roles, config.pages.quests.roles);
+            defaultData.invasions_page = config.pages.quests.enabled && utils.hasRole(req.session.roles, config.pages.invasions.roles);
+            defaultData.nests_page = config.pages.nests.enabled && utils.hasRole(req.session.roles, config.pages.nests.roles);
             return next();
         }
         res.redirect('/login');

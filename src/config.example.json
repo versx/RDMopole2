@@ -30,7 +30,8 @@
         "clientId": "",
         "clientSecret": "",
         "redirectUri": "http://localhost:8080/api/discord/callback",
-        "guilds": [""]
+        "guilds": [""],
+        "userIdWhitelist": []
     },
     "map": {
         "tileserver": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png;Â© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors Â© <a href='https://carto.com/attributions'>CARTO</a>",
@@ -43,7 +44,35 @@
     "pages": {
         "home": {
             "enabled": true,
-            "roles": []
+            "roles": [],
+            "custom": {
+                "overview": true,
+                "spawnpoints": true,
+                "pokemon": {
+                    "enabled": true,
+                    "active": true,
+                    "lifetime": true,
+                    "top10": {
+                        "enabled": true,
+                        "lifetime": true,
+                        "today": true,
+                        "iv": true
+                    }
+                },
+                "gyms": {
+                    "enabled": true,
+                    "teams": true,
+                    "defenders": true,
+                    "overview": true,
+                    "underAttack": true,
+                    "newGyms": true
+                },
+                "pokestops": {
+                    "enabled": true,
+                    "overview": true,
+                    "newPokestops": true
+                }
+            }
         },
         "pokemon": {
             "enabled": true,
