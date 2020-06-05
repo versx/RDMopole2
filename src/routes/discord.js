@@ -35,9 +35,18 @@ router.get('/callback', catchAsyncErrors(async function(req, res) {
     axios.post('https://discord.com/api/oauth2/token', data, {
         headers: headers
     }).then(async function(response) {
-        
         const client = new DiscordClient(response.data.access_token);
         const user = await client.getUser();
+        if (config.discord.userIdWhitelist.includes(user.id)) {
+            console.log(`Discord user ${user.id} in whitelist, skipping role and guild check...`);
+            req.session.logged_in = true;
+            req.session.user_id = user.id;
+            req.session.username = `${user.username}#${user.discriminator}`;
+            req.session.roles = [];
+            req.session.guilds = config.discord.guilds;
+            res.redirect(`/?token=${response.data.access_token}`);
+            return;
+        }
         const guilds = await client.getGuilds();
         const roles = await client.getUserRoles(user.id);
 
