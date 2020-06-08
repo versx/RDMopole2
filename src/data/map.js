@@ -666,6 +666,20 @@ async function getNests(filter) {
     return [];
 }
 
+async function getSpawnpoints(filter) {
+    const sql = `
+    SELECT
+        id,
+        lat,
+        lon,
+        updated,
+        despawn_sec
+    FROM spawnpoint
+    `;
+    const results = await query(sql);
+    return results;
+}
+
 async function getGymDefenders(limit = 10) {
     const sql = `
 	SELECT guarding_pokemon_id, COUNT(guarding_pokemon_id) AS count
@@ -775,6 +789,7 @@ module.exports = {
     getInvasions,
     getInvasionStats,
     getNests,
+    getSpawnpoints,
     getNewPokestops,
     getNewGyms,
     getPokemonNameIdsList,

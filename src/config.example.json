@@ -97,6 +97,10 @@
         "nests": {
             "enabled": true,
             "roles": []
+        },
+        "spawnpoints": {
+            "enabled": true,
+            "roles": []
         }
     },
     "google": {

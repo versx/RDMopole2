@@ -15,7 +15,7 @@ const pokedex = require('../../static/data/pokedex.json');
 const svc = new GeofenceService.GeofenceService();
 
 
-router.get(['/', '/index'], async function(req, res) {
+router.get(['/', '/index'], async (req, res) => {
     const data = defaultData;
     const newPokestops = await map.getNewPokestops();
     const newGyms = await map.getNewGyms();
@@ -94,12 +94,12 @@ router.get(['/', '/index'], async function(req, res) {
 });
 
 if (config.discord.enabled) {
-    router.get('/login', function(req, res) {
+    router.get('/login', (req, res) => {
         res.redirect('/api/discord/login');
     });
 
-    router.get('/logout', function(req, res) {
-        req.session.destroy(function(err) {
+    router.get('/logout', (req, res) => {
+        req.session.destroy((err) => {
             if (err) throw err;
             res.redirect('/login');
         });
@@ -107,7 +107,7 @@ if (config.discord.enabled) {
 }
 
 if (config.pages.pokemon.enabled) {
-    router.get('/pokemon', function(req, res) {
+    router.get('/pokemon', (req, res) => {
         const data = defaultData;
         data.pokemon = map.getPokemonNameIdsList();
         data.tileserver = config.map.tileserver;
@@ -121,7 +121,7 @@ if (config.pages.pokemon.enabled) {
 }
 
 if (config.pages.raids.enabled) {
-    router.get('/raids', function(req, res) {
+    router.get('/raids', (req, res) => {
         const data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         data.pokemon = map.getPokemonNameIdsList();
@@ -130,7 +130,7 @@ if (config.pages.raids.enabled) {
 }
 
 if (config.pages.gyms.enabled) {
-    router.get('/gyms', function(req, res) {
+    router.get('/gyms', (req, res) => {
         const data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         res.render('gyms', data);
@@ -138,7 +138,7 @@ if (config.pages.gyms.enabled) {
 }
 
 if (config.pages.quests.enabled) {
-    router.get('/quests', async function(req, res) {
+    router.get('/quests', async (req, res) => {
         const data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         data.rewards = await map.getQuestRewardsList();
@@ -147,7 +147,7 @@ if (config.pages.quests.enabled) {
 }
 
 if (config.pages.invasions.enabled) {
-    router.get('/invasions', function(req, res) {
+    router.get('/invasions', (req, res) => {
         const data = defaultData;
         const gruntTypes = [];
         for (let i = 0; i <= 50; i++) {
@@ -161,10 +161,23 @@ if (config.pages.invasions.enabled) {
 }
 
 if (config.pages.nests.enabled) {
-    router.get('/nests', function(req, res) {
+    router.get('/nests', (req, res) => {
         const data = defaultData;
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
         res.render('nests', data);
+    });
+}
+
+if (config.pages.spawnpoints.enabled) {
+    router.get('/spawnpoints', (req, res) => {
+        const data = defaultData;
+        data.tileserver = config.map.tileserver;
+        data.start_lat = config.map.startLat;
+        data.start_lon = config.map.startLon;
+        data.start_zoom = config.map.startZoom;
+        data.min_zoom = config.map.minZoom;
+        data.max_zoom = config.map.maxZoom;
+        res.render('spawnpoints', data);
     });
 }
 

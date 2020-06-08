@@ -14,6 +14,7 @@ data.gyms_page = config.pages.gyms.enabled;
 data.quests_page = config.pages.quests.enabled;
 data.invasions_page = config.pages.invasions.enabled;
 data.nests_page = config.pages.nests.enabled;
+data.spawnpoints_page = config.pages.spawnpoints.enabled;
 data.analytics = config.google.analytics;
 data.adsense = config.google.adsense;
 data.map_url = config.urls.map;

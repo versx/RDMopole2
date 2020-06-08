@@ -46,6 +46,11 @@
                 <a class="nav-link" href="/nests"><i class="fa fa-fw fa-connectdevelop" aria-hidden="true"></i>&nbsp;{{Nests}}</a>
             </li>
         {{/nests_page}}
+        {{#spawnpoints_page}}
+            <li class="nav-item spawnpoints_page">
+                <a class="nav-link" href="/spawnpoints"><i class="fa fa-fw fa-map-pin" aria-hidden="true"></i>&nbsp;{{Spawnpoints}}</a>
+            </li>
+        {{/spawnpoints_page}}
         </ul>
         <ul class="navbar-nav ml-auto">
         {{#map_url}}
@@ -102,5 +107,8 @@
         {{^nests_page}}
             $('.nests_page').css('hidden', {{nests_page}});
         {{/nests_page}}
+        {{^spawnpoints_page}}
+            $('.spawnpoints_page').css('hidden', {{spawnpoints_page}});
+        {{/spawnpoints_page}}
     });
 </script>

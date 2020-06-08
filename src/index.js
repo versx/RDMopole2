@@ -118,6 +118,7 @@ async function run() {
             defaultData.quests_page = config.pages.quests.enabled && utils.hasRole(req.session.roles, config.pages.quests.roles);
             defaultData.invasions_page = config.pages.quests.enabled && utils.hasRole(req.session.roles, config.pages.invasions.roles);
             defaultData.nests_page = config.pages.nests.enabled && utils.hasRole(req.session.roles, config.pages.nests.roles);
+            defaultData.spawnpoints_page = config.pages.spawnpoints.enabled && utils.hasRole(req.session.roles, config.pages.spawnpoints.roles);
             return next();
         }
         res.redirect('/login');

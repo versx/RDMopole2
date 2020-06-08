@@ -1,0 +1,151 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Spawnpoints}}</h1>
+        <br>
+        <div style="width:90%; margin-left:calc(5%);">
+            <div id="canvas_map" style="width:100%; height:800px;"></div>
+        </div>
+        <br>
+    </body>
+    {{> footer}}
+</html>
+
+<script type='text/javascript' src='./js/utils.js'></script>
+<script type='text/javascript'>
+    $("[data-toggle='datetimepicker']").flatpickr({
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        enableTime: false
+    });
+
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+        $('.modal-content').css('background-color', 'rgb(33, 37, 41)');
+        $('.modal-content').css('color', 'rgb(255, 255, 255)');
+    }
+
+    var ctx = document.getElementById('canvas').getContext('2d');
+    var spawnpointChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: {
+            tooltips: true,
+            elements: {
+                rectangle: {
+                    backgroundColor: "dodgerblue",
+                    borderColor: colorize.bind(null, true, false),
+                    borderWidth: 0.5
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: true,
+            legend: {
+                display: false,
+                position: 'right',
+            },
+            title: {
+                display: true,
+                text: 'Spawnpoint Statistics'
+            },
+            tooltips: { mode: "index", intersect: false, },
+            hover: { mode: "nearest", intersect: true },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Amount'
+                    }
+                }]
+            }
+        }
+    });
+
+    const map = L.map('canvas_map', {
+        preferCanvas: true,
+        updateWhenIdle: true,
+        updateWhenZooming: true
+    }).setView([{{start_lat}}, {{start_lon}}], {{start_zoom}});
+    const spawnpointLayer = new L.LayerGroup();
+
+    function initMap() {
+        const split = ("{{{tileserver}}}" || '').split(';');
+        const style = '{{style}}';
+        const tileserver = split[0] || style === 'dark'
+            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+        const attribution = split[1] || style === 'dark'
+            ? "Â© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors Â© <a href='https://carto.com/attributions'>CARTO</a>"
+            : "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors";
+        const tileLayer = L.tileLayer(tileserver, {
+            attribution: attribution,
+            minZoom: {{min_zoom}} || 10,
+            maxZoom: {{max_zoom}} || 18,
+            scale: L.Browser.retina ? '@2x' : '',
+            hq: L.Browser.retina,
+            layers: [spawnpointLayer]
+        });
+        tileLayer.addTo(map);
+    }
+
+    function getSpawnpoints() {
+        $.ajax({
+            url: `/api/spawnpoints`,
+            type: 'POST', 
+            success: function(result) {
+                if (result === null) {
+                    console.log('Failed to parse result value.');
+                    return;
+                }
+                console.log('Result:', result);
+                if (result) {
+                    const renderer = L.canvas({ padding: 0.5 });
+                    for (let i = 0; i < result.data.spawnpoints.length; i++) {
+                        const spawnpoint = result.data.spawnpoints[i];
+                        const verified = spawnpoint.despawn_sec !== null;
+                        const circle = L.circle([spawnpoint.lat, spawnpoint.lon], {
+                            color: verified ? 'green' : 'red',
+                            fillColor: verified ? 'green' : 'red',
+                            fillOpacity: 0.5,
+                            radius: 1.0
+                        }).addTo(map);
+                        const content = getSpawnpointPopupContent(spawnpoint);
+                        circle.bindPopup(content);
+                        spawnpointLayer.addLayer(circle);
+                    }
+                }
+            }
+        });
+    }
+
+    function getSpawnpointPopupContent(spawnpoint) {
+        var content = '<center><h6><b>Spawnpoint</b></h6></center>'
+        var hasTimer = spawnpoint.despawn_sec !== null;
+        if (hasTimer) {
+            var timer = Math.round(spawnpoint.despawn_sec / 60);
+            content += '<br><b>Despawn Timer:</b> ' + timer + ' minutes';
+        }
+        return content;
+    }
+
+    initMap();
+    getSpawnpoints();
+</script>

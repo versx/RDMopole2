@@ -7,56 +7,63 @@ const config = require('../config.json');
 const map = require('../data/map.js');
 
 if (config.pages.pokemon.enabled) {
-    router.post('/pokemon/overview', async function(req, res) {
+    router.post('/pokemon/overview', async (req, res) => {
         const overviewStats = await map.getPokemonOverviewStats();
         res.json({ data: { stats: overviewStats } });
     });
-    router.post('/pokemon/heatmap', async function(req, res) {
+    router.post('/pokemon/heatmap', async (req, res) => {
         const heatmapStats = await map.getPokemonHeatmapStats(req.query);
         res.json({ data: { stats: heatmapStats } });
     });
-    router.post('/pokemon/shiny', async function(req, res) {
+    router.post('/pokemon/shiny', async (req, res) => {
         const shinyRates = await map.getShinyRates(req.query);
         res.json({ data: { pokemon: shinyRates } });
     });
-    router.post('/pokemon/commday', async function(req, res) {
+    router.post('/pokemon/commday', async (req, res) => {
         const commdayStats = await map.getCommunityDayStats(req.query);
         res.json({ data: { stats: commdayStats } });
     });
 }
 
 if (config.pages.raids.enabled) {
-    router.post('/raids', async function(req, res) {
+    router.post('/raids', async (req, res) => {
         const raids = await map.getRaids(req.query);
         res.json({ data: { raids: raids } });
     });
 }
 
 if (config.pages.gyms.enabled) {
-    router.post('/gyms', async function(req, res) {
+    router.post('/gyms', async (req, res) => {
         const gyms = await map.getGyms(req.query);
         res.json({ data: { gyms: gyms } });
     });
 }
 
 if (config.pages.quests.enabled) {
-    router.post('/quests', async function(req, res) {
+    router.post('/quests', async (req, res) => {
         const quests = await map.getQuests(req.query);
         res.json({ data: { quests: quests } });
     });
 }
 
 if (config.pages.invasions.enabled) {
-    router.post('/invasions', async function(req, res) {
+    router.post('/invasions', async (req, res) => {
         const invasions = await map.getInvasions(req.query);
         res.json({ data: { invasions: invasions } });
     });
 }
 
 if (config.pages.nests.enabled) {
-    router.post('/nests', async function(req, res) {
+    router.post('/nests', async (req, res) => {
         const nests = await map.getNests(req.query);
         res.json({ data: { nests: nests } });
+    });
+}
+
+if (config.pages.spawnpoints.enabled) {
+    router.post('/spawnpoints', async (req, res) => {
+        const spawnpoints = await map.getSpawnpoints(req.query);
+        res.json({ data: { spawnpoints: spawnpoints } });
     });
 }
 
