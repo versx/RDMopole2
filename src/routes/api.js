@@ -62,7 +62,7 @@ if (config.pages.nests.enabled) {
 
 if (config.pages.spawnpoints.enabled) {
     router.post('/spawnpoints', async (req, res) => {
-        const spawnpoints = await map.getSpawnpoints(req.query);
+        const spawnpoints = await map.getSpawnpoints();
         res.json({ data: { spawnpoints: spawnpoints } });
     });
 }

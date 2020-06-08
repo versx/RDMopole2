@@ -34,7 +34,9 @@
         updateWhenIdle: true,
         updateWhenZooming: true
     }).setView([{{start_lat}}, {{start_lon}}], {{start_zoom}});
-    const spawnpointLayer = new L.LayerGroup();
+    //const spawnpointsLayer = new L.LayerGroup();
+    const knownSpawnpointsLayer = new L.LayerGroup();
+    const unknownSpawnpointsLayer = new L.LayerGroup();
 
     function initMap() {
         const split = ("{{{tileserver}}}" || '').split(';');
@@ -51,7 +53,7 @@
             maxZoom: {{max_zoom}} || 18,
             scale: L.Browser.retina ? '@2x' : '',
             hq: L.Browser.retina,
-            layers: [spawnpointLayer]
+            layers: [unknownSpawnpointsLayer, knownSpawnpointsLayer]//[spawnpointsLayer]
         });
         tileLayer.addTo(map);
     }
@@ -76,11 +78,19 @@
                             fillColor: verified ? 'green' : 'red',
                             fillOpacity: 0.5,
                             radius: 1.0
-                        }).addTo(map);
+                        });
+                        if (verified) {
+                            knownSpawnpointsLayer.addLayer(circle);
+                        } else {
+                            unknownSpawnpointsLayer.addLayer(circle);
+                        }
+                        //spawnpointsLayer.addLayer(circle);
                         const content = getSpawnpointPopupContent(spawnpoint);
                         circle.bindPopup(content);
-                        spawnpointLayer.addLayer(circle);
                     }
+                    unknownSpawnpointsLayer.addTo(map);
+                    knownSpawnpointsLayer.addTo(map);
+                    //spawnpointsLayer.addTo(map);
                 }
             }
         });

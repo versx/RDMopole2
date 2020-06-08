@@ -666,7 +666,7 @@ async function getNests(filter) {
     return [];
 }
 
-async function getSpawnpoints(filter) {
+async function getSpawnpoints() {
     const sql = `
     SELECT
         id,
