@@ -29,56 +29,6 @@
         $('.modal-content').css('color', 'rgb(255, 255, 255)');
     }
 
-    var ctx = document.getElementById('canvas').getContext('2d');
-    var spawnpointChart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: [],
-            datasets: []
-        },
-        options: {
-            tooltips: true,
-            elements: {
-                rectangle: {
-                    backgroundColor: "dodgerblue",
-                    borderColor: colorize.bind(null, true, false),
-                    borderWidth: 0.5
-                }
-            },
-            responsive: true,
-            maintainAspectRatio: true,
-            legend: {
-                display: false,
-                position: 'right',
-            },
-            title: {
-                display: true,
-                text: 'Spawnpoint Statistics'
-            },
-            tooltips: { mode: "index", intersect: false, },
-            hover: { mode: "nearest", intersect: true },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Date'
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    },
-                    display: true,
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Amount'
-                    }
-                }]
-            }
-        }
-    });
-
     const map = L.map('canvas_map', {
         preferCanvas: true,
         updateWhenIdle: true,
