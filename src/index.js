@@ -31,6 +31,7 @@ const utils = require('./services/utils.js');
 // TODO: Add custom tile server selection to heatmap
 // TODO: Finish localization
 // TODO: Make rest of pages modular, hide/show stats/billboard
+// TODO: Device status page with geofences of cities
 
 
 run();
