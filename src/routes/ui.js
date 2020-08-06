@@ -90,6 +90,27 @@ router.get(['/', '/index'], async function(req, res) {
     data.custom_pokestops = config.pages.home.custom.pokestops.enabled;
     data.custom_pokestops_overview = config.pages.home.custom.pokestops.overview;
     data.custom_pokestops_new = config.pages.home.custom.pokestops.newPokestops;
+
+    if (!config.discord.enabled || req.session.logged_in) {
+        data.logged_in = true;
+        data.username = req.session.username;
+        if (config.discord.enabled) {
+            if (req.session.valid) {
+                const perms = req.session.perms;
+                data.home_page = config.pages.home.enabled && perms.home !== false;
+                data.pokemon_page = config.pages.pokemon.enabled && perms.pokemon !== false;
+                data.raids_page = config.pages.raids.enabled && perms.raids !== false;
+                data.gyms_page = config.pages.gyms.enabled && perms.gyms !== false;
+                data.quests_page = config.pages.quests.enabled && perms.quests !== false;
+                data.invasions_page = config.pages.invasions.enabled && perms.invasions !== false;
+                data.nests_page = config.pages.nests.enabled && perms.nests !== false;
+            } else {
+                console.log(req.session.username, 'Not authorized to access map');
+                res.redirect('/login');
+            }
+        }
+    }
+
     res.render('index', data);
 });
 
