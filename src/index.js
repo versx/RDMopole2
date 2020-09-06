@@ -109,7 +109,8 @@ async function run() {
         if (config.discord.enabled && (req.path === '/api/discord/login' || req.path === '/login')) {
             return next();
         }
-        if (!config.discord.enabled || req.session.logged_in) {
+        /*
+        if (!config.discord.enabled || (req.session.logged_in && req.session.valid)) {
             defaultData.logged_in = true;
             defaultData.username = req.session.username;
             defaultData.home_page = config.pages.home.enabled && utils.hasRole(req.session.roles, config.pages.home.roles);
@@ -121,6 +122,43 @@ async function run() {
             defaultData.nests_page = config.pages.nests.enabled && utils.hasRole(req.session.roles, config.pages.nests.roles);
             return next();
         }
+        */
+       if (req.session.user_id && req.session.username && req.session.guilds && req.session.roles) {
+        //console.log("Previous discord auth still active for user id:", req.session.user_id);
+        return next();
+    }
+    if (!config.discord.enabled || req.session.logged_in) {
+        defaultData.logged_in = true;
+        defaultData.username = req.session.username;
+        if (!config.discord.enabled) {
+            return next();
+        }
+        if (!req.session.valid) {
+            console.error('Invalid user authenticated', req.session.user_id);
+            res.redirect('/login');
+            return;
+        }
+        const perms = req.session.perms;
+        /*
+        defaultData.home_page = config.pages.home.enabled && perms.home !== false;
+        if (!defaultData.home_page) {
+            // No view map permissions, go to login screen
+            console.error('Invalid home page permissions for user', req.session.user_id);
+            res.redirect('/login');
+            return;
+        }
+        */
+        defaultData.logged_in = true;
+        defaultData.username = req.session.username;
+        defaultData.home_page = config.pages.home.enabled && perms.home !== false;
+        defaultData.pokemon_page = config.pages.pokemon.enabled && perms.pokemon !== false;
+        defaultData.raids_page = config.pages.raids.enabled && perms.raids !== false;
+        defaultData.gyms_page = config.pages.gyms.enabled && perms.gyms !== false;
+        defaultData.quests_page = config.pages.quests.enabled && perms.quests !== false;
+        defaultData.invasions_page = config.pages.invasions.enabled && perms.invasions !== false;
+        defaultData.nests_page = config.pages.nests.enabled && perms.nests !== false;
+        return next();
+    }
         res.redirect('/login');
     });
 
