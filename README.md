@@ -15,13 +15,15 @@
 2,2
 3,3
 ```
-7.) Run `npm start`  
-8.) Access via http://machineip:port/ login using your Discord account    
+7.) Run `npm run create-locales`  
+8.) Run `npm start`  
+9.) Access via http://machineip:port/ login using your Discord account    
 
 ## Updating  
 1.) `git pull`  
 2.) Run `npm install` in root folder  
-3.) Run `npm start`  
+3.) Run `npm run create-locales`  
+4.) Run `npm start`  
 
 ## Notes  
 If you want to host your images locally where RDM-opole2 resides, change your `pokemon` and `eggs` image urls to something like the following:  

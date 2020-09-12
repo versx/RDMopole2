@@ -115,5 +115,8 @@ logs
 # No icons
 static/pokemon/
 
+static/locales/*
+!static/locales/_*
+
 # No docker-compose.yml files
 docker-compose.yml

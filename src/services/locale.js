@@ -25,7 +25,7 @@ function getPokemonName(pokemonId) {
     return i18n.__('poke_' + pokemonId);
 }
 function getPokemonType(type) {
-    return i18n.__('pokemon_type_' + type);
+    return i18n.__('poke_type_' + type);
 }
 function getTeamName(teamId) {
     return i18n.__('team_' + teamId);
