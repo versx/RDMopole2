@@ -33,10 +33,7 @@ const utils = require('./services/utils.js');
 // TODO: Make rest of pages modular, hide/show stats/billboard
 // TODO: Device status page with geofences of cities
 
-
-run();
-
-async function run() {
+(async () => {
     // Basic security protections
     app.use(helmet());
 
@@ -109,20 +106,6 @@ async function run() {
         if (config.discord.enabled && (req.path === '/api/discord/login' || req.path === '/login')) {
             return next();
         }
-        /*
-        if (!config.discord.enabled || (req.session.logged_in && req.session.valid)) {
-            defaultData.logged_in = true;
-            defaultData.username = req.session.username;
-            defaultData.home_page = config.pages.home.enabled && utils.hasRole(req.session.roles, config.pages.home.roles);
-            defaultData.pokemon_page = config.pages.pokemon.enabled && utils.hasRole(req.session.roles, config.pages.pokemon.roles);
-            defaultData.raids_page = config.pages.raids.enabled && utils.hasRole(req.session.roles, config.pages.raids.roles);
-            defaultData.gyms_page = config.pages.gyms.enabled && utils.hasRole(req.session.roles, config.pages.gyms.roles);
-            defaultData.quests_page = config.pages.quests.enabled && utils.hasRole(req.session.roles, config.pages.quests.roles);
-            defaultData.invasions_page = config.pages.quests.enabled && utils.hasRole(req.session.roles, config.pages.invasions.roles);
-            defaultData.nests_page = config.pages.nests.enabled && utils.hasRole(req.session.roles, config.pages.nests.roles);
-            return next();
-        }
-        */
         if (req.session.user_id && req.session.username && req.session.guilds && req.session.roles) {
             //console.log("Previous discord auth still active for user id:", req.session.user_id);
             return next();
@@ -170,4 +153,4 @@ async function run() {
 
     // Start listener
     app.listen(config.port, config.interface, () => console.log(`Listening on port ${config.port}...`));
-}
+})();
