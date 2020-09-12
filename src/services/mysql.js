@@ -27,6 +27,7 @@ const getConnection = (config) => {
 };
 
 class MySQLConnector {
+
     constructor(config) {
         this.config = config;
     }

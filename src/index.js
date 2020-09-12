@@ -124,7 +124,7 @@ async function run() {
         }
         */
         if (req.session.user_id && req.session.username && req.session.guilds && req.session.roles) {
-        //console.log("Previous discord auth still active for user id:", req.session.user_id);
+            //console.log("Previous discord auth still active for user id:", req.session.user_id);
             return next();
         }
         if (!config.discord.enabled || req.session.logged_in) {
@@ -140,14 +140,14 @@ async function run() {
             }
             const perms = req.session.perms;
             /*
-        defaultData.home_page = config.pages.home.enabled && perms.home !== false;
-        if (!defaultData.home_page) {
-            // No view map permissions, go to login screen
-            console.error('Invalid home page permissions for user', req.session.user_id);
-            res.redirect('/login');
-            return;
-        }
-        */
+            defaultData.home_page = config.pages.home.enabled && perms.home !== false;
+            if (!defaultData.home_page) {
+                // No view map permissions, go to login screen
+                console.error('Invalid home page permissions for user', req.session.user_id);
+                res.redirect('/login');
+                return;
+            }
+            */
             defaultData.logged_in = true;
             defaultData.username = req.session.username;
             defaultData.home_page = config.pages.home.enabled && perms.home !== false;
