@@ -229,7 +229,10 @@
         altInput: true,
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
-        enableTime: false
+        enableTime: false,
+        onChange: function(selectedDates, dateStr, instance) {
+            getHistoricalStats();
+        }
     });
 
     $("#heatmap-start").flatpickr({
