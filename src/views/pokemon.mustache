@@ -236,14 +236,20 @@
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getHeatmapData();
+        }
     });
 
     $("#heatmap-end").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getHeatmapData();
+        }
     });
 
     $("#commday-start").flatpickr({
