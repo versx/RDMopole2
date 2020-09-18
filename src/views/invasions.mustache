@@ -179,9 +179,15 @@
             "columns": [
                 { "data": "grunt_type" },
                 { "data": "pokestop_name" },
-                { "data": "expires" },
+                { data: {
+                    _: "expires.formatted",
+                    sort: "expires.sort"
+                } },
                 { "data": "city" }
             ],
+        "columnDefs": [
+            { type: 'formatted-num', targets: [2] }
+        ],
             "info": true,
             "order": [[ 2, "asc" ]],
             "search.caseInsensitive": true,

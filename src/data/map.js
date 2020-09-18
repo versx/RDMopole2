@@ -622,7 +622,10 @@ async function getInvasions(filter) {
                 invasions.push({
                     grunt_type: `<img src='./img/grunts/${row.grunt_type}.png' width=auto height=32 />&nbsp;${gruntType}`,
                     pokestop_name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
-                    expires: expires,
+                    expires: { 
+                        "formatted": expires,
+                        "sort": row.incident_expire_timestamp
+                    },
                     city: city
                     // TODO: Updated
                 });
