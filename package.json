@@ -5,8 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "create-locales": "node src/createLocales.js",
     "test": "npx eslint src/**/*.js",
-    "test-fix": "npx eslint src/**/*.js --fix"
+    "test-fix": "npx eslint src/**/*.js --fix",
+    "update": "npm install && npm update pogo-translations && npm run create-locales"
   },
   "repository": {
     "type": "git",
@@ -29,6 +31,7 @@
     "helmet": "^3.22.0",
     "i18n": "^0.9.0",
     "mustache-express": "^1.3.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "pogo-translations": "git+https://github.com/bschultz/pogo-translations.git"
   }
 }

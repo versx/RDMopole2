@@ -5,7 +5,7 @@ const axios = require('axios');
 const router = express.Router();
 
 const DiscordClient = require('../services/discord.js');
-const utils = require('../services/utils.js');
+//const utils = require('../services/utils.js');
 
 const config = require('../config.json');
 const redirect = encodeURIComponent(config.discord.redirectUri);
@@ -22,7 +22,7 @@ router.get('/login', (req, res) => {
     res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${config.discord.clientId}&scope=${scope}&response_type=code&redirect_uri=${redirect}`);
 });
 
-router.get('/callback', catchAsyncErrors(async function(req, res) {
+router.get('/callback', catchAsyncErrors(async (req, res) => {
     if (!req.query.code) {
         throw new Error('NoCodeProvided');
     }
@@ -34,36 +34,30 @@ router.get('/callback', catchAsyncErrors(async function(req, res) {
     
     axios.post('https://discord.com/api/oauth2/token', data, {
         headers: headers
-    }).then(async function(response) {
-        const client = new DiscordClient(response.data.access_token);
-        const user = await client.getUser();
-        if (config.discord.userIdWhitelist.includes(user.id)) {
-            console.log(`Discord user ${user.id} in whitelist, skipping role and guild check...`);
-            req.session.logged_in = true;
-            req.session.user_id = user.id;
-            req.session.username = `${user.username}#${user.discriminator}`;
-            req.session.roles = [];
-            req.session.guilds = config.discord.guilds;
-            res.redirect(`/?token=${response.data.access_token}`);
-            return;
-        }
-        const guilds = await client.getGuilds();
-        const roles = await client.getUserRoles(user.id);
+    }).then(async (response) => {
+        DiscordClient.setAccessToken(response.data.access_token);
+        const user = await DiscordClient.getUser();
+        const guilds = await DiscordClient.getGuilds();
 
         req.session.logged_in = true;
         req.session.user_id = user.id;
         req.session.username = `${user.username}#${user.discriminator}`;
-        req.session.roles = roles;
+        const perms = await DiscordClient.getPerms();
+        req.session.perms = perms;
         req.session.guilds = guilds;
-        if (utils.hasGuild(guilds)) {
+        const valid = perms.home !== false;
+        req.session.valid = valid;
+        if (valid) {
+            console.log(user.id, 'Authenticated successfully.');
             res.redirect(`/?token=${response.data.access_token}`);
         } else {
-            // Not in Discord server(s)
+            // Not in Discord server(s) and/or have required roles to view map
+            console.warn(user.id, 'Not authorized to access map');
             res.redirect('/login');
         }
     }).catch(error => {
-        console.error('Error:', error);
-        throw new Error('UnableToFetchToken');
+        console.error(error);
+        //throw new Error('UnableToFetchToken');
     });
 }));
 

@@ -110,10 +110,13 @@ config.json
 logs
 
 # No geofences
-geofences/
+#geofences/
 
 # No icons
 static/pokemon/
+
+static/locales/*
+!static/locales/_*
 
 # No docker-compose.yml files
 docker-compose.yml

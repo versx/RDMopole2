@@ -3,8 +3,9 @@
 const util = require('util');
 
 const config = require('../config.json');
-const query = require('../services/db.js');
-const queryManual = require('../services/db-manual.js');
+const MySQLConnector = require('../services/mysql.js');
+const db = new MySQLConnector(config.db.scanner);
+const dbManual = new MySQLConnector(config.db.manualdb);
 const GeofenceService = require('../services/geofence.js');
 const locale = require('../services/locale.js');
 const utils = require('../services/utils.js');
@@ -115,7 +116,7 @@ async function getStats() {
     FROM metadata
     LIMIT 1;
     `;
-    const results = await query(sql);
+    const results = await db.query(sql);
     if (results && results.length > 0) {
         return results[0];        
     }
@@ -148,7 +149,7 @@ async function getPokemonIVStats() {
         WHERE expire_timestamp >= UNIX_TIMESTAMP()
     ) AS D
     `;
-    const results = await query(sql);
+    const results = await db.query(sql);
     return results;
 }
 
@@ -158,7 +159,7 @@ async function getPokemonOverviewStats() {
     FROM pokemon_stats
     GROUP BY date
     `;
-    const results = await query(sql);
+    const results = await db.query(sql);
     return results;
 }
 
@@ -172,7 +173,7 @@ async function getTopPokemonIVStats(iv = 100, limit = 10) {
     LIMIT ?
     `;
     const args = [iv, limit];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -201,7 +202,7 @@ async function getTopPokemonStats(lifetime = false, limit = 10) {
         `;
     }
     const args = [limit];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -215,7 +216,7 @@ async function getPokemonHeatmapStats(filter) {
     WHERE pokemon_id = ? AND expire_timestamp >= ? AND expire_timestamp <= ?
     `;
     const args = [pokemonId, start, end];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -227,13 +228,13 @@ async function getShinyRates(filter) {
     WHERE date = ?
     `;
     const args = [date];
-    const shinyResults = await query(sql, args);
+    const shinyResults = await db.query(sql, args);
     sql = `
     SELECT date, pokemon_id, count
     FROM pokemon_iv_stats
     WHERE date = ?
     `;
-    const ivResults = await query(sql, args);
+    const ivResults = await db.query(sql, args);
     if (shinyResults) {
         const getTotalCount = (x) => {
             for (let i = 0; i < ivResults.length; i++) {
@@ -299,7 +300,7 @@ async function getCommunityDayStats(filter) {
         AND first_seen_timestamp <= ?
     `;
     const args = [pokemonId, start, end];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     if (results && results.length > 0) {
         const data = results[0];
         data.pokemon_id = pokemonId;
@@ -334,7 +335,7 @@ async function getPokemonStats(filter) {
     ${all}
     `;
     const args = [start, end, pokemonId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -349,7 +350,7 @@ async function getRaidStats(filter) {
     ${all}
     `;
     const args = [start, end, pokemonId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -384,7 +385,7 @@ async function getQuestStats(filter) {
         reward = '0';
     }
     const args = [reward, start, end];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -399,7 +400,7 @@ async function getInvasionStats(filter) {
     ${all}
     `;
     const args = [start, end, grunt];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -426,7 +427,7 @@ async function getRaids(filter) {
         AND raid_end_timestamp > UNIX_TIMESTAMP()
     ORDER BY raid_end_timestamp
     `;
-    const results = await query(sql);
+    const results = await db.query(sql);
     if (results && results.length > 0) {
         var raids = [];
         results.forEach(function(row) {
@@ -490,7 +491,7 @@ async function getGyms(filter) {
         name IS NOT NULL
         AND enabled = 1;
     `;
-    const results = await query(sql);
+    const results = await db.query(sql);
     if (results && results.length > 0) {
         const gyms = [];
         results.forEach(function(row) {
@@ -549,7 +550,7 @@ async function getQuests(filter) {
         AND name IS NOT NULL
         AND enabled = 1;
     `;
-    const results = await query(sql);
+    const results = await db.query(sql);
     if (results && results.length > 0) {
         const quests = [];
         results.forEach(function(row) {
@@ -596,7 +597,7 @@ async function getInvasions(filter) {
         incident_expire_timestamp > UNIX_TIMESTAMP()
         AND enabled = 1;
     `;
-    const results = await query(sql);
+    const results = await db.query(sql);
     if (results && results.length > 0) {
         const invasions = [];
         results.forEach(function(row) {
@@ -636,7 +637,7 @@ async function getNests(filter) {
     FROM nests
     WHERE name IS NOT NULL
     `;
-    const results = await queryManual(sql);
+    const results = await dbManual.query(sql);
     if (results && results.length > 0) {
         const nests = [];
         results.forEach(function(row) {
@@ -689,7 +690,7 @@ async function getGymDefenders(limit = 10) {
 	LIMIT ?
     `;
     const args = [limit];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -702,7 +703,7 @@ async function getGymsUnderAttack(limit = 10) {
     LIMIT ?
     `;
     const args = [limit];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -713,7 +714,7 @@ async function getNewPokestops(lastHours = 24) {
     WHERE first_seen_timestamp > UNIX_TIMESTAMP(NOW() - INTERVAL ? HOUR)
     `;
     const args = [lastHours];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -724,7 +725,7 @@ async function getNewGyms(lastHours = 24) {
     WHERE first_seen_timestamp > UNIX_TIMESTAMP(NOW() - INTERVAL ? HOUR)
     `;
     const args = [lastHours];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 }
 
@@ -751,7 +752,7 @@ function getPokemonNameIdsList() {
 async function getQuestRewardsList() {
     const rewards = [{ id: 'stardust', name: 'Stardust' }]; // TODO: Localize
     let sql = 'SELECT item_id AS id FROM quest_stats WHERE reward_type=2 GROUP BY item_id';
-    const itemResults = await query(sql);
+    const itemResults = await db.query(sql);
     if (itemResults && itemResults.length > 0) {
         itemResults.forEach(reward => rewards.push({
             id: 'item_' + reward.id,
@@ -759,7 +760,7 @@ async function getQuestRewardsList() {
         }));
     }
     sql = 'SELECT pokemon_id AS id FROM quest_stats WHERE reward_type=7 GROUP BY pokemon_id';
-    const pokemonResults = await query(sql);
+    const pokemonResults = await db.query(sql);
     if (pokemonResults && pokemonResults.length > 0) {
         pokemonResults.forEach(reward => rewards.push({
             id: 'poke_' + reward.id,
