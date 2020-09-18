@@ -93,7 +93,7 @@
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="shiny-date">Date</label>
                         </div>
-                        <input id="shiny-date" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker" onchange="getShinyStats()">
+                        <input id="shiny-date" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker">
                     </div>
                     <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                         <thead class="thead-dark">
@@ -256,14 +256,20 @@
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getCommDayStats();
+        }
     });
 
     $("#commday-end").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getCommDayStats();
+        }
     });
 
     $("#shiny-date").flatpickr({
@@ -271,7 +277,10 @@
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
         enableTime: false,
-        defaultDate: getTodaysDate()
+        defaultDate: getTodaysDate(),
+        onChange: function(selectedDates, dateStr, instance) {
+            getShinyStats();
+        }
     });
 
     var pieOptions = {
