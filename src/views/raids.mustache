@@ -223,14 +223,32 @@
             "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
             "pageLength": 100,
             "columns": [
-                { "data": "pokemon" },
-                { "data": "raid_level" },
-                { "data": "raid_starts" },
-                { "data": "raid_ends" },
+                { data: {
+                    _: "pokemon.formatted",
+                    sort: "pokemon.sort"
+                } },
+                { data: {
+                    _: "raid_level.formatted",
+                    sort: "raid_level.sort"
+                } },
+                { data: {
+                    _: "raid_starts.formatted",
+                    sort: "raid_starts.sort"
+                } },
+                { data: {
+                    _: "raid_ends.formatted",
+                    sort: "raid_ends.sort"
+                } },
                 { "data": "gym_name" },
-                { "data": "team" },
+                { data: {
+                    _: "team.formatted",
+                    sort: "team.sort"
+                } },
                 { "data": "ex_eligible" },
                 { "data": "city" }
+            ],
+            "columnDefs": [
+                { type: 'formatted-num', targets: [0, 1, 2, 3, 5] }
             ],
             "info": true,
             "order": [[ 3, "asc" ]],

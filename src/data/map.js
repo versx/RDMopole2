@@ -467,12 +467,27 @@ async function getRaids(filter) {
                     (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                     const mapLink = util.format(config.google.maps, row.lat, row.lon);
                     raids.push({
-                        pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${name}`,
-                        raid_starts: startTime,
-                        raid_ends: endTime,
-                        raid_level: level === 6 ? 'Mega' : 'Level ' + level,
+                        pokemon: {
+                            formatted: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${name}`,
+                            sort: row.raid_pokemon_id
+                        },
+                        raid_starts: {
+                            formatted: startTime,
+                            sort: starts
+                        },
+                        raid_ends: {
+                            formatted: endTime,
+                            sort: ends
+                        },
+                        raid_level: {
+                            formatted: parseInt(level) === 6 ? 'Mega' : 'Level ' + level,
+                            sort: level
+                        },
                         gym_name: `<a href='${mapLink}' target='_blank'>${gym}</a>`,
-                        team: teamIcon,
+                        team: {
+                            formatted: teamIcon,
+                            sort: row.team_id
+                        },
                         ex_eligible: ex,
                         city: city
                     });
@@ -522,9 +537,18 @@ async function getGyms(filter) {
                 const mapLink = util.format(config.google.maps, row.lat, row.lon);
                 gyms.push({
                     name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
-                    team: teamIcon,
-                    available_slots: slots,
-                    guarding_pokemon_id: pkmnIcon === 'None' ? 'None' : `<img src='${pkmnIcon}' width=auto height=32 />&nbsp;${guard}`,
+                    team: {
+                        formatted: teamIcon,
+                        sort: row.team_id
+                    },
+                    available_slots: {
+                        formatted: slots,
+                        sort: row.availble_slots
+                    },
+                    guarding_pokemon_id: {
+                        formatted: pkmnIcon === 'None' ? 'None' : `<img src='${pkmnIcon}' width=auto height=32 />&nbsp;${guard}`,
+                        sort: row.guarding_pokemon_id
+                    },
                     in_battle: inBattle,
                     city: city
                     // TODO: Updated
@@ -623,8 +647,8 @@ async function getInvasions(filter) {
                     grunt_type: `<img src='./img/grunts/${row.grunt_type}.png' width=auto height=32 />&nbsp;${gruntType}`,
                     pokestop_name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
                     expires: { 
-                        "formatted": expires,
-                        "sort": row.incident_expire_timestamp
+                        formatted: expires,
+                        sort: row.incident_expire_timestamp
                     },
                     city: city
                     // TODO: Updated
