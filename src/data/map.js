@@ -470,7 +470,7 @@ async function getRaids(filter) {
                         pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${name}`,
                         raid_starts: startTime,
                         raid_ends: endTime,
-                        raid_level: 'Level ' + level,
+                        raid_level: level === 6 ? 'Mega' : 'Level ' + level,
                         gym_name: `<a href='${mapLink}' target='_blank'>${gym}</a>`,
                         team: teamIcon,
                         ex_eligible: ex,
