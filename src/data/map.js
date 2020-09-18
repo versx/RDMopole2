@@ -677,7 +677,7 @@ async function getSpawnpoints() {
         despawn_sec
     FROM spawnpoint
     `;
-    const results = await query(sql);
+    const results = await db.query(sql);
     return results;
 }
 
