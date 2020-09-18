@@ -255,10 +255,19 @@ async function getShinyRates(filter) {
             const rate = shiny === 0 || total === 0 ? 0 : Math.round(total / shiny);
             const imageUrl = locale.getPokemonIcon(pokemonId, 0);
             data.push({
-                id: `#${pokemonId}`,
+                id: {
+                    formatted: `#${pokemonId}`,
+                    sort: pokemonId
+                },
                 pokemon: `<img src="${imageUrl}" width="auto" height="32" />&nbsp;${name}`,
-                rate: `1/${rate}`,
-                count: `${shiny.toLocaleString()}/${total.toLocaleString()}`
+                rate: {
+                    formatted: `1/${rate}`,
+                    sort: rate
+                },
+                count: {
+                    formatted: `${shiny.toLocaleString()}/${total.toLocaleString()}`,
+                    sort: total
+                }
             });
         }
         return data;
