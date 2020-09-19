@@ -256,7 +256,7 @@ async function getShinyRates(filter) {
             const imageUrl = await locale.getPokemonIcon(pokemonId);
             data.push({
                 id: `#${pokemonId}`,
-                pokemon: `<img src="${imageUrl}" width="auto" height="32" />&nbsp;${name}`,
+                pokemon: `<img src="${imageUrl}" style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;${name}`,
                 rate: `1/${rate}`,
                 count: `${shiny.toLocaleString()}/${total.toLocaleString()}`
             });
@@ -459,7 +459,7 @@ async function getRaids(filter) {
                     (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                     const mapLink = util.format(config.google.maps, row.lat, row.lon);
                     raids.push({
-                        pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${name}`,
+                        pokemon: `<img src='${imgUrl}' style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;${name}`,
                         raid_starts: startTime,
                         raid_ends: endTime,
                         raid_level: 'Level ' + level,
@@ -516,7 +516,7 @@ async function getGyms(filter) {
                     name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
                     team: teamIcon,
                     available_slots: slots,
-                    guarding_pokemon_id: pkmnIcon === 'None' ? 'None' : `<img src='${pkmnIcon}' width=auto height=32 />&nbsp;${guard}`,
+                    guarding_pokemon_id: pkmnIcon === 'None' ? 'None' : `<img src='${pkmnIcon}' style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;${guard}`,
                     in_battle: inBattle,
                     city: city
                     // TODO: Updated
@@ -569,7 +569,7 @@ async function getQuests(filter) {
                 (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                 const mapLink = util.format(config.google.maps, row.lat, row.lon);
                 quests.push({
-                    reward: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${reward}`,
+                    reward: `<img src='${imgUrl}' style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;${reward}`,
                     quest: task,
                     conditions: conditions,
                     pokestop_name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
@@ -655,7 +655,7 @@ async function getNests(filter) {
                 const mapLink = util.format(config.google.maps, row.lat, row.lon);
                 nests.push({
                     name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
-                    pokemon: `<img src='${imgUrl}' width=auto height=32 />&nbsp;${pokemon}`,
+                    pokemon: `<img src='${imgUrl}' style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;${pokemon}`,
                     count: count,
                     average: average,
                     city: city
