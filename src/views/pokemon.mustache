@@ -492,6 +492,12 @@
         "responsive": true
     });
 
+    $('.nav-link').on('click', function () {
+        setTimeout(function () {
+            table.fixedHeader.adjust();
+        }, 200);
+    });
+
     function getOverviewStats() {
         $.ajax({
             url: "/api/pokemon/overview",
