@@ -30,7 +30,7 @@ router.get(['/', '/index'], async function(req, res) {
     const lifetime = await map.getTopPokemonStats(true, 10);
     const today = await map.getTopPokemonStats(false, 10);
 
-    const defenders = Promise.all(topGymDefenders.map(async x => {
+    const defenders = await Promise.all(topGymDefenders.map(async x => {
         return {
             id: x.guarding_pokemon_id,
             name: pokedex[x.guarding_pokemon_id],
@@ -38,7 +38,7 @@ router.get(['/', '/index'], async function(req, res) {
             image_url: await locale.getPokemonIcon(x.guarding_pokemon_id)
         };
     }));
-    data.top10_100iv_pokemon = Promise.all(top10_100IVStats.map(async x => {
+    data.top10_100iv_pokemon = await Promise.all(top10_100IVStats.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
             name: pokedex[x.pokemon_id],
@@ -47,7 +47,7 @@ router.get(['/', '/index'], async function(req, res) {
             image_url: await locale.getPokemonIcon(x.pokemon_id)
         };
     }));
-    data.lifetime = Promise.all(lifetime.map(async x => {
+    data.lifetime = await Promise.all(lifetime.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
             name: pokedex[x.pokemon_id],
@@ -56,7 +56,7 @@ router.get(['/', '/index'], async function(req, res) {
             image_url: await locale.getPokemonIcon(x.pokemon_id)
         };
     }));
-    data.today = Promise.all(today.map(async x => {
+    data.today = await Promise.all(today.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
             name: pokedex[x.pokemon_id],
