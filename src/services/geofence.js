@@ -32,12 +32,12 @@ class GeofenceService {
         }
         this.loadGeofences();
     }
-    loadGeofences() {
+    loadGeofences(filter = '.txt') {
         const files = fs.readdirSync(geofencesDir);
         if (files) {
             for (var i = 0; i < files.length; i++) {
                 const file = files[i];
-                if (file !== '.' && file !== '..') {
+                if (file !== '.' && file !== '..' && file.indexOf(filter) >= 0) {
                     const filepath = path.resolve(geofencesDir, file);
                     const geofence = this.loadGeofence(filepath);
                     if (geofence) {
