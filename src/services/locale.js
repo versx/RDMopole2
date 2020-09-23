@@ -87,7 +87,7 @@ class Localizer {
             }
             return string;
         } else {
-            return i18n('quest_reward_' + id);
+            string = pokedex[info.pokemon_id];
         }
     }
 
