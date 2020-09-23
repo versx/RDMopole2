@@ -2,13 +2,12 @@
 
 const express = require('express');
 const router = express.Router();
-const i18n = require('i18n');
 
 const config = require('../config.json');
 const defaultData = require('../data/default.js');
 const map = require('../data/map.js');
 const GeofenceService = require('../services/geofence.js');
-const locale = require('../services/locale.js');
+const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
 const pokedex = require('../../static/data/pokedex.json');
 
@@ -22,7 +21,7 @@ router.get(['/', '/index'], async function(req, res) {
     const topGymDefenders = await map.getGymDefenders(10);
     const gymsUnderAttack = await map.getGymsUnderAttack(15);
     gymsUnderAttack.forEach(x => {
-        x.team = locale.getTeamName(x.team_id).toLowerCase();
+        x.team = Localizer.instance.getTeamName(x.team_id).toLowerCase();
         x.slots_available = x.availble_slots === 0 ? 'Full' : x.availble_slots + '/6';
         x.raid_battle_timestamp = utils.toHHMMSS(x.raid_battle_timestamp * 1000);
     });
@@ -35,7 +34,7 @@ router.get(['/', '/index'], async function(req, res) {
             id: x.guarding_pokemon_id,
             name: pokedex[x.guarding_pokemon_id],
             count: (x.count || 0).toLocaleString(),
-            image_url: locale.getPokemonIcon(x.guarding_pokemon_id, 0)
+            image_url: Localizer.instance.getPokemonIcon(x.guarding_pokemon_id, 0)
         };
     });
     data.top10_100iv_pokemon = top10_100IVStats.map(x => {
@@ -44,7 +43,7 @@ router.get(['/', '/index'], async function(req, res) {
             name: pokedex[x.pokemon_id],
             iv: x.iv,
             count: (x.count || 0).toLocaleString(),
-            image_url: locale.getPokemonIcon(x.pokemon_id)
+            image_url: Localizer.instance.getPokemonIcon(x.pokemon_id)
         };
     });
     data.lifetime = lifetime.map(x => {
@@ -53,7 +52,7 @@ router.get(['/', '/index'], async function(req, res) {
             name: pokedex[x.pokemon_id],
             shiny: (x.shiny || 0).toLocaleString(),
             count: (x.count || 0).toLocaleString(),
-            image_url: locale.getPokemonIcon(x.pokemon_id)
+            image_url: Localizer.instance.getPokemonIcon(x.pokemon_id)
         };
     });
     data.today = today.map(x => {
@@ -62,7 +61,7 @@ router.get(['/', '/index'], async function(req, res) {
             name: pokedex[x.pokemon_id],
             shiny: (x.shiny || 0).toLocaleString(),
             count: (x.count || 0).toLocaleString(),
-            image_url: locale.getPokemonIcon(x.pokemon_id)
+            image_url: Localizer.instance.getPokemonIcon(x.pokemon_id)
         };
     });
     data.gym_defenders = defenders;
@@ -172,7 +171,7 @@ if (config.pages.invasions.enabled) {
         const data = defaultData;
         const gruntTypes = [];
         for (let i = 0; i <= 50; i++) {
-            const grunt = i18n.__('grunt_' + i);
+            const grunt = Localizer.instance.getGruntType(i);
             gruntTypes.push({ 'id': i, 'name': grunt });
         }
         data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
