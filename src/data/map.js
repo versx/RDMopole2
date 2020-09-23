@@ -429,7 +429,11 @@ async function getRaids(filter) {
         name,
         team_id,
         ex_raid_eligible,
-        updated
+        updated,
+        raid_pokemon_form,
+        raid_pokemon_gender,
+        raid_pokemon_costume,
+        raid_pokemon_evolution
     FROM gym
     WHERE
         raid_pokemon_id IS NOT NULL
@@ -442,7 +446,7 @@ async function getRaids(filter) {
         var raids = [];
         for (const row of results) {
             const name = row.raid_pokemon_id === 0 ? 'Egg' : `${pokedex[row.raid_pokemon_id]} (#${row.raid_pokemon_id})`;
-            const imgUrl = await Localizer.instance.getRaidIcon(row.raid_pokemon_id, row.raid_level);
+            const imgUrl = await Localizer.instance.getRaidIcon(row.raid_pokemon_id, row.raid_level, row.raid_pokemon_form, row.raid_pokemon_evolution, row.raid_pokemon_gender);
             const geofence = svc.getGeofence(row.lat, row.lon);
             const team = Localizer.instance.getTeamName(row.team_id);
             const teamIcon = getTeamIcon(row.team_id);

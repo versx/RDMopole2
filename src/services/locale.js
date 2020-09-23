@@ -209,9 +209,9 @@ class Localizer {
         return `${config.urls.images.pokemon}/${await this.resolvePokemonIcon(pokemonId, form, evolution, gender, costume, shiny)}.png`;
     }
 
-    async getRaidIcon(pokemonId, raidLevel) {
+    async getRaidIcon(pokemonId, raidLevel, form, evolution, gender, costume) {
         if (pokemonId > 0) {
-            return await this.getPokemonIcon(pokemonId, 0);
+            return await this.getPokemonIcon(pokemonId, form, evolution, gender, costume);
         }
         return util.format(config.urls.images.eggs, raidLevel);
     }
