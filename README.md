@@ -1,6 +1,11 @@
 ![Node.js CI](https://github.com/versx/RDMopole2/workflows/Node.js%20CI/badge.svg)
 ![Lint](https://github.com/versx/RDMopole2/workflows/Lint/badge.svg)  
-# RDM-opole2  
+
+[![GitHub Release](https://img.shields.io/github/release/WatWowMap/MapJS.svg)](https://github.com/WatWowMap/MapJS/releases/)
+[![GitHub Contributors](https://img.shields.io/github/contributors/WatWowMap/MapJS.svg)](https://github.com/WatWowMap/MapJS/graphs/contributors/)
+[![Discord](https://img.shields.io/discord/552003258000998401.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zZ9h9Xa)  
+
+# RDMopole2  
 
 ## Installation  
 1. Clone repository `git clone https://github.com/versx/RDMopole2`  
