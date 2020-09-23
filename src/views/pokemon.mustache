@@ -646,12 +646,12 @@
 
                 removeDataset(scanChart);
                 var scanData = {
-                data: [result.data.stats.total || 0, result.data.stats.with_iv || 0],
-                backgroundColor: [
-                    'green',
-                    'blue'
-                ],
-                label: 'Seen'
+                    data: [result.data.stats.total || 0, result.data.stats.with_iv || 0],
+                    backgroundColor: [
+                        'green',
+                        'red'
+                    ],
+                    label: 'Seen'
                 };
                 addDataset(scanChart, [], scanData);
         
