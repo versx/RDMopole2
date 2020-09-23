@@ -645,11 +645,14 @@
                 $("#evo3-text").text(result.data.stats.evo3.name);
 
                 removeDataset(scanChart);
+                var total = result.data.stats.total || 0;
+                var withIV = result.data.stats.with_iv || 0;
+                var withoutIV = total - withIV;
                 var scanData = {
-                    data: [result.data.stats.total || 0, result.data.stats.with_iv || 0],
+                    data: [withoutIV, withIV],
                     backgroundColor: [
+                        'red',
                         'green',
-                        'red'
                     ],
                     label: 'Seen'
                 };
@@ -674,7 +677,6 @@
                 addDataset(levelChart, [], levelData);
         
                 removeDataset(ivChart);
-        
                 addDataset(ivChart, [], { data: [result.data.stats.iv_0], backgroundColor: 'black', label: '0% IV' });
                 addDataset(ivChart, [], { data: [result.data.stats.iv_1_9], backgroundColor: 'brown', label: '1-9% IV' });
                 addDataset(ivChart, [], { data: [result.data.stats.iv_10_19], backgroundColor: 'pink', label: '10-19% IV' });
