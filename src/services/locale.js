@@ -178,16 +178,16 @@ async function resolvePokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0
     const shinySuffixes = shiny ? ['-shiny', ''] : [''];
     const lookup = await availablePokemon;
     for (const evolutionSuffix of evolutionSuffixes) {
-    for (const formSuffix of formSuffixes) {
-    for (const costumeSuffix of costumeSuffixes) {
-    for (const genderSuffix of genderSuffixes) {
-    for (const shinySuffix of shinySuffixes) {
-        const result = `${pokemonId}${evolutionSuffix}${formSuffix}${costumeSuffix}${genderSuffix}${shinySuffix}`;
-        if (lookup.has(result)) return result;
-    }
-    }
-    }
-    }
+        for (const formSuffix of formSuffixes) {
+            for (const costumeSuffix of costumeSuffixes) {
+                for (const genderSuffix of genderSuffixes) {
+                    for (const shinySuffix of shinySuffixes) {
+                        const result = `${pokemonId}${evolutionSuffix}${formSuffix}${costumeSuffix}${genderSuffix}${shinySuffix}`;
+                        if (lookup.has(result)) return result;
+                    }
+                }
+            }
+        }
     }
     return '0'; // substitute
 }
