@@ -29,7 +29,7 @@ If you want to host your images locally where RDM-opole2 resides, change your `p
 Pokemon Id is always 3 digits i.e `007`, `047`, `147` although form will be whatever the form number is i.e `12`, `195`, `4032` etc  
 ```
 "images": {
-    "pokemon": "../img/pokemon/pokemon_icon_%s_%s.png",
+    "pokemon": "https://mygod.github.io/pokicons/v2",
     "eggs": "../img/eggs/%s.png"
 },
 ```

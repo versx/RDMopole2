@@ -1,5 +1,6 @@
 'use strict';
 
+const axios = require('axios');
 const util = require('util');
 const i18n = require('i18n');
 
@@ -164,23 +165,45 @@ function getQuestCondition(condition) {
     /* eslint-enable no-unused-vars */
 }
 
+const availablePokemon = (async () => {
+    const response = await axios.get(config.urls.images.pokemon + '/index.json');
+    return new Set(response.data);
+})();
 
-function getPokemonIcon(pokemonId, formId) {
-    const padId = (pokemonId + '').padStart(3, '0');
-    if (formId > 0) {
-        return util.format(config.urls.images.pokemon, padId, formId);
+async function resolvePokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0, costume = 0, shiny = false) {
+    const evolutionSuffixes = evolution ? ['-e' + evolution, ''] : [''];
+    const formSuffixes = form ? ['-f' + form, ''] : [''];
+    const costumeSuffixes = costume ? ['-c' + costume, ''] : [''];
+    const genderSuffixes = gender ? ['-g' + gender, ''] : [''];
+    const shinySuffixes = shiny ? ['-shiny', ''] : [''];
+    const lookup = await availablePokemon;
+    for (const evolutionSuffix of evolutionSuffixes) {
+    for (const formSuffix of formSuffixes) {
+    for (const costumeSuffix of costumeSuffixes) {
+    for (const genderSuffix of genderSuffixes) {
+    for (const shinySuffix of shinySuffixes) {
+        const result = `${pokemonId}${evolutionSuffix}${formSuffix}${costumeSuffix}${genderSuffix}${shinySuffix}`;
+        if (lookup.has(result)) return result;
     }
-    return util.format(config.urls.images.pokemon, padId, '00');
+    }
+    }
+    }
+    }
+    return '0'; // substitute
 }
 
-function getRaidIcon(pokemonId, raidLevel) {
+async function getPokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0, costume = 0, shiny = false) {
+    return `${config.urls.images.pokemon}/${await resolvePokemonIcon(pokemonId, form, evolution, gender, costume, shiny)}.png`;
+}
+
+async function getRaidIcon(pokemonId, raidLevel) {
     if (pokemonId > 0) {
-        return getPokemonIcon(pokemonId, 0);
+        return await getPokemonIcon(pokemonId);
     }
     return util.format(config.urls.images.eggs, raidLevel);
 }
 
-function getQuestIcon(rewards) {
+async function getQuestIcon(rewards) {
     let iconIndex = 0;
     const obj = JSON.parse(rewards);
     const reward = obj[0];
@@ -202,7 +225,7 @@ function getQuestIcon(rewards) {
     case 6://Quest
         break;
     case 7://Pokemon
-        return getPokemonIcon((reward.info.pokemon_id + '').padStart(3, '0'), 0);
+        return await getPokemonIcon(reward.info.pokemon_id);
     default: //Unset/Unknown
         break;
     }

@@ -30,41 +30,41 @@ router.get(['/', '/index'], async function(req, res) {
     const lifetime = await map.getTopPokemonStats(true, 10);
     const today = await map.getTopPokemonStats(false, 10);
 
-    const defenders = topGymDefenders.map(x => {
+    const defenders = await Promise.all(topGymDefenders.map(async x => {
         return {
             id: x.guarding_pokemon_id,
             name: pokedex[x.guarding_pokemon_id],
             count: (x.count || 0).toLocaleString(),
-            image_url: locale.getPokemonIcon(x.guarding_pokemon_id, 0)
+            image_url: await locale.getPokemonIcon(x.guarding_pokemon_id)
         };
-    });
-    data.top10_100iv_pokemon = top10_100IVStats.map(x => {
+    }));
+    data.top10_100iv_pokemon = await Promise.all(top10_100IVStats.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
             name: pokedex[x.pokemon_id],
             iv: x.iv,
             count: (x.count || 0).toLocaleString(),
-            image_url: locale.getPokemonIcon(x.pokemon_id)
+            image_url: await locale.getPokemonIcon(x.pokemon_id)
         };
-    });
-    data.lifetime = lifetime.map(x => {
+    }));
+    data.lifetime = await Promise.all(lifetime.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
             name: pokedex[x.pokemon_id],
             shiny: (x.shiny || 0).toLocaleString(),
             count: (x.count || 0).toLocaleString(),
-            image_url: locale.getPokemonIcon(x.pokemon_id)
+            image_url: await locale.getPokemonIcon(x.pokemon_id)
         };
-    });
-    data.today = today.map(x => {
+    }));
+    data.today = await Promise.all(today.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
             name: pokedex[x.pokemon_id],
             shiny: (x.shiny || 0).toLocaleString(),
             count: (x.count || 0).toLocaleString(),
-            image_url: locale.getPokemonIcon(x.pokemon_id)
+            image_url: await locale.getPokemonIcon(x.pokemon_id)
         };
-    });
+    }));
     data.gym_defenders = defenders;
     data.gyms_under_attack = gymsUnderAttack;
     data.new_pokestops = newPokestops;
