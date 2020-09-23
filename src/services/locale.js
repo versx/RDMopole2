@@ -17,9 +17,26 @@ class Localizer {
         const localeData = fs.readFileSync(filepath);
         let values = JSON.parse(localeData);
         i18n.translator.add(values);
-        const availablePokemon = (async () => {
-        const response = await axios.get(config.urls.images.pokemon + '/index.json');
-            return new Set(response.data);
+        this.availablePokemon = (async () => {
+            if (config.urls.images.pokemon.includes('http')) {
+                // Remote repo
+                const response = await axios.get(config.urls.images.pokemon + '/index.json');
+                return new Set(response.data);
+            } else {
+                // Locale repo
+                const pokemonIconsDir = path.resolve(__dirname, '../../static/' + config.urls.images.pokemon);
+                const files = await fs.promises.readdir(pokemonIconsDir);
+                if (files) {
+                    const availableForms = [];
+                    files.forEach(file => {
+                        const match = /^(.+)\.png$/.exec(file);
+                        if (match !== null) {
+                            availableForms.push(match[1]);
+                        }
+                    });
+                    return new Set(availableForms);
+                }
+            }
         })();
     }
 
@@ -86,9 +103,8 @@ class Localizer {
                 string += ' (Shiny)';
             }
             return string;
-        } else {
-            string = pokedex[info.pokemon_id];
         }
+        return i18n('quest_reward_' + id);
     }
 
     getQuestConditions(conditions) {
@@ -184,19 +200,18 @@ class Localizer {
                 categoriesString += formatted + this.getCharacterCategoryName(characterCategory);
             }
             return i18n('quest_condition_27_formatted', { categories: categoriesString });
-        } else {
-            return i18n('quest_condition_' + id);
         }
+        return i18n('quest_condition_' + id);
     }
 
     /* eslint-enable no-unused-vars */
-    getPokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0, costume = 0, shiny = false) {
+    async getPokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0, costume = 0, shiny = false) {
         return `${config.urls.images.pokemon}/${await this.resolvePokemonIcon(pokemonId, form, evolution, gender, costume, shiny)}.png`;
     }
 
-    getRaidIcon(pokemonId, raidLevel) {
+    async getRaidIcon(pokemonId, raidLevel) {
         if (pokemonId > 0) {
-            return this.getPokemonIcon(pokemonId, 0);
+            return await this.getPokemonIcon(pokemonId, 0);
         }
         return util.format(config.urls.images.eggs, raidLevel);
     }
@@ -207,7 +222,7 @@ class Localizer {
         const costumeSuffixes = costume ? ['-c' + costume, ''] : [''];
         const genderSuffixes = gender ? ['-g' + gender, ''] : [''];
         const shinySuffixes = shiny ? ['-shiny', ''] : [''];
-        const lookup = await availablePokemon;
+        const lookup = await this.availablePokemon;
         for (const evolutionSuffix of evolutionSuffixes) {
             for (const formSuffix of formSuffixes) {
                 for (const costumeSuffix of costumeSuffixes) {
@@ -223,7 +238,7 @@ class Localizer {
         return '0'; // substitute
     }
 
-    getQuestIcon(rewards) {
+    async getQuestIcon(rewards) {
         let iconIndex = 0;
         const obj = JSON.parse(rewards);
         const reward = obj[0];
@@ -250,5 +265,6 @@ class Localizer {
         }
         return `./img/quests/${iconIndex}.png`;
     }
+}
 
 module.exports = Localizer;
