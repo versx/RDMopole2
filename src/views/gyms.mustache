@@ -170,11 +170,23 @@
             "pageLength": 100,
             "columns": [
                 { "data": "name" },
-                { "data": "team" },
-                { "data": "available_slots" },
-                { "data": "guarding_pokemon_id" },
+                { data: {
+                    _: "team.formatted",
+                    sort: "team.sort"
+                } },
+                { data: {
+                    _: "available_slots.formatted",
+                    sort: "available_slots.sort"
+                } },
+                { data: {
+                    _: "guarding_pokemon_id.formatted",
+                    sort: "guarding_pokemon_id.sort"
+                } },
                 { "data": "in_battle" },
                 { "data": "city" }
+            ],
+            "columnDefs": [
+                { type: 'formatted-num', targets: [1, 2, 3] }
             ],
             "info": true,
             "order": [[ 0, "asc" ]],

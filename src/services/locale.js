@@ -1,5 +1,6 @@
 'use strict';
 
+const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
@@ -16,6 +17,10 @@ class Localizer {
         const localeData = fs.readFileSync(filepath);
         let values = JSON.parse(localeData);
         i18n.translator.add(values);
+        const availablePokemon = (async () => {
+        const response = await axios.get(config.urls.images.pokemon + '/index.json');
+            return new Set(response.data);
+        })();
     }
 
     getGruntType(gruntType) {
@@ -182,15 +187,11 @@ class Localizer {
         } else {
             return i18n('quest_condition_' + id);
         }
-        /* eslint-enable no-unused-vars */
     }
 
-    getPokemonIcon(pokemonId, formId) {
-        const padId = (pokemonId + '').padStart(3, '0');
-        if (formId > 0) {
-            return util.format(config.urls.images.pokemon, padId, formId);
-        }
-        return util.format(config.urls.images.pokemon, padId, '00');
+    /* eslint-enable no-unused-vars */
+    getPokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0, costume = 0, shiny = false) {
+        return `${config.urls.images.pokemon}/${await this.resolvePokemonIcon(pokemonId, form, evolution, gender, costume, shiny)}.png`;
     }
 
     getRaidIcon(pokemonId, raidLevel) {
@@ -200,34 +201,54 @@ class Localizer {
         return util.format(config.urls.images.eggs, raidLevel);
     }
 
+    async resolvePokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0, costume = 0, shiny = false) {
+        const evolutionSuffixes = evolution ? ['-e' + evolution, ''] : [''];
+        const formSuffixes = form ? ['-f' + form, ''] : [''];
+        const costumeSuffixes = costume ? ['-c' + costume, ''] : [''];
+        const genderSuffixes = gender ? ['-g' + gender, ''] : [''];
+        const shinySuffixes = shiny ? ['-shiny', ''] : [''];
+        const lookup = await availablePokemon;
+        for (const evolutionSuffix of evolutionSuffixes) {
+            for (const formSuffix of formSuffixes) {
+                for (const costumeSuffix of costumeSuffixes) {
+                    for (const genderSuffix of genderSuffixes) {
+                        for (const shinySuffix of shinySuffixes) {
+                            const result = `${pokemonId}${evolutionSuffix}${formSuffix}${costumeSuffix}${genderSuffix}${shinySuffix}`;
+                            if (lookup.has(result)) return result;
+                        }
+                    }
+                }
+            }
+        }
+        return '0'; // substitute
+    }
+
     getQuestIcon(rewards) {
         let iconIndex = 0;
         const obj = JSON.parse(rewards);
         const reward = obj[0];
         switch (reward.type) {
-        case 1://Experience
-            iconIndex = -2;
-            break;
-        case 2://Item
-            iconIndex = reward.info.item_id;
-            break;
-        case 3://Stardust
-            iconIndex = -1;
-            break;
-        case 4://Candy
-            iconIndex = 1301;
-            break;
-        case 5://AvatarClothing
-            break;
-        case 6://Quest
-            break;
-        case 7://Pokemon
-            return this.getPokemonIcon((reward.info.pokemon_id + '').padStart(3, '0'), 0);
-        default: //Unset/Unknown
-            break;
+            case 1://Experience
+                iconIndex = -2;
+                break;
+            case 2://Item
+                iconIndex = reward.info.item_id;
+                break;
+            case 3://Stardust
+                iconIndex = -1;
+                break;
+            case 4://Candy
+                iconIndex = 1301;
+                break;
+            case 5://AvatarClothing
+            case 6://Quest
+                break;
+            case 7://Pokemon
+                return await this.getPokemonIcon(reward.info.pokemon_id);
+            default: //Unset/Unknown
+                break;
         }
         return `./img/quests/${iconIndex}.png`;
     }
-}
 
 module.exports = Localizer;

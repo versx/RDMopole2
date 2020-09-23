@@ -63,16 +63,16 @@ const utils = require('./services/utils.js');
         app.use(function(err, req, res, next) {
         /* eslint-enable no-unused-vars */
             switch (err.message) {
-            case 'NoCodeProvided':
-                return res.status(400).send({
-                    status: 'ERROR',
-                    error: err.message,
-                });
-            default:
-                return res.status(500).send({
-                    status: 'ERROR',
-                    error: err.message,
-                });
+                case 'NoCodeProvided':
+                    return res.status(400).send({
+                        status: 'ERROR',
+                        error: err.message,
+                    });
+                default:
+                    return res.status(500).send({
+                        status: 'ERROR',
+                        error: err.message,
+                    });
             }
         });
     }

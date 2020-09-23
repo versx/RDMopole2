@@ -93,7 +93,7 @@
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="shiny-date">Date</label>
                         </div>
-                        <input id="shiny-date" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker" onchange="getShinyStats()">
+                        <input id="shiny-date" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker">
                     </div>
                     <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                         <thead class="thead-dark">
@@ -185,15 +185,15 @@
                                     <div class="col-md-8">
                                         <div class="row text-center">
                                             <div class="col-4">
-                                                <img id="evo1" src="#" height=72 width=72/><br>
+                                                <img id="evo1" src="#" style="width: 72px; height: 72px; object-fit: contain;"/><br>
                                                 <b id="evo1-text"></b>
                                             </div>
                                             <div class="col-4">
-                                                <img id="evo2" src="#" height=72 width=72/><br>
+                                                <img id="evo2" src="#" style="width: 72px; height: 72px; object-fit: contain;"/><br>
                                                 <b id="evo2-text"></b>
                                             </div>
                                             <div class="col-4 justify-content-end">
-                                                <img id="evo3" src="#" height=72 width=72/><br>
+                                                <img id="evo3" src="#" style="width: 72px; height: 72px; object-fit: contain;"/><br>
                                                 <b id="evo3-text"></b>
                                             </div>
                                         </div>
@@ -229,35 +229,50 @@
         altInput: true,
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
-        enableTime: false
+        enableTime: false,
+        onChange: function(selectedDates, dateStr, instance) {
+            getHistoricalStats();
+        }
     });
 
     $("#heatmap-start").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getHeatmapData();
+        }
     });
 
     $("#heatmap-end").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getHeatmapData();
+        }
     });
 
     $("#commday-start").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getCommDayStats();
+        }
     });
 
     $("#commday-end").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getCommDayStats();
+        }
     });
 
     $("#shiny-date").flatpickr({
@@ -265,7 +280,10 @@
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
         enableTime: false,
-        defaultDate: getTodaysDate()
+        defaultDate: getTodaysDate(),
+        onChange: function(selectedDates, dateStr, instance) {
+            getShinyStats();
+        }
     });
 
     var pieOptions = {
@@ -481,15 +499,33 @@
         "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
         "pageLength": 100,
         "columns": [
-            { "data": "id" },
+            { data: {
+                _: "id.formatted",
+                sort: "id.sort"
+            } },
             { "data": "pokemon" },
-            { "data": "rate" },
-            { "data": "count" },
+            { data: {
+                _: "rate.formatted",
+                sort: "rate.sort"
+            } },
+            { data: {
+                _: "count.formatted",
+                sort: "count.sort"
+            } },
+        ],
+        "columnDefs": [
+            { type: 'formatted-num', targets: [0, 2, 3] }
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "responsive": true
+    });
+
+    $('.nav-link').on('click', function () {
+        setTimeout(function () {
+            table.fixedHeader.adjust();
+        }, 200);
     });
 
     function getOverviewStats() {
