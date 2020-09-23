@@ -208,26 +208,26 @@ async function getQuestIcon(rewards) {
     const obj = JSON.parse(rewards);
     const reward = obj[0];
     switch (reward.type) {
-    case 1://Experience
-        iconIndex = -2;
-        break;
-    case 2://Item
-        iconIndex = reward.info.item_id;
-        break;
-    case 3://Stardust
-        iconIndex = -1;
-        break;
-    case 4://Candy
-        iconIndex = 1301;
-        break;
-    case 5://AvatarClothing
-        break;
-    case 6://Quest
-        break;
-    case 7://Pokemon
-        return await getPokemonIcon(reward.info.pokemon_id);
-    default: //Unset/Unknown
-        break;
+        case 1://Experience
+            iconIndex = -2;
+            break;
+        case 2://Item
+            iconIndex = reward.info.item_id;
+            break;
+        case 3://Stardust
+            iconIndex = -1;
+            break;
+        case 4://Candy
+            iconIndex = 1301;
+            break;
+        case 5://AvatarClothing
+            break;
+        case 6://Quest
+            break;
+        case 7://Pokemon
+            return await getPokemonIcon(reward.info.pokemon_id);
+        default: //Unset/Unknown
+            break;
     }
     return `./img/quests/${iconIndex}.png`;
 }

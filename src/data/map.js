@@ -755,14 +755,14 @@ async function getNewGyms(lastHours = 24) {
 function getTeamIcon(teamId) {
     var teamName = locale.getTeamName(teamId);
     switch (teamId) {
-    case 1:
-        return '<img src="./img/teams/mystic.png" width=auto height=32 />&nbsp;' + teamName;
-    case 2:
-        return '<img src="./img/teams/valor.png" width=auto height=32 />&nbsp;' + teamName;
-    case 3:
-        return '<img src="./img/teams/instinct.png" width=auto height=32 />&nbsp;' + teamName;
-    default:
-        return '<img src="./img/teams/neutral.png" width=auto height=32 />&nbsp;' + teamName;
+        case 1:
+            return '<img src="./img/teams/mystic.png" width=auto height=32 />&nbsp;' + teamName;
+        case 2:
+            return '<img src="./img/teams/valor.png" width=auto height=32 />&nbsp;' + teamName;
+        case 3:
+            return '<img src="./img/teams/instinct.png" width=auto height=32 />&nbsp;' + teamName;
+        default:
+            return '<img src="./img/teams/neutral.png" width=auto height=32 />&nbsp;' + teamName;
     }
 }
 
