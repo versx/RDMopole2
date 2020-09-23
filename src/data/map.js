@@ -7,7 +7,7 @@ const MySQLConnector = require('../services/mysql.js');
 const db = new MySQLConnector(config.db.scanner);
 const dbManual = new MySQLConnector(config.db.manualdb);
 const GeofenceService = require('../services/geofence.js');
-const locale = require('../services/locale.js');
+const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
 const svc = new GeofenceService.GeofenceService();
 
@@ -253,7 +253,7 @@ async function getShinyRates(filter) {
             const shiny = (row.count || 0);
             const total = (getTotalCount(pokemonId) || 0);
             const rate = shiny === 0 || total === 0 ? 0 : Math.round(total / shiny);
-            const imageUrl = await locale.getPokemonIcon(pokemonId);
+            const imageUrl = await Localizer.instance.getPokemonIcon(pokemonId);
             data.push({
                 id: {
                     formatted: `#${pokemonId}`,
@@ -318,16 +318,16 @@ async function getCommunityDayStats(filter) {
         const id = parseInt(pokemonId);
         data.evo1 = {
             name: `${pokedex[id]} (#${id})`,
-            image: await locale.getPokemonIcon(id)
+            image: await Localizer.instance.getPokemonIcon(id)
         };
         // todo: fix this?
         data.evo2 = {
             name: `${pokedex[id + 1]} (#${id + 1})`,
-            image: await locale.getPokemonIcon(id + 1)
+            image: await Localizer.instance.getPokemonIcon(id + 1)
         };
         data.evo3 = {
             name: `${pokedex[id + 2]} (#${id + 2})`,
-            image: await locale.getPokemonIcon(id + 2)
+            image: await Localizer.instance.getPokemonIcon(id + 1)
         };
         return data;
     }
@@ -429,7 +429,11 @@ async function getRaids(filter) {
         name,
         team_id,
         ex_raid_eligible,
-        updated
+        updated,
+        raid_pokemon_form,
+        raid_pokemon_gender,
+        raid_pokemon_costume,
+        raid_pokemon_evolution
     FROM gym
     WHERE
         raid_pokemon_id IS NOT NULL
@@ -442,9 +446,9 @@ async function getRaids(filter) {
         var raids = [];
         for (const row of results) {
             const name = row.raid_pokemon_id === 0 ? 'Egg' : `${pokedex[row.raid_pokemon_id]} (#${row.raid_pokemon_id})`;
-            const imgUrl = await locale.getRaidIcon(row.raid_pokemon_id, row.raid_level);
+            const imgUrl = await Localizer.instance.getRaidIcon(row.raid_pokemon_id, row.raid_level, row.raid_pokemon_form, row.raid_pokemon_evolution, row.raid_pokemon_gender);
             const geofence = svc.getGeofence(row.lat, row.lon);
-            const team = locale.getTeamName(row.team_id);
+            const team = Localizer.instance.getTeamName(row.team_id);
             const teamIcon = getTeamIcon(row.team_id);
             const gym = row.name;
             const level = '' + row.raid_level;
@@ -521,11 +525,11 @@ async function getGyms(filter) {
         const gyms = [];
         for (const row of results) {
             const name = row.name;
-            const team = locale.getTeamName(row.team_id);
+            const team = Localizer.instance.getTeamName(row.team_id);
             const teamIcon = getTeamIcon(row.team_id);
             const slots = row.availble_slots === 0 ? 'Full' : row.availble_slots === 6 ? 'Empty' : '' + row.availble_slots;
             const guard = row.guarding_pokemon_id === 0 ? 'None' : pokedex[row.guarding_pokemon_id];
-            const pkmnIcon = guard === 'None' ? 'None' : await locale.getPokemonIcon(row.guarding_pokemon_id);
+            const pkmnIcon = guard === 'None' ? 'None' : await Localizer.instance.getPokemonIcon(row.guarding_pokemon_id);
             const geofence = svc.getGeofence(row.lat, row.lon);
             const city = geofence ? geofence.name : 'Unknown';
             const inBattle = row.in_battle ? 'Yes' : 'No';
@@ -589,10 +593,10 @@ async function getQuests(filter) {
         const quests = [];
         for (const row of results) {
             const name = row.name;
-            const imgUrl = await locale.getQuestIcon(row.quest_rewards);
-            const reward = locale.getQuestReward(row.quest_rewards);
-            const task = locale.getQuestTask(row.quest_type, row.quest_target);
-            const conditions = locale.getQuestConditions(row.quest_conditions);
+            const imgUrl = await Localizer.instance.getQuestIcon(row.quest_rewards);
+            const reward = Localizer.instance.getQuestReward(row.quest_rewards);
+            const task = Localizer.instance.getQuestTask(row.quest_type, row.quest_target);
+            const conditions = Localizer.instance.getQuestConditions(row.quest_conditions);
             const geofence = svc.getGeofence(row.lat, row.lon);
             const pokestop = row.name;
             const city = geofence ? geofence.name : 'Unknown';
@@ -636,7 +640,7 @@ async function getInvasions(filter) {
         const invasions = [];
         results.forEach(function(row) {
             const name = row.name || '';
-            const gruntType = locale.getGruntType(row.grunt_type);
+            const gruntType = Localizer.instance.getGruntType(row.grunt_type);
             const expires = new Date(row.incident_expire_timestamp * 1000).toLocaleTimeString();
             const geofence = svc.getGeofence(row.lat, row.lon);
             const city = geofence ? geofence.name : 'Unknown';
@@ -678,7 +682,7 @@ async function getNests(filter) {
     if (results && results.length > 0) {
         const nests = [];
         for (const row of results) {
-            const imgUrl = await locale.getPokemonIcon(row.pokemon_id);
+            const imgUrl = await Localizer.instance.getPokemonIcon(row.pokemon_id);
             const name = row.name;
             const pokemon = pokedex[row.pokemon_id];
             const count = row.pokemon_count;
@@ -753,7 +757,7 @@ async function getNewGyms(lastHours = 24) {
 }
 
 function getTeamIcon(teamId) {
-    var teamName = locale.getTeamName(teamId);
+    var teamName = Localizer.instance.getTeamName(teamId);
     switch (teamId) {
         case 1:
             return '<img src="./img/teams/mystic.png" width=auto height=32 />&nbsp;' + teamName;
@@ -779,7 +783,7 @@ async function getQuestRewardsList() {
     if (itemResults && itemResults.length > 0) {
         itemResults.forEach(reward => rewards.push({
             id: 'item_' + reward.id,
-            name: locale.getItem(reward.id)
+            name: Localizer.instance.getItem(reward.id)
         }));
     }
     sql = 'SELECT pokemon_id AS id FROM quest_stats WHERE reward_type=7 GROUP BY pokemon_id';
@@ -787,7 +791,7 @@ async function getQuestRewardsList() {
     if (pokemonResults && pokemonResults.length > 0) {
         pokemonResults.forEach(reward => rewards.push({
             id: 'poke_' + reward.id,
-            name: locale.getPokemonName(reward.id)
+            name: Localizer.instance.getPokemonName(reward.id)
         }));
     }
     return rewards;
