@@ -6,7 +6,6 @@ const path = require('path');
 const util = require('util');
 
 const config = require('../config.json');
-const pokedex = require('../../static/data/pokedex.json');
 const i18n = require('../../static/js/i18n.min.js');
 
 class Localizer {
@@ -73,8 +72,7 @@ class Localizer {
     }
 
     getQuestTask(questId, amount) {
-        const task = i18n('quest_' + questId, { amount: amount });
-        return task;
+        return i18n('quest_' + questId, { amount: amount });
     }
 
     getQuestReward(rewards) {
@@ -82,6 +80,7 @@ class Localizer {
         const reward = obj[0];
         const id = reward.type;
         const info = reward.info;
+
         if (id === 1 && info !== undefined && info.amount !== undefined) {
             return i18n('quest_reward_1_formatted', { amount: info.amount });
         } else if (id === 2 && info !== undefined && info.amount !== undefined && info.item_id !== undefined) {
@@ -89,15 +88,12 @@ class Localizer {
         } else if (id === 3 && info !== undefined && info.amount !== undefined) {
             return i18n('quest_reward_3_formatted', { amount: info.amount });
         } else if (id === 4 && info !== undefined && info.amount !== undefined && info.pokemon_id !== undefined) {
-            return i18n('quest_reward_4_formatted', { amount: info.amount, pokemon: pokedex[info.pokemon_id] });
+            return i18n('quest_reward_4_formatted', { amount: info.amount, pokemon: this.getPokemonName(info.pokemon_id) });
         } else if (id === 7 && info !== undefined && info.pokemon_id !== undefined) {
-            let string = '';
+            let string = this.getPokemonName(info.pokemon_id);
+
             if (info.form_id !== 0 && info.form_id !== null) {
-                // TODO: getFormName
-                //string = getFormName(info.form_id) + ' ' + pokedex[info.pokemon_id];
-                string = pokedex[info.pokemon_id];
-            } else {
-                string = pokedex[info.pokemon_id];
+                string += ' (' + i18n('form_' + info.form_id) + ')';
             }
             if (info.shiny) {
                 string += ' (Shiny)';
@@ -146,7 +142,7 @@ class Localizer {
                 } else {
                     formatted = ', ';
                 }
-                pokemonString += formatted + pokedex[pokemonId];
+                pokemonString += formatted + this.getPokemonName(pokemonId);
             }
             return i18n('quest_condition_2_formatted', { pokemon: pokemonString });
         } else if (id === 7 && info !== undefined && info.raid_levels !== undefined) {
