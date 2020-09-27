@@ -457,7 +457,7 @@ async function getRaids(filter) {
             const now = new Date();
             const starts = new Date(row.raid_battle_timestamp * 1000);
             const started = starts < now;
-            const startTime = started ? '--' : starts.toLocaleTimeString();
+            const startTime = started ? '--' : utils.toHHMMSS(starts - now);//.toLocaleTimeString();
             const ends = new Date(row.raid_end_timestamp * 1000);
             const secondsLeft = ends - now;
             // Skip raids that have less than 60 seconds remaining.
@@ -472,6 +472,7 @@ async function getRaids(filter) {
                     (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                     const mapLink = util.format(config.google.maps, row.lat, row.lon);
                     raids.push({
+                        DT_RowId: row.id,
                         pokemon: {
                             formatted: `<img src='${imgUrl}' style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;${name}`,
                             sort: row.raid_pokemon_id
@@ -489,10 +490,14 @@ async function getRaids(filter) {
                             sort: level
                         },
                         gym_name: `<a href='${mapLink}' target='_blank'>${gym}</a>`,
-                        team: {
-                            formatted: teamIcon,
-                            sort: row.team_id
-                        },
+                        team: teamIcon,
+                        form: row.raid_pokemon_form > 0 ? Localizer.instance.getFormName(row.raid_pokemon_form) : '',
+                        evolution: row.raid_pokemon_evolution > 0 ? Localizer.instance.getEvolutionName(row.raid_pokemon_evolution) : '',
+                        move1: Localizer.instance.getMoveName(row.raid_pokemon_move_1),
+                        move2: Localizer.instance.getMoveName(row.raid_pokemon_move_2),
+                        costume: row.raid_pokemon_costume ? Localizer.instance.getCostumeName(row.raid_pokemon_costume) : '',
+                        gender: Localizer.instance.getGenderName(row.raid_pokemon_gender),
+                        cp: (row.raid_pokemon_cp || 0).toLocaleString(),
                         ex_eligible: ex,
                         city: city
                     });

@@ -72,6 +72,34 @@ class Localizer {
         return i18n('team_' + teamId);
     }
 
+    getMoveName(moveId) {
+        return i18n('move_' + moveId);
+    }
+
+    getCostumeName(costumeId) {
+        return i18n('costume_' + costumeId);
+    }
+
+    getGenderName(genderId) {
+        return i18n('gender_icon_' + genderId);
+    }
+
+    getEvolutionName(evoId) {
+        return i18n('evo_' + evoId);
+    }
+
+    getFormName(formId) {
+        return i18n('form_' + formId);
+    }
+
+    getWeatherName(weatherId) {
+        return i18n('weather_' + weatherId);
+    }
+
+    getWeatherIcon(weatherId) {
+        return i18n('weather_icon_' + weatherId);
+    }
+
     getQuestTask(questId, amount) {
         const task = i18n('quest_' + questId, { amount: amount });
         return task;

@@ -101,13 +101,12 @@
                     <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                         <thead class="thead-dark">
                             <tr>
+                                <th></th>
                                 <th class="all">{{Pokemon}}</th>
                                 <th class="min-desktop">{{Level}}</th>
                                 <th class="all">{{Starts}}</th>
                                 <th class="all">{{Ends}}</th>
                                 <th class="min-desktop">{{Gym Name}}</th>
-                                <th class="min-desktop">{{Team}}</th>
-                                <th class="min-desktop">{{EX-Eligible}}</th>
                                 <th class="all">{{City}}</th>
                             </tr>
                         </thead>
@@ -226,6 +225,13 @@
             "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
             "pageLength": 100,
             "columns": [
+                {
+                    "class": "details-control",
+                    "orderable": false,
+                    "data": null,
+                    "defaultContent": "",
+                    "visible": false
+                },
                 { data: {
                     _: "pokemon.formatted",
                     sort: "pokemon.sort"
@@ -243,11 +249,6 @@
                     sort: "raid_ends.sort"
                 } },
                 { "data": "gym_name" },
-                { data: {
-                    _: "team.formatted",
-                    sort: "team.sort"
-                } },
-                { "data": "ex_eligible" },
                 { "data": "city" }
             ],
             "columnDefs": [
@@ -256,7 +257,7 @@
             "info": true,
             "order": [[ 3, "asc" ]],
             "search.caseInsensitive": true,
-            "responsive": true,
+            //"responsive": true,
             /*
             "createdRow": function(row, data, index) {
                 //$('td', row).eq(2).css('color', 'blue');
@@ -294,6 +295,92 @@
                 table.ajax.reload(null, false);
             }, 30 * 1000);
         });
+        let detailRows = [];
+        $('#table tbody').on('click', 'tr td', function() {
+            let tr = $(this).closest('tr');
+            let row = table.row(tr);
+            let index = $.inArray(tr.attr('id'), detailRows);
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+                detailRows.splice(index, 1);
+            }
+            else {
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+                detailRows.push(tr.attr('id'));
+            }
+        });
+    
+        // On each draw, loop over the `detailRows` array and show any child rows
+        table.on('draw', function() {
+            $.each(detailRows, function (i, id) {
+                $(`#${id} td.details-control`).trigger('click');
+            });
+        });
+
+        function format (data) {
+            let content = `
+            <div class="expanded-row">
+                <div class="row justify-content-center">
+                    <h5>${data.gym_name}</h5>
+                </div>
+                <div class="row justify-content-left">
+                    <div class="col">
+                        <b>Moveset:</b> ${data.move1}/${data.move2}<br>
+                    </div>
+                    <div class="col">
+                        <b>EX-Eligible:</b> ${data.ex_eligible}<br>
+                    </div>
+                    <div class="col">
+                        <b>Team:</b> ${data.team}<br>
+                    </div>
+                    <div class="col">
+                        <b>Level:</b> ${data.raid_level.formatted}<br>
+                    </div>
+                `;
+            if (data.form) {
+                content += `
+                <div class="col">
+                    <b>Form:</b> ${data.form}<br>
+                </div>
+                `;
+            }
+            if (data.costume) {
+                content += `
+                <div class="col">
+                    <b>Costume:</b> ${data.costume}<br>
+                </div>
+                `;
+            }
+            if (data.evolution) {
+                content += `
+                <div class="col">
+                    <b>Evolution:</b> ${data.evolution}<br>
+                </div>
+                `;
+            }
+            if (data.cp > 0) {
+                content += `
+                <div class="col">
+                    <b>CP:</b> ${data.cp}<br>
+                </div>
+                `;
+            }
+            if (data.gender > 0) {
+                content += `
+                <div class="col">
+                    <b>Gender:</b> ${data.gender}<br>
+                </div>
+                `;
+            }
+            content += `
+                </div>
+            </div>
+            `;
+            return content;
+        }
+
         function reload() {
             var pokemon = $('#filter-pokemon').val();
             var gym = $('#filter-gym').val();
