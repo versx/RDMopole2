@@ -101,7 +101,8 @@
                                 <th class="all">{{ID}}</th>
                                 <th class="all">{{Pokemon}}</th>
                                 <th class="all">{{Shiny Rate}}</th>
-                                <th class="min-desktop">{{Shiny / Total}}</th>
+                                <th>{{Shiny}}</th>
+                                <th>{{Total}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -508,13 +509,11 @@
                 _: "rate.formatted",
                 sort: "rate.sort"
             } },
-            { data: {
-                _: "count.formatted",
-                sort: "count.sort"
-            } },
+            { "data": "shiny" },
+            { "data": "total" },
         ],
         "columnDefs": [
-            { type: 'formatted-num', targets: [0, 2, 3] }
+            { type: 'formatted-num', targets: [0, 2] }
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
