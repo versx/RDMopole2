@@ -262,12 +262,10 @@ async function getShinyRates(filter) {
                 pokemon: `<img src="${imageUrl}" style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;${name}`,
                 rate: {
                     formatted: `1/${rate}`,
-                    sort: rate
+                    sort: -rate,
                 },
-                count: {
-                    formatted: `${shiny.toLocaleString()}/${total.toLocaleString()}`,
-                    sort: total
-                }
+                shiny: shiny,
+                total: total,
             });
         }
         return data;
