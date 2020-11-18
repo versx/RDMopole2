@@ -473,7 +473,7 @@
 
     const computeShinyRate = (row, type, set, meta) => type === 'sort'
             ? row.shiny / row.total
-            : row.shiny > 0 ? `1/${(row.total / row.shiny).toPrecision(1 + Math.ceil(Math.log10(row.total)))}` : '0';
+            : row.shiny > 0 ? `1/${(row.total / row.shiny).toPrecision(Math.ceil(Math.log10(row.total)))}` : '0';
 
     /**
      * Computes exact confidence interval around proportion [lowerEstimate, mostLikely, upperEstimate].
@@ -531,7 +531,7 @@
         const rate = computeBinomialConfidenceIntervals(row.shiny, row.total)[0];
         return type === 'sort'
                 ? rate
-                : row.shiny > 0 ? `1/${(1 / rate).toPrecision(1 + Math.ceil(Math.log10(row.total)))}` : '0';
+                : row.shiny > 0 ? `1/${(1 / rate).toPrecision(Math.ceil(Math.log10(row.total)))}` : '0';
     };
 
     const table = $('#table').DataTable({
