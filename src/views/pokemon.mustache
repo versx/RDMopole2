@@ -533,7 +533,7 @@
     const computeShinyRateConfidence = (row, type, set, meta) => {
         const rate = computeBinomialConfidenceIntervals(row.shiny, row.total)[0];
         return {
-            _: row.shiny > 0 ? `1/${rate.toPrecision(1 + Math.ceil(Math.log10(row.total)))}`,
+            _: row.shiny > 0 ? `1/${rate.toPrecision(1 + Math.ceil(Math.log10(row.total)))}` : '0',
             sort: rate,
         };
     };
