@@ -471,7 +471,7 @@
     var shinyDate = $('#shiny-date').val();
     var query = `?date=${shinyDate}`;
 
-    const withPrecision = (num, denominator) => Number(num.toPrecision(Math.ceil(Math.log10(denominator))));
+    const withPrecision = (num, denominator) => Number(num.toPrecision(Math.ceil(Math.log10(1 + denominator))));
     const computeShinyRate = (row, type, set, meta) => type === 'sort'
             ? row.shiny / row.total
             : row.shiny > 0 ? `1/${withPrecision(row.total / row.shiny, row.total)}` : '0';
