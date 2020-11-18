@@ -473,7 +473,7 @@
 
     const computeShinyRate = (row, type, set, meta) => {
         return {
-            _: row.shiny > 0 ? `1/${(row.total / row.shiny).toPrecision(1 + Math.ceil(Math.log10(row.total)))}`,
+            _: row.shiny > 0 ? `1/${(row.total / row.shiny).toPrecision(1 + Math.ceil(Math.log10(row.total)))}` : '0',
             sort: row.shiny / row.total,
         };
     };
