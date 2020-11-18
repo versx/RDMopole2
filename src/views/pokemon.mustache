@@ -482,11 +482,11 @@
      *
      * @param numerator An integer indicating the number of events.
      * @param denominator An integer indicating the number of trials.
-     * @param upperTail A real number in [0, 1] indicating % area of upper tail.
      * @param lowerTail A real number in [0, 1] indicating % area of lower tail.
+     * @param upperTail A real number in [0, 1] indicating % area of upper tail.
      * @param accuracy Accuracy of the estimate. Omit to determine automatically based on denominator (.1/denominator).
      */
-    function computeBinomialConfidenceIntervals(numerator, denominator, upperTail = 0, lowerTail = .05, accuracy = null) {
+    function computeBinomialConfidenceIntervals(numerator, denominator, lowerTail = .05, upperTail = 0, accuracy = null) {
         if (accuracy === null) {
             accuracy = .1 / denominator;
         }
@@ -524,7 +524,7 @@
             lower = binarySearch(0, likely, (p) => computeBinomialLikelihood(denominator, p, numerator, denominator) > lowerTail);
         }
         if (numerator < denominator && upperTail > 0) {
-            upper = binarySearch(likely, 1, (p) => computeBinomialLikelihood(denominator, p, numerator, denominator) < upperTail);
+            upper = binarySearch(likely, 1, (p) => computeBinomialLikelihood(denominator, p, 0, numerator) < upperTail);
         }
         return [lower, likely, upper];
     }
