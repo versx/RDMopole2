@@ -252,7 +252,6 @@ async function getShinyRates(filter) {
             const name = Localizer.instance.getPokemonName(pokemonId);
             const shiny = (row.count || 0);
             const total = (getTotalCount(pokemonId) || 0);
-            const rate = shiny === 0 || total === 0 ? 0 : Math.round(total / shiny);
             const imageUrl = await Localizer.instance.getPokemonIcon(pokemonId);
             data.push({
                 id: {
@@ -260,10 +259,6 @@ async function getShinyRates(filter) {
                     sort: pokemonId
                 },
                 pokemon: `<img src="${imageUrl}" style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;${name}`,
-                rate: {
-                    formatted: `1/${rate}`,
-                    sort: -rate,
-                },
                 shiny: shiny,
                 total: total,
             });
