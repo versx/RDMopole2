@@ -8,7 +8,7 @@ const mustacheExpress = require('mustache-express');
 const helmet = require('helmet');
 const i18n = require('i18n');
 
-const config = require('./config.json');
+const config = require('./services/config.js');
 const defaultData = require('./data/default.js');
 const apiRoutes = require('./routes/api.js');
 const discordRoutes = require('./routes/discord.js');

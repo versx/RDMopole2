@@ -1,6 +1,6 @@
 'use strict';
 
-const config = require('../config.json');
+const config = require('./config.js');
 
 function generateString() {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);

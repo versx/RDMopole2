@@ -3,7 +3,7 @@
 const util = require('util');
 const i18n = require('i18n');
 
-const config = require('../config.json');
+const config = require('./config.js');
 const pokedex = require('../../static/data/pokedex.json');
 
 function getGruntType(gruntType) {

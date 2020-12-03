@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const config = require('../config.json');
+const config = require('../services/config.js');
 const map = require('../data/map.js');
 
 if (config.pages.pokemon.enabled) {
