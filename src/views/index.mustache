@@ -208,7 +208,7 @@
                                         <div class="row justify-content-center">
                                             {{#lifetime}}
                                             <div class="col-md-2">
-                                                <img src="{{image_url}}" width="64" height="64">
+                                                <img src="{{image_url}}" style="width: 64px; height: 64px; object-fit: contain;">
                                                 <span class="text-nowrap"><b>{{name}}</b></span>
                                                 <br>
                                                 <span class="text-nowrap">{{shiny}}/{{count}}</span>
@@ -226,7 +226,7 @@
                                         <div class="row justify-content-center">
                                             {{#today}}
                                             <div class="col-md-2">
-                                                <img src="{{image_url}}" width="64" height="64">
+                                                <img src="{{image_url}}" style="width: 64px; height: 64px; object-fit: contain;">
                                                 <span class="text-nowrap"><b>{{name}}</b></span>
                                                 <br>
                                                 <span class="text-nowrap">{{shiny}}/{{count}}</span>
@@ -244,7 +244,7 @@
                                         <div class="row justify-content-center">
                                             {{#top10_100iv_pokemon}}
                                             <div class="col-md-2">
-                                                <img src="{{image_url}}" width="64" height="64">
+                                                <img src="{{image_url}}" style="width: 64px; height: 64px; object-fit: contain;">
                                                 <span class="text-nowrap"><b>{{name}}</b></span>
                                                 <br>
                                                 <span class="text-nowrap">{{count}} 100%</span>
@@ -327,7 +327,7 @@
                                             <ul class="list-group">
                                             {{#gym_defenders}}
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    <span><img src="{{image_url}}" width="auto" height="32" />&nbsp;{{name}} (#{{id}})</span>
+                                                    <span><img src="{{image_url}}" style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;{{name}} (#{{id}})</span>
                                                     <span class="badge badge-primary badge-pill">{{count}}</span>
                                                 </li>
                                             {{/gym_defenders}}

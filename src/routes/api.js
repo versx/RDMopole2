@@ -66,26 +66,26 @@ router.post('/stats', async function(req, res) {
     let data;
     if (type) {
         switch (type) {
-        case 'pokemon':
-            data = {
-                stats: await map.getPokemonStats(req.query)
-            };
-            break;
-        case 'raids':
-            data = {
-                stats: await map.getRaidStats(req.query)
-            };
-            break;
-        case 'quests':
-            data = {
-                stats: await map.getQuestStats(req.query)
-            };
-            break;
-        case 'invasions':
-            data = {
-                stats: await map.getInvasionStats(req.query)
-            };
-            break;
+            case 'pokemon':
+                data = {
+                    stats: await map.getPokemonStats(req.query)
+                };
+                break;
+            case 'raids':
+                data = {
+                    stats: await map.getRaidStats(req.query)
+                };
+                break;
+            case 'quests':
+                data = {
+                    stats: await map.getQuestStats(req.query)
+                };
+                break;
+            case 'invasions':
+                data = {
+                    stats: await map.getInvasionStats(req.query)
+                };
+                break;
         }
     } else {
         const stats = await map.getStats();

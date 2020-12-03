@@ -6,7 +6,6 @@ const session = require('express-session');
 const app = express();
 const mustacheExpress = require('mustache-express');
 const helmet = require('helmet');
-const i18n = require('i18n');
 
 const config = require('./services/config.js');
 const defaultData = require('./data/default.js');
@@ -49,29 +48,6 @@ const utils = require('./services/utils.js');
     app.use(express.json());
     app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
-    // Initialize localzation handler
-    i18n.configure({
-        locales:['en', 'es', 'de'],
-        directory: path.resolve(__dirname, '../static/locales')
-    });
-    app.use(i18n.init);
-    
-    // Register helper as a locals function wrroutered as mustache expects
-    app.use(function(req, res, next) {
-        // Mustache helper
-        res.locals.__ = function() {
-            /* eslint-disable no-unused-vars */
-            return function(text, render) {
-            /* eslint-enable no-unused-vars */
-                return i18n.__.routerly(req, arguments);
-            };
-        };
-        next();
-    });
-    
-    // Set locale
-    i18n.setLocale(config.locale);
-
     // Sessions middleware
     app.use(session({
         secret: utils.generateString(),
@@ -87,16 +63,16 @@ const utils = require('./services/utils.js');
         app.use(function(err, req, res, next) {
         /* eslint-enable no-unused-vars */
             switch (err.message) {
-            case 'NoCodeProvided':
-                return res.status(400).send({
-                    status: 'ERROR',
-                    error: err.message,
-                });
-            default:
-                return res.status(500).send({
-                    status: 'ERROR',
-                    error: err.message,
-                });
+                case 'NoCodeProvided':
+                    return res.status(400).send({
+                        status: 'ERROR',
+                        error: err.message,
+                    });
+                default:
+                    return res.status(500).send({
+                        status: 'ERROR',
+                        error: err.message,
+                    });
             }
         });
     }

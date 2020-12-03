@@ -1,6 +1,11 @@
 ![Node.js CI](https://github.com/versx/RDMopole2/workflows/Node.js%20CI/badge.svg)
 ![Lint](https://github.com/versx/RDMopole2/workflows/Lint/badge.svg)  
-# RDM-opole2  
+
+[![GitHub Release](https://img.shields.io/github/release/versx/RDMopole2.svg)](https://github.com/versx/RDMopole2/releases/)
+[![GitHub Contributors](https://img.shields.io/github/contributors/versx/RDMopole2.svg)](https://github.com/versx/RDMopole2/graphs/contributors/)
+[![Discord](https://img.shields.io/discord/552003258000998401.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zZ9h9Xa)  
+
+# RDMopole2  
 
 ## Installation  
 1. Clone repository `git clone https://github.com/versx/RDMopole2`  
@@ -29,7 +34,7 @@ If you want to host your images locally where RDM-opole2 resides, change your `p
 Pokemon Id is always 3 digits i.e `007`, `047`, `147` although form will be whatever the form number is i.e `12`, `195`, `4032` etc  
 ```
 "images": {
-    "pokemon": "../img/pokemon/pokemon_icon_%s_%s.png",
+    "pokemon": "https://mygod.github.io/pokicons/v2",
     "eggs": "../img/eggs/%s.png"
 },
 ```
