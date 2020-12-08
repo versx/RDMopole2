@@ -320,7 +320,7 @@ async function getCommunityDayStats(filter) {
         };
         data.evo3 = {
             name: `${Localizer.instance.getPokemonName(id + 2)} (#${id + 2})`,
-            image: await Localizer.instance.getPokemonIcon(id + 1)
+            image: await Localizer.instance.getPokemonIcon(id + 2)
         };
         return data;
     }
