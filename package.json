@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/versx/RDM-opole2#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "btoa": "^1.2.1",
     "discord-oauth2": "^2.1.0",
     "discord.js": "^12.2.0",
