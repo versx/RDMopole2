@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
-const config = require('../config.json');
+const config = require('./config.js');
 const i18n = require('../../static/js/i18n.min.js');
 
 class Localizer {

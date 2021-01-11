@@ -2,7 +2,7 @@
 
 const util = require('util');
 
-const config = require('../config.json');
+const config = require('../services/config.js');
 const MySQLConnector = require('../services/mysql.js');
 const db = new MySQLConnector(config.db.scanner);
 const dbManual = new MySQLConnector(config.db.manualdb);

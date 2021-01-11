@@ -10,9 +10,9 @@
 ## Installation  
 1. Clone repository `git clone https://github.com/versx/RDMopole2`  
 1. Install dependencies `npm run update`  
-1. Copy config `cp src/config.example.json src/config.json`  
+1. Copy config `cp src/configs/config.example.json src/configs/config.json`  
 1. Create a Discord bot at https://discord.com/developers and enter the `botToken`, `clientId`, and `clientSecret` in your `config.json`  
-1. Fill out config `vi src/config.json`  
+1. Fill out config `vi src/configs/config.json`  
 1. Create or copy your existing geofences to the `geofences` folder. One geofence per file, the following is the expected format:  
     ```ini
     [City Name]
