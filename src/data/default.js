@@ -19,5 +19,7 @@ data.adsense = config.google.adsense;
 data.map_url = config.urls.map;
 data.paypal_url = config.urls.paypal;
 data.copyright_footer = config.showFooter;
+data.buttons_left = config.header.left;
+data.buttons_right = config.header.right;
 
 module.exports = data;

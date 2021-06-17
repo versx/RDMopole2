@@ -6,6 +6,10 @@
     "style": "dark",
     "lastNestMigration": "2019-03-07T01:00:00Z",
     "showFooter": true,
+    "header": {
+        "left": [],
+        "right": []
+    },
     "db": {
         "scanner": {
             "host": "127.0.0.1",
