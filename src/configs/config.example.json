@@ -6,6 +6,16 @@
     "style": "dark",
     "lastNestMigration": "2019-03-07T01:00:00Z",
     "showFooter": true,
+    "header": {
+        "left": [
+            { "name": "Stats", "url": "https://stats.example.com", "icon": "fas fa-fw fa-chart-bar" }
+        ],
+        "right": [
+            { "name": "Map", "url": "https://stats.example.com", "icon": "fas fa-map" },
+            { "name": "PayPal", "url": "https://paypal.me/example", "icon": "fab fa-paypal" },
+            { "name": "Discord", "url": "https://discord.example.com", "icon": "fab fa-discord" }
+        ]
+    },
     "db": {
         "scanner": {
             "host": "127.0.0.1",
