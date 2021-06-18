@@ -2,7 +2,7 @@
 
 const util = require('util');
 
-const config = require('../config.json');
+const config = require('../services/config.js');
 const MySQLConnector = require('../services/mysql.js');
 const db = new MySQLConnector(config.db.scanner);
 const dbManual = new MySQLConnector(config.db.manualdb);
@@ -249,10 +249,9 @@ async function getShinyRates(filter) {
         for (let i = 0; i < shinyResults.length; i++) {
             const row = shinyResults[i];
             const pokemonId = row.pokemon_id;
-            const name = pokedex[pokemonId];
+            const name = Localizer.instance.getPokemonName(pokemonId);
             const shiny = (row.count || 0);
             const total = (getTotalCount(pokemonId) || 0);
-            const rate = shiny === 0 || total === 0 ? 0 : Math.round(total / shiny);
             const imageUrl = await Localizer.instance.getPokemonIcon(pokemonId);
             data.push({
                 id: {
@@ -260,14 +259,8 @@ async function getShinyRates(filter) {
                     sort: pokemonId
                 },
                 pokemon: `<img src="${imageUrl}" style="width: 32px; height: 32px; object-fit: contain;" />&nbsp;${name}`,
-                rate: {
-                    formatted: `1/${rate}`,
-                    sort: rate
-                },
-                count: {
-                    formatted: `${shiny.toLocaleString()}/${total.toLocaleString()}`,
-                    sort: total
-                }
+                shiny: shiny,
+                total: total,
             });
         }
         return data;
@@ -317,17 +310,17 @@ async function getCommunityDayStats(filter) {
         data.end = end;
         const id = parseInt(pokemonId);
         data.evo1 = {
-            name: `${pokedex[id]} (#${id})`,
+            name: `${Localizer.instance.getPokemonName(id)} (#${id})`,
             image: await Localizer.instance.getPokemonIcon(id)
         };
         // todo: fix this?
         data.evo2 = {
-            name: `${pokedex[id + 1]} (#${id + 1})`,
+            name: `${Localizer.instance.getPokemonName(id + 1)} (#${id + 1})`,
             image: await Localizer.instance.getPokemonIcon(id + 1)
         };
         data.evo3 = {
-            name: `${pokedex[id + 2]} (#${id + 2})`,
-            image: await Localizer.instance.getPokemonIcon(id + 1)
+            name: `${Localizer.instance.getPokemonName(id + 2)} (#${id + 2})`,
+            image: await Localizer.instance.getPokemonIcon(id + 2)
         };
         return data;
     }
@@ -445,8 +438,16 @@ async function getRaids(filter) {
     if (results && results.length > 0) {
         var raids = [];
         for (const row of results) {
-            const name = row.raid_pokemon_id === 0 ? 'Egg' : `${pokedex[row.raid_pokemon_id]} (#${row.raid_pokemon_id})`;
-            const imgUrl = await Localizer.instance.getRaidIcon(row.raid_pokemon_id, row.raid_level, row.raid_pokemon_form, row.raid_pokemon_evolution, row.raid_pokemon_gender);
+            const name = row.raid_pokemon_id === 0
+                ? 'Egg'
+                : `${Localizer.instance.getPokemonName(row.raid_pokemon_id)} (#${row.raid_pokemon_id})`;
+            const imgUrl = await Localizer.instance.getRaidIcon(
+                row.raid_pokemon_id,
+                row.raid_level,
+                row.raid_pokemon_form,
+                row.raid_pokemon_evolution,
+                row.raid_pokemon_gender
+            );
             const geofence = svc.getGeofence(row.lat, row.lon);
             const team = Localizer.instance.getTeamName(row.team_id);
             const teamIcon = getTeamIcon(row.team_id);
@@ -533,7 +534,7 @@ async function getGyms(filter) {
             const team = Localizer.instance.getTeamName(row.team_id);
             const teamIcon = getTeamIcon(row.team_id);
             const slots = row.availble_slots === 0 ? 'Full' : row.availble_slots === 6 ? 'Empty' : '' + row.availble_slots;
-            const guard = row.guarding_pokemon_id === 0 ? 'None' : pokedex[row.guarding_pokemon_id];
+            const guard = row.guarding_pokemon_id === 0 ? 'None' : Localizer.instance.getPokemonName(row.guarding_pokemon_id);
             const pkmnIcon = guard === 'None' ? 'None' : await Localizer.instance.getPokemonIcon(row.guarding_pokemon_id);
             const geofence = svc.getGeofence(row.lat, row.lon);
             const city = geofence ? geofence.name : 'Unknown';
@@ -689,11 +690,12 @@ async function getNests(filter) {
         for (const row of results) {
             const imgUrl = await Localizer.instance.getPokemonIcon(row.pokemon_id);
             const name = row.name;
-            const pokemon = pokedex[row.pokemon_id];
+            const pokemon = Localizer.instance.getPokemonName(row.pokemon_id);
             const count = row.pokemon_count;
             const average = row.pokemon_avg;
             const geofence = svc.getGeofence(row.lat, row.lon);
             const city = geofence ? geofence.name : 'Unknown';
+
             if (name.toLowerCase().indexOf(filter.nest.toLowerCase()) > -1 &&
                 pokemon.toLowerCase().indexOf(filter.pokemon.toLowerCase()) > -1 &&
                 (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
@@ -777,7 +779,7 @@ function getTeamIcon(teamId) {
 
 function getPokemonNameIdsList() {
     const dex = pokedex;
-    const result = Object.keys(dex).map(x => { return { 'id': x, 'name': pokedex[x] }; });
+    const result = Object.keys(dex).map(x => { return { 'id': x, 'name': Localizer.instance.getPokemonName(x) }; });
     return result;
 }
 

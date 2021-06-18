@@ -98,10 +98,12 @@
                     <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                         <thead class="thead-dark">
                             <tr>
-                                <th class="all">{{ID}}</th>
+                                <th>{{ID}}</th>
                                 <th class="all">{{Pokemon}}</th>
-                                <th class="all">{{Shiny Rate}}</th>
-                                <th class="min-desktop">{{Shiny / Total}}</th>
+                                <th>{{Shiny Rate}}</th>
+                                <th class="all">{{Shiny Rate 95% Confidence}}</th>
+                                <th class="all">{{Shiny}}</th>
+                                <th>{{Total}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -469,6 +471,70 @@
     var shinyDate = $('#shiny-date').val();
     var query = `?date=${shinyDate}`;
 
+    const withPrecision = (num, denominator) => Number(num.toPrecision(Math.ceil(Math.log10(1 + denominator))));
+    const computeShinyRate = (row, type, set, meta) => type === 'sort'
+            ? row.shiny / row.total
+            : row.shiny > 0 ? `1/${withPrecision(row.total / row.shiny, row.total)}` : '0';
+
+    /**
+     * Computes exact confidence interval around proportion [lowerEstimate, mostLikely, upperEstimate].
+     * The confidence level computed will be (1 - upperTail - lowerTail).
+     *
+     * @param numerator An integer indicating the number of events.
+     * @param denominator An integer indicating the number of trials.
+     * @param lowerTail A real number in [0, 1] indicating % area of lower tail.
+     * @param upperTail A real number in [0, 1] indicating % area of upper tail.
+     * @param accuracy Accuracy of the estimate. Omit to determine automatically based on denominator (.1/denominator).
+     */
+    function computeBinomialConfidenceIntervals(numerator, denominator, lowerTail = .05, upperTail = 0, accuracy = null) {
+        if (accuracy === null) {
+            accuracy = .1 / denominator;
+        }
+        const computeBinomialLikelihood = (N, p, lower, higher) => {
+            const q = p / (1 - p);
+            let sum = 0, total = 0;
+            for (let k = 0, v = 1; k <= N; ++k, v = v * q * (N + 1 - k) / k) {
+                total += v;
+                if (k >= lower && k <= higher) {
+                    sum += v;
+                }
+                if (total > 1e30) {
+                    sum /= 1e30;
+                    total /= 1e30;
+                    v /= 1e30;
+                }
+            }
+            return sum / total;
+        };
+        const binarySearch = (lower, higher, predicateIsHigh) => {
+            let v = (lower + higher) / 2;
+            while (higher - lower > accuracy) {
+                if (predicateIsHigh(v)) {
+                    higher = v;
+                } else {
+                    lower = v;
+                }
+                v = (lower + higher) / 2;
+            }
+            return v;
+        };
+        let lower = 0, upper = 1;
+        const likely = numerator / denominator;
+        if (numerator > 0 && lowerTail > 0) {
+            lower = binarySearch(0, likely, (p) => computeBinomialLikelihood(denominator, p, numerator, denominator) > lowerTail);
+        }
+        if (numerator < denominator && upperTail > 0) {
+            upper = binarySearch(likely, 1, (p) => computeBinomialLikelihood(denominator, p, 0, numerator) < upperTail);
+        }
+        return [lower, likely, upper];
+    }
+    const computeShinyRateConfidence = (row, type, set, meta) => {
+        const rate = computeBinomialConfidenceIntervals(row.shiny, row.total)[0];
+        return type === 'sort'
+                ? rate
+                : row.shiny > 0 ? `1/${withPrecision(1 / rate, row.total)}` : '0';
+    };
+
     const table = $('#table').DataTable({
         "ajax": {
             "url": "/api/pokemon/shiny" + query,
@@ -504,17 +570,13 @@
                 sort: "id.sort"
             } },
             { "data": "pokemon" },
-            { data: {
-                _: "rate.formatted",
-                sort: "rate.sort"
-            } },
-            { data: {
-                _: "count.formatted",
-                sort: "count.sort"
-            } },
+            { data: computeShinyRate },
+            { data: computeShinyRateConfidence },
+            { "data": "shiny" },
+            { "data": "total" },
         ],
         "columnDefs": [
-            { type: 'formatted-num', targets: [0, 2, 3] }
+            { type: 'formatted-num', targets: [0, 2] }
         ],
         "info": true,
         "order": [[ 0, "asc" ]],

@@ -3,13 +3,12 @@
 const express = require('express');
 const router = express.Router();
 
-const config = require('../config.json');
+const config = require('../services/config.js');
 const defaultData = require('../data/default.js');
 const map = require('../data/map.js');
 const GeofenceService = require('../services/geofence.js');
 const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
-const pokedex = require('../../static/data/pokedex.json');
 
 const svc = new GeofenceService.GeofenceService();
 
@@ -32,7 +31,7 @@ router.get(['/', '/index'], async function(req, res) {
     const defenders = await Promise.all(topGymDefenders.map(async x => {
         return {
             id: x.guarding_pokemon_id,
-            name: pokedex[x.guarding_pokemon_id],
+            name: Localizer.instance.getPokemonName(x.guarding_pokemon_id),
             count: (x.count || 0).toLocaleString(),
             image_url: await Localizer.instance.getPokemonIcon(x.guarding_pokemon_id)
         };
@@ -40,7 +39,7 @@ router.get(['/', '/index'], async function(req, res) {
     data.top10_100iv_pokemon = await Promise.all(top10_100IVStats.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
-            name: pokedex[x.pokemon_id],
+            name: Localizer.instance.getPokemonName(x.pokemon_id),
             iv: x.iv,
             count: (x.count || 0).toLocaleString(),
             image_url: await Localizer.instance.getPokemonIcon(x.pokemon_id)
@@ -49,7 +48,7 @@ router.get(['/', '/index'], async function(req, res) {
     data.lifetime = await Promise.all(lifetime.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
-            name: pokedex[x.pokemon_id],
+            name: Localizer.instance.getPokemonName(x.pokemon_id),
             shiny: (x.shiny || 0).toLocaleString(),
             count: (x.count || 0).toLocaleString(),
             image_url: await Localizer.instance.getPokemonIcon(x.pokemon_id)
@@ -58,7 +57,7 @@ router.get(['/', '/index'], async function(req, res) {
     data.today = await Promise.all(today.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
-            name: pokedex[x.pokemon_id],
+            name: Localizer.instance.getPokemonName(x.pokemon_id),
             shiny: (x.shiny || 0).toLocaleString(),
             count: (x.count || 0).toLocaleString(),
             image_url: await Localizer.instance.getPokemonIcon(x.pokemon_id)
