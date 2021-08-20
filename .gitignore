@@ -120,3 +120,7 @@ static/locales/*
 
 # No docker-compose.yml files
 docker-compose.yml
+
+# Masterfile
+movesets.json
+pokedex.json
