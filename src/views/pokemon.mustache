@@ -93,15 +93,17 @@
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="shiny-date">Date</label>
                         </div>
-                        <input id="shiny-date" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker" onchange="getShinyStats()">
+                        <input id="shiny-date" class="flatpickr" placeholder="Select Date.." data-toggle="datetimepicker">
                     </div>
                     <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                         <thead class="thead-dark">
                             <tr>
-                                <th class="all">{{ID}}</th>
+                                <th>{{ID}}</th>
                                 <th class="all">{{Pokemon}}</th>
-                                <th class="all">{{Shiny Rate}}</th>
-                                <th class="min-desktop">{{Shiny / Total}}</th>
+                                <th>{{Shiny Rate}}</th>
+                                <th class="all">{{Shiny Rate 95% Confidence}}</th>
+                                <th class="all">{{Shiny}}</th>
+                                <th>{{Total}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -185,15 +187,15 @@
                                     <div class="col-md-8">
                                         <div class="row text-center">
                                             <div class="col-4">
-                                                <img id="evo1" src="#" height=72 width=72/><br>
+                                                <img id="evo1" src="#" style="width: 72px; height: 72px; object-fit: contain;"/><br>
                                                 <b id="evo1-text"></b>
                                             </div>
                                             <div class="col-4">
-                                                <img id="evo2" src="#" height=72 width=72/><br>
+                                                <img id="evo2" src="#" style="width: 72px; height: 72px; object-fit: contain;"/><br>
                                                 <b id="evo2-text"></b>
                                             </div>
                                             <div class="col-4 justify-content-end">
-                                                <img id="evo3" src="#" height=72 width=72/><br>
+                                                <img id="evo3" src="#" style="width: 72px; height: 72px; object-fit: contain;"/><br>
                                                 <b id="evo3-text"></b>
                                             </div>
                                         </div>
@@ -229,35 +231,50 @@
         altInput: true,
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
-        enableTime: false
+        enableTime: false,
+        onChange: function(selectedDates, dateStr, instance) {
+            getHistoricalStats();
+        }
     });
 
     $("#heatmap-start").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getHeatmapData();
+        }
     });
 
     $("#heatmap-end").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getHeatmapData();
+        }
     });
 
     $("#commday-start").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getCommDayStats();
+        }
     });
 
     $("#commday-end").flatpickr({
         altInput: true,
         altFormat: "F j, Y h\:00 K",
         dateFormat: "U",//"Y-m-d h K",
-        enableTime: true
+        enableTime: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            getCommDayStats();
+        }
     });
 
     $("#shiny-date").flatpickr({
@@ -265,7 +282,10 @@
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
         enableTime: false,
-        defaultDate: getTodaysDate()
+        defaultDate: getTodaysDate(),
+        onChange: function(selectedDates, dateStr, instance) {
+            getShinyStats();
+        }
     });
 
     var pieOptions = {
@@ -451,6 +471,70 @@
     var shinyDate = $('#shiny-date').val();
     var query = `?date=${shinyDate}`;
 
+    const withPrecision = (num, denominator) => Number(num.toPrecision(Math.ceil(Math.log10(1 + denominator))));
+    const computeShinyRate = (row, type, set, meta) => type === 'sort'
+            ? row.shiny / row.total
+            : row.shiny > 0 ? `1/${withPrecision(row.total / row.shiny, row.total)}` : '0';
+
+    /**
+     * Computes exact confidence interval around proportion [lowerEstimate, mostLikely, upperEstimate].
+     * The confidence level computed will be (1 - upperTail - lowerTail).
+     *
+     * @param numerator An integer indicating the number of events.
+     * @param denominator An integer indicating the number of trials.
+     * @param lowerTail A real number in [0, 1] indicating % area of lower tail.
+     * @param upperTail A real number in [0, 1] indicating % area of upper tail.
+     * @param accuracy Accuracy of the estimate. Omit to determine automatically based on denominator (.1/denominator).
+     */
+    function computeBinomialConfidenceIntervals(numerator, denominator, lowerTail = .05, upperTail = 0, accuracy = null) {
+        if (accuracy === null) {
+            accuracy = .1 / denominator;
+        }
+        const computeBinomialLikelihood = (N, p, lower, higher) => {
+            const q = p / (1 - p);
+            let sum = 0, total = 0;
+            for (let k = 0, v = 1; k <= N; ++k, v = v * q * (N + 1 - k) / k) {
+                total += v;
+                if (k >= lower && k <= higher) {
+                    sum += v;
+                }
+                if (total > 1e30) {
+                    sum /= 1e30;
+                    total /= 1e30;
+                    v /= 1e30;
+                }
+            }
+            return sum / total;
+        };
+        const binarySearch = (lower, higher, predicateIsHigh) => {
+            let v = (lower + higher) / 2;
+            while (higher - lower > accuracy) {
+                if (predicateIsHigh(v)) {
+                    higher = v;
+                } else {
+                    lower = v;
+                }
+                v = (lower + higher) / 2;
+            }
+            return v;
+        };
+        let lower = 0, upper = 1;
+        const likely = numerator / denominator;
+        if (numerator > 0 && lowerTail > 0) {
+            lower = binarySearch(0, likely, (p) => computeBinomialLikelihood(denominator, p, numerator, denominator) > lowerTail);
+        }
+        if (numerator < denominator && upperTail > 0) {
+            upper = binarySearch(likely, 1, (p) => computeBinomialLikelihood(denominator, p, 0, numerator) < upperTail);
+        }
+        return [lower, likely, upper];
+    }
+    const computeShinyRateConfidence = (row, type, set, meta) => {
+        const rate = computeBinomialConfidenceIntervals(row.shiny, row.total)[0];
+        return type === 'sort'
+                ? rate
+                : row.shiny > 0 ? `1/${withPrecision(1 / rate, row.total)}` : '0';
+    };
+
     const table = $('#table').DataTable({
         "ajax": {
             "url": "/api/pokemon/shiny" + query,
@@ -481,15 +565,29 @@
         "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
         "pageLength": 100,
         "columns": [
-            { "data": "id" },
+            { data: {
+                _: "id.formatted",
+                sort: "id.sort"
+            } },
             { "data": "pokemon" },
-            { "data": "rate" },
-            { "data": "count" },
+            { data: computeShinyRate },
+            { data: computeShinyRateConfidence },
+            { "data": "shiny" },
+            { "data": "total" },
+        ],
+        "columnDefs": [
+            { type: 'formatted-num', targets: [0, 2] }
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "responsive": true
+    });
+
+    $('.nav-link').on('click', function () {
+        setTimeout(function () {
+            table.fixedHeader.adjust();
+        }, 200);
     });
 
     function getOverviewStats() {
@@ -609,13 +707,16 @@
                 $("#evo3-text").text(result.data.stats.evo3.name);
 
                 removeDataset(scanChart);
+                var total = result.data.stats.total || 0;
+                var withIV = result.data.stats.with_iv || 0;
+                var withoutIV = total - withIV;
                 var scanData = {
-                data: [result.data.stats.total || 0, result.data.stats.with_iv || 0],
-                backgroundColor: [
-                    'green',
-                    'blue'
-                ],
-                label: 'Seen'
+                    data: [withoutIV, withIV],
+                    backgroundColor: [
+                        'red',
+                        'green',
+                    ],
+                    label: 'Seen'
                 };
                 addDataset(scanChart, [], scanData);
         
@@ -638,7 +739,6 @@
                 addDataset(levelChart, [], levelData);
         
                 removeDataset(ivChart);
-        
                 addDataset(ivChart, [], { data: [result.data.stats.iv_0], backgroundColor: 'black', label: '0% IV' });
                 addDataset(ivChart, [], { data: [result.data.stats.iv_1_9], backgroundColor: 'brown', label: '1-9% IV' });
                 addDataset(ivChart, [], { data: [result.data.stats.iv_10_19], backgroundColor: 'pink', label: '10-19% IV' });

@@ -1,6 +1,6 @@
 'use strict';
 
-const config = require('../config.json');
+const config = require('../services/config.js');
 const data = require('../../static/locales/' + config.locale + '.json');
 data.title = config.title;
 data.locale = config.locale;
@@ -19,5 +19,7 @@ data.adsense = config.google.adsense;
 data.map_url = config.urls.map;
 data.paypal_url = config.urls.paypal;
 data.copyright_footer = config.showFooter;
+data.buttons_left = config.header.left;
+data.buttons_right = config.header.right;
 
 module.exports = data;
