@@ -714,6 +714,7 @@ async function getGymDefenders(limit = 10) {
     const sql = `
 	SELECT guarding_pokemon_id, COUNT(guarding_pokemon_id) AS count
 	FROM gym
+	WHERE guarding_pokemon_id != 0
 	GROUP BY guarding_pokemon_id
 	ORDER BY count DESC
 	LIMIT ?
