@@ -36,8 +36,8 @@ async function getStats() {
         ) AS quests,
         (
             SELECT COUNT(id)
-            FROM   pokestop
-            WHERE  incident_expire_timestamp > UNIX_TIMESTAMP()
+            FROM   incident
+            WHERE  expiration > UNIX_TIMESTAMP()
         ) AS invasions,
         (
             SELECT COUNT(id)
@@ -396,9 +396,9 @@ async function getInvasionStats(filter) {
     const start = filter.start;
     const end = filter.end;
     const grunt = filter.grunt;
-    const all = grunt === 'all' ? '' : 'WHERE date > ? AND date < ? AND grunt_type = ?';
+    const all = grunt === 'all' ? '' : 'WHERE date > ? AND date < ? AND character = ?';
     const sql = `
-    SELECT date, grunt_type, count
+    SELECT date, character, count
     FROM invasion_stats
     ${all}
     `;
@@ -623,38 +623,38 @@ async function getQuests(filter) {
 
 async function getInvasions(filter) {
     const sql = `
-    SELECT 
-        lat, 
-        lon,
-        name,
-        grunt_type,
-        incident_expire_timestamp,
-        updated
-    FROM
-        pokestop
-    WHERE
-        incident_expire_timestamp > UNIX_TIMESTAMP()
-        AND enabled = 1;
+	SELECT 
+        p.lat, 
+        p.lon, 
+        p.name, 
+        i.character, 
+        i.expiration, 
+        p.updated 
+	FROM 
+		pokestop p, incident i 
+	WHERE 
+		expiration > UNIX_TIMESTAMP() 
+		AND p.enabled = 1;
     `;
     const results = await db.query(sql);
     if (results && results.length > 0) {
         const invasions = [];
         results.forEach(function(row) {
             const name = row.name || '';
-            const gruntType = Localizer.instance.getGruntType(row.grunt_type);
-            const expires = new Date(row.incident_expire_timestamp * 1000).toLocaleTimeString();
+            const character = Localizer.instance.getGruntType(row.character);
+            const expires = new Date(row.expiration * 1000).toLocaleTimeString();
             const geofence = svc.getGeofence(row.lat, row.lon);
             const city = geofence ? geofence.name : 'Unknown';
-            if ((utils.inArray(filter.grunt, gruntType) || filter.grunt.toLowerCase() === 'all') &&
+            if ((utils.inArray(filter.grunt, character) || filter.grunt.toLowerCase() === 'all') &&
                 name.toLowerCase().indexOf(filter.pokestop.toLowerCase()) > -1 &&
                 (utils.inArray(filter.city, city) || filter.city.toLowerCase() === 'all')) {
                 const mapLink = util.format(config.google.maps, row.lat, row.lon);
                 invasions.push({
-                    grunt_type: `<img src='./img/grunts/${row.grunt_type}.png' width=auto height=32 />&nbsp;${gruntType}`,
+                    character: `<img src='./img/grunts/${row.character}.png' width=auto height=32 />&nbsp;${character}`,
                     pokestop_name: `<a href='${mapLink}' target='_blank'>${name}</a>`,
                     expires: { 
                         formatted: expires,
-                        sort: row.incident_expire_timestamp
+                        sort: row.expiration
                     },
                     city: city
                     // TODO: Updated
