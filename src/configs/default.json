@@ -17,7 +17,8 @@
             "username": "user",
             "password": "pass123!",
             "database": "rdmdb",
-            "charset": "utf8mb4"
+            "charset": "utf8mb4",
+            "hasMultipleInvasions": false
         },
         "manualdb": {
             "host": "127.0.0.1",

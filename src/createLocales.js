@@ -39,7 +39,7 @@ module.exports.locales = async function locales() {
                 'utf8',
                 () => { },
             );
-            console.log('localeFile', 'file saved.');
+            console.log(locale, 'file saved.');
         }
     }));
 };

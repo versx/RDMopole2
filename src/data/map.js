@@ -36,8 +36,8 @@ async function getStats() {
         ) AS quests,
         (
             SELECT COUNT(id)
-            FROM   pokestop
-            WHERE  incident_expire_timestamp > UNIX_TIMESTAMP()
+            FROM   ${config.db.scanner.hasMultipleInvasions ? 'incident' : 'pokestop'}
+            WHERE  ${config.db.scanner.hasMultipleInvasions ? 'expiration' : 'incident_expire_timestamp'} > UNIX_TIMESTAMP()
         ) AS invasions,
         (
             SELECT COUNT(id)
@@ -622,7 +622,24 @@ async function getQuests(filter) {
 }
 
 async function getInvasions(filter) {
-    const sql = `
+    const sql = config.db.scanner.hasMultipleInvasions 
+        ? `
+    SELECT 
+        lat, 
+        lon,
+        name,
+        incident.updated,
+        incident.character AS grunt_type,
+        expiration AS incident_expire_timestamp
+    FROM
+        pokestop
+    LEFT JOIN
+        incident ON pokestop.id = incident.pokestop_id
+    WHERE
+        expiration > UNIX_TIMESTAMP()
+        AND enabled = 1;
+    ` 
+        : `
     SELECT 
         lat, 
         lon,
@@ -635,7 +652,7 @@ async function getInvasions(filter) {
     WHERE
         incident_expire_timestamp > UNIX_TIMESTAMP()
         AND enabled = 1;
-    `;
+    ` ;
     const results = await db.query(sql);
     if (results && results.length > 0) {
         const invasions = [];
