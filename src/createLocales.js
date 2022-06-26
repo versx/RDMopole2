@@ -6,7 +6,7 @@ const axios = require('axios');
 
 const appLocalesFolder = path.resolve(__dirname, '../static/locales');
 
-module.exports.locales = async function locales() {
+(async () => {
     const localTranslations = await fs.promises.readdir(appLocalesFolder);
     const englishRef = fs.readFileSync(path.resolve(appLocalesFolder, '_en.json'), { encoding: 'utf8', flag: 'r' });
 
@@ -42,4 +42,4 @@ module.exports.locales = async function locales() {
             console.log(locale, 'file saved.');
         }
     }));
-};
+})();

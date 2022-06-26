@@ -123,6 +123,7 @@ router.post('/stats', async function(req, res) {
             lures_glacial: (stats.lures_glacial || 0),
             lures_mossy: (stats.lures_mossy || 0),
             lures_magnetic: (stats.lures_magnetic || 0),
+            lures_rainy: (stats.lures_rainy || 0),
 
             spawnpoints_total: (stats.spawnpoints_total || 0),
             spawnpoints_found: (stats.spawnpoints_found || 0),

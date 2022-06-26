@@ -484,6 +484,13 @@
                                         <p class="list-group-item-text">Magnetic Lures</p>
                                     </a>
                                 </div>
+                                <div class="col-md-4 p-1">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/quests/505.png" width="64" height="64"/></h3>
+                                        <h4 class="list-group-item-heading lures-rainy">0</h4>
+                                        <p class="list-group-item-text">Rainy Lures</p>
+                                    </a>
+                                </div>
                             </div>
                             <br>
                             {{/custom_pokestops_overview}}
@@ -560,10 +567,12 @@
             updateCounter(".raids-female", result.raids_female);
             updateCounter(".gyms-attack", result.gyms_attack);
     
+            console.log('result:', result);
             updateCounter(".lures-normal", result.lures_normal);
             updateCounter(".lures-glacial", result.lures_glacial);
             updateCounter(".lures-mossy", result.lures_mossy);
             updateCounter(".lures-magnetic", result.lures_magnetic);
+            updateCounter(".lures-rainy", result.lures_rainy);
     
             updateCounter(".spawnpoints-total", result.spawnpoints_total);
             updateCounter(".spawnpoints-found", result.spawnpoints_found);

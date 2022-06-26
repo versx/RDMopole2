@@ -101,6 +101,11 @@ async function getStats() {
         ) AS lures_magnetic,
         (
             SELECT COUNT(id)
+            FROM   pokestop
+            WHERE  lure_expire_timestamp > UNIX_TIMESTAMP() AND lure_id=505
+        ) AS lures_rainy,
+        (
+            SELECT COUNT(id)
             FROM   spawnpoint
         ) AS spawnpoints_total,
         (

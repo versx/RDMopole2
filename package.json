@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "create-locales": "node -e 'require(\"./src/createLocales\").locales()'",
-    "generate": "node -e 'require(\"./src/generateMasterfile\").generate()'",
+    "create-locales": "node src/createLocales",
+    "generate": "node src/generateMasterfile",
     "test": "npx eslint src/**/*.js",
     "test-fix": "npx eslint src/**/*.js --fix",
     "update": "npm install && npm run generate && npm run create-locales"
