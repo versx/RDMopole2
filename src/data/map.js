@@ -181,7 +181,8 @@ async function getTopPokemonStats(lifetime = false, limit = 10) {
     let sql = '';
     if (lifetime) {
         sql = `
-        SELECT iv.pokemon_id, SUM(shiny.count) AS shiny, SUM(iv.count) AS count
+        SELECT iv.pokemon_id, SUM(shiny.count) AS shiny, SUM(iv.count) AS count,
+          (SELECT SUM(count) FROM pokemon_iv_stats) AS total
         FROM pokemon_iv_stats iv
           LEFT JOIN pokemon_shiny_stats shiny
           ON iv.date = shiny.date AND iv.pokemon_id = shiny.pokemon_id
@@ -191,7 +192,8 @@ async function getTopPokemonStats(lifetime = false, limit = 10) {
         `;
     } else {
         sql = `
-        SELECT iv.pokemon_id, SUM(shiny.count) AS shiny, SUM(iv.count) AS count
+        SELECT iv.pokemon_id, SUM(shiny.count) AS shiny, SUM(iv.count) AS count,
+          SUM(iv.count) OVER() AS total
         FROM pokemon_iv_stats iv
           LEFT JOIN pokemon_shiny_stats shiny
           ON iv.date = shiny.date AND iv.pokemon_id = shiny.pokemon_id

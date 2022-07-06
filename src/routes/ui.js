@@ -51,6 +51,7 @@ router.get(['/', '/index'], async function(req, res) {
             name: Localizer.instance.getPokemonName(x.pokemon_id),
             shiny: (x.shiny || 0).toLocaleString(),
             count: (x.count || 0).toLocaleString(),
+            percent: (x.count/x.total || 0).toLocaleString(undefined, {style: 'percent', maximumFractionDigits: 2}),
             image_url: await Localizer.instance.getPokemonIcon(x.pokemon_id)
         };
     }));
@@ -60,6 +61,7 @@ router.get(['/', '/index'], async function(req, res) {
             name: Localizer.instance.getPokemonName(x.pokemon_id),
             shiny: (x.shiny || 0).toLocaleString(),
             count: (x.count || 0).toLocaleString(),
+            percent: (x.count/x.total || 0).toLocaleString(undefined, {style: 'percent', maximumFractionDigits: 2}),
             image_url: await Localizer.instance.getPokemonIcon(x.pokemon_id)
         };
     }));
