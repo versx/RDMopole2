@@ -24,9 +24,9 @@ router.get(['/', '/index'], async function(req, res) {
         x.slots_available = x.availble_slots === 0 ? 'Full' : x.availble_slots + '/6';
         x.raid_battle_timestamp = utils.toHHMMSS(x.raid_battle_timestamp * 1000);
     });
-    const top10_100IVStats = await map.getTopPokemonIVStats(100, 10);
-    const lifetime = await map.getTopPokemonStats(true, 10);
-    const today = await map.getTopPokemonStats(false, 10);
+    const top20_100IVStats = await map.getTopPokemonIVStats(100, 20);
+    const lifetime = await map.getTopPokemonStats(true, 20);
+    const today = await map.getTopPokemonStats(false, 20);
 
     const defenders = await Promise.all(topGymDefenders.map(async x => {
         return {
@@ -36,7 +36,7 @@ router.get(['/', '/index'], async function(req, res) {
             image_url: await Localizer.instance.getPokemonIcon(x.guarding_pokemon_id)
         };
     }));
-    data.top10_100iv_pokemon = await Promise.all(top10_100IVStats.map(async x => {
+    data.top20_100iv_pokemon = await Promise.all(top20_100IVStats.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
             name: Localizer.instance.getPokemonName(x.pokemon_id),
@@ -75,10 +75,10 @@ router.get(['/', '/index'], async function(req, res) {
     data.custom_active_iv = config.pages.home.custom.pokemon.active;
     data.custom_lifetime_iv = config.pages.home.custom.pokemon.lifetime;
 
-    data.custom_pokemon_top10 = config.pages.home.custom.pokemon.top10.enabled;
-    data.custom_pokemon_top10_lifetime = config.pages.home.custom.pokemon.top10.lifetime;
-    data.custom_pokemon_top10_today = config.pages.home.custom.pokemon.top10.today;
-    data.custom_pokemon_top10_iv = config.pages.home.custom.pokemon.top10.iv;
+    data.custom_pokemon_top20 = config.pages.home.custom.pokemon.top20.enabled;
+    data.custom_pokemon_top20_lifetime = config.pages.home.custom.pokemon.top20.lifetime;
+    data.custom_pokemon_top20_today = config.pages.home.custom.pokemon.top20.today;
+    data.custom_pokemon_top20_iv = config.pages.home.custom.pokemon.top20.iv;
 
     data.custom_gyms = config.pages.home.custom.gyms.enabled;
     data.custom_gyms_new = config.pages.home.custom.gyms.newGyms;

@@ -185,24 +185,24 @@
                         {{/custom_lifetime_iv}}
                     </div>
               
-                    <!-- Start Top 10 -->
-                    {{#custom_pokemon_top10}}
+                    <!-- Start Top 20 -->
+                    {{#custom_pokemon_top20}}
                     <div class="card-body text-center p-1 m-3">
-                        <div class="card-header bg-dark text-light"><b>Top 10 Pokemon</b></div>
+                        <div class="card-header bg-dark text-light"><b>Top 20 Pokemon</b></div>
                         <ul class="nav nav-tabs justify-content-center" role="tablist">
-                            {{#custom_pokemon_top10_lifetime}}
-                            <li class="nav-item"><a class="nav-link active" id="top10-lifetime-tab" data-toggle="tab" href="#top10-lifetime" role="tab" aria-controls="top10-lifetime" aria-selected="true">Lifetime</a></li>
-                            {{/custom_pokemon_top10_lifetime}}
-                            {{#custom_pokemon_top10_today}}
-                            <li class="nav-item"><a class="nav-link" id="top10-today-tab" data-toggle="tab" href="#top10-today" role="tab" aria-controls="top10-today" aria-selected="false">Today</a></li>
-                            {{/custom_pokemon_top10_today}}
-                            {{#custom_pokemon_top10_iv}}
-                            <li class="nav-item"><a class="nav-link" id="top10-iv-today-tab" data-toggle="tab" href="#top10-iv-today" role="tab" aria-controls="top10-iv-today" aria-selected="false">IV Today</a></li>
-                            {{/custom_pokemon_top10_iv}}
+                            {{#custom_pokemon_top20_lifetime}}
+                            <li class="nav-item"><a class="nav-link active" id="top20-lifetime-tab" data-toggle="tab" href="#top20-lifetime" role="tab" aria-controls="top20-lifetime" aria-selected="true">Lifetime</a></li>
+                            {{/custom_pokemon_top20_lifetime}}
+                            {{#custom_pokemon_top20_today}}
+                            <li class="nav-item"><a class="nav-link" id="top20-today-tab" data-toggle="tab" href="#top20-today" role="tab" aria-controls="top20-today" aria-selected="false">Today</a></li>
+                            {{/custom_pokemon_top20_today}}
+                            {{#custom_pokemon_top20_iv}}
+                            <li class="nav-item"><a class="nav-link" id="top20-iv-today-tab" data-toggle="tab" href="#top20-iv-today" role="tab" aria-controls="top20-iv-today" aria-selected="false">IV Today</a></li>
+                            {{/custom_pokemon_top20_iv}}
                         </ul>
                         <div class="tab-content">
-                            {{#custom_pokemon_top10_lifetime}}
-                            <div class="tab-pane fade show active" id="top10-lifetime" role="tabpanel" aria-labelledby="top10-lifetime-tab">
+                            {{#custom_pokemon_top20_lifetime}}
+                            <div class="tab-pane fade show active" id="top20-lifetime" role="tabpanel" aria-labelledby="top20-lifetime-tab">
                                 <div class="card-body">
                                     <div class="container">
                                         <div class="row justify-content-center">
@@ -218,9 +218,9 @@
                                     </div>
                                 </div>
                             </div>
-                            {{/custom_pokemon_top10_lifetime}}
-                            {{#custom_pokemon_top10_today}}
-                            <div class="tab-pane fade" id="top10-today" role="tabpanel" aria-labelledby="top10-today-tab">
+                            {{/custom_pokemon_top20_lifetime}}
+                            {{#custom_pokemon_top20_today}}
+                            <div class="tab-pane fade" id="top20-today" role="tabpanel" aria-labelledby="top20-today-tab">
                                 <div class="card-body">
                                     <div class="container">
                                         <div class="row justify-content-center">
@@ -236,29 +236,29 @@
                                     </div>
                                 </div>
                             </div>
-                            {{/custom_pokemon_top10_today}}
-                            {{#custom_pokemon_top10_iv}}
-                            <div class="tab-pane fade" id="top10-iv-today" role="tabpanel" aria-labelledby="top10-iv-today-tab">
+                            {{/custom_pokemon_top20_today}}
+                            {{#custom_pokemon_top20_iv}}
+                            <div class="tab-pane fade" id="top20-iv-today" role="tabpanel" aria-labelledby="top20-iv-today-tab">
                                 <div class="card-body">
                                     <div class="container">
                                         <div class="row justify-content-center">
-                                            {{#top10_100iv_pokemon}}
+                                            {{#top20_100iv_pokemon}}
                                             <div class="col-md-2">
                                                 <img src="{{image_url}}" style="width: 64px; height: 64px; object-fit: contain;">
                                                 <span class="text-nowrap"><b>{{name}}</b></span>
                                                 <br>
                                                 <span class="text-nowrap">{{count}} 100%</span>
                                             </div>
-                                            {{/top10_100iv_pokemon}}
+                                            {{/top20_100iv_pokemon}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            {{/custom_pokemon_top10_iv}}
+                            {{/custom_pokemon_top20_iv}}
                         </div>
                     </div>
-                    {{/custom_pokemon_top10}}
-                    <!-- End Top 10 -->
+                    {{/custom_pokemon_top20}}
+                    <!-- End Top 20 -->
               
                 </div>
                 {{/custom_pokemon}}
