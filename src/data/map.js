@@ -163,7 +163,7 @@ async function getPokemonOverviewStats() {
     return results;
 }
 
-async function getTopPokemonIVStats(iv = 100, limit = config.pages.home.custom.pokemon.top.limit || 20) {
+async function getTopPokemonIVStats(iv = 100, limit = config.pages.home.custom.pokemon.top20.limit || 20) {
     const sql = `
     SELECT pokemon_id, iv, COUNT(iv) AS count
     FROM pokemon
@@ -177,7 +177,7 @@ async function getTopPokemonIVStats(iv = 100, limit = config.pages.home.custom.p
     return results;
 }
 
-async function getTopPokemonStats(lifetime = false, limit = config.pages.home.custom.pokemon.top.limit || 20) {
+async function getTopPokemonStats(lifetime = false, limit = config.pages.home.custom.pokemon.top20.limit || 20) {
     let sql = '';
     if (lifetime) {
         sql = `
