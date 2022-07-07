@@ -15,7 +15,7 @@ const svc = new GeofenceService.GeofenceService();
 
 router.get(['/', '/index'], async function(req, res) {
     const data = defaultData;
-    const topLimit = config.pages.home.custom.pokemon.top.limit || 20;
+    const topLimit = config.pages.home.custom.pokemon.top20.limit || 20;
     const newPokestops = await map.getNewPokestops();
     const newGyms = await map.getNewGyms();
     const topGymDefenders = await map.getGymDefenders(10);
