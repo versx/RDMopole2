@@ -15,6 +15,7 @@ const svc = new GeofenceService.GeofenceService();
 
 router.get(['/', '/index'], async function(req, res) {
     const data = defaultData;
+    const topLimit = config.pages.home.custom.pokemon.top.limit || 20;
     const newPokestops = await map.getNewPokestops();
     const newGyms = await map.getNewGyms();
     const topGymDefenders = await map.getGymDefenders(10);
@@ -24,9 +25,9 @@ router.get(['/', '/index'], async function(req, res) {
         x.slots_available = x.availble_slots === 0 ? 'Full' : x.availble_slots + '/6';
         x.raid_battle_timestamp = utils.toHHMMSS(x.raid_battle_timestamp * 1000);
     });
-    const top20_100IVStats = await map.getTopPokemonIVStats(100, 20);
-    const lifetime = await map.getTopPokemonStats(true, 20);
-    const today = await map.getTopPokemonStats(false, 20);
+    const top20_100IVStats = await map.getTopPokemonIVStats(100, topLimit);
+    const lifetime = await map.getTopPokemonStats(true, topLimit);
+    const today = await map.getTopPokemonStats(false, topLimit);
 
     const defenders = await Promise.all(topGymDefenders.map(async x => {
         return {
@@ -79,6 +80,7 @@ router.get(['/', '/index'], async function(req, res) {
     data.custom_pokemon_top20_lifetime = config.pages.home.custom.pokemon.top20.lifetime;
     data.custom_pokemon_top20_today = config.pages.home.custom.pokemon.top20.today;
     data.custom_pokemon_top20_iv = config.pages.home.custom.pokemon.top20.iv;
+    data.top_pokemon_count = topLimit;
 
     data.custom_gyms = config.pages.home.custom.gyms.enabled;
     data.custom_gyms_new = config.pages.home.custom.gyms.newGyms;
