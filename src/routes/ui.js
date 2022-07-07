@@ -21,7 +21,7 @@ router.get(['/', '/index'], async function(req, res) {
     const gymsUnderAttack = await map.getGymsUnderAttack(15);
     gymsUnderAttack.forEach(x => {
         x.team = Localizer.instance.getTeamName(x.team_id).toLowerCase();
-        x.slots_available = x.availble_slots === 0 ? 'Full' : x.availble_slots + '/6';
+        x.slots_available = x.available_slots === 0 ? 'Full' : x.available_slots + '/6';
         x.raid_battle_timestamp = utils.toHHMMSS(x.raid_battle_timestamp * 1000);
     });
     const top10_100IVStats = await map.getTopPokemonIVStats(100, 10);
