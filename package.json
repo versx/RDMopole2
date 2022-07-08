@@ -1,6 +1,6 @@
 {
-  "name": "rdm-opole2",
-  "version": "2.4.2",
+  "name": "rdmopole2",
+  "version": "2.4.3",
   "description": "",
   "main": "src/index.js",
   "scripts": {
