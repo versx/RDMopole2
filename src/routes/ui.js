@@ -15,7 +15,7 @@ const svc = new GeofenceService.GeofenceService();
 
 router.get(['/', '/index'], async function(req, res) {
     const data = defaultData;
-    const topLimit = config.pages.home.custom.pokemon.top20.limit || 20;
+    const topLimit = config.pages.home.custom.pokemon.top.limit || 20;
     const newPokestops = await map.getNewPokestops();
     const newGyms = await map.getNewGyms();
     const topGymDefenders = await map.getGymDefenders(10);
@@ -25,7 +25,7 @@ router.get(['/', '/index'], async function(req, res) {
         x.slots_available = x.availble_slots === 0 ? 'Full' : x.availble_slots + '/6';
         x.raid_battle_timestamp = utils.toHHMMSS(x.raid_battle_timestamp * 1000);
     });
-    const top20_100IVStats = await map.getTopPokemonIVStats(100, topLimit);
+    const top_100IVStats = await map.getTopPokemonIVStats(100, topLimit);
     const lifetime = await map.getTopPokemonStats(true, topLimit);
     const today = await map.getTopPokemonStats(false, topLimit);
 
@@ -37,7 +37,7 @@ router.get(['/', '/index'], async function(req, res) {
             image_url: await Localizer.instance.getPokemonIcon(x.guarding_pokemon_id)
         };
     }));
-    data.top20_100iv_pokemon = await Promise.all(top20_100IVStats.map(async x => {
+    data.top_100iv_pokemon = await Promise.all(top_100IVStats.map(async x => {
         return {
             pokemon_id: x.pokemon_id,
             name: Localizer.instance.getPokemonName(x.pokemon_id),
@@ -76,10 +76,10 @@ router.get(['/', '/index'], async function(req, res) {
     data.custom_active_iv = config.pages.home.custom.pokemon.active;
     data.custom_lifetime_iv = config.pages.home.custom.pokemon.lifetime;
 
-    data.custom_pokemon_top20 = config.pages.home.custom.pokemon.top20.enabled;
-    data.custom_pokemon_top20_lifetime = config.pages.home.custom.pokemon.top20.lifetime;
-    data.custom_pokemon_top20_today = config.pages.home.custom.pokemon.top20.today;
-    data.custom_pokemon_top20_iv = config.pages.home.custom.pokemon.top20.iv;
+    data.custom_pokemon_top = config.pages.home.custom.pokemon.top.enabled;
+    data.custom_pokemon_top_lifetime = config.pages.home.custom.pokemon.top.lifetime;
+    data.custom_pokemon_top_today = config.pages.home.custom.pokemon.top.today;
+    data.custom_pokemon_top_iv = config.pages.home.custom.pokemon.top.iv;
     data.top_pokemon_count = topLimit;
 
     data.custom_gyms = config.pages.home.custom.gyms.enabled;

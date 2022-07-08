@@ -57,7 +57,7 @@
                     "enabled": true,
                     "active": true,
                     "lifetime": true,
-                    "top20": {
+                    "top": {
                         "enabled": true,
                         "lifetime": true,
                         "today": true,
