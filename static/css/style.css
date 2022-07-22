@@ -1,0 +1,8 @@
+.expanded-row {
+    border: 4px solid rgb(50, 53, 57);
+    background-color: rgb(34, 34, 34);
+    width: 100%;
+    height: 100%;
+    padding: 0 0 0 0;
+    /*margin: 0 0 0 0;*/
+}
